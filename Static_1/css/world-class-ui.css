@@ -1,0 +1,299 @@
+/* MasterAI - World-Class UI Enhancements */
+
+/* Advanced Gradient Backgrounds */
+.world-class-gradient {
+    background: linear-gradient(135deg, 
+        #0f0f23 0%, 
+        #1a1a3e 10%, 
+        #2d1b69 25%, 
+        #4c1d95 40%, 
+        #7c3aed 60%, 
+        #a855f7 80%, 
+        #c084fc 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Premium Glass Effects */
+.glass-world-class {
+    backdrop-filter: blur(30px) saturate(200%);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Advanced Typography */
+.text-world-class {
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    line-height: 0.9;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Professional Button Styles */
+.btn-world-class {
+    position: relative;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+    box-shadow: 
+        0 10px 30px rgba(251, 191, 36, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+.btn-world-class::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
+}
+
+.btn-world-class:hover::before {
+    left: 100%;
+}
+
+.btn-world-class:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 
+        0 20px 50px rgba(251, 191, 36, 0.6),
+        0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+/* Advanced Card Styles */
+.card-world-class {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-world-class::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+}
+
+.card-world-class:hover {
+    transform: translateY(-20px) rotateX(5deg) rotateY(5deg);
+    box-shadow: 
+        0 30px 60px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.2);
+    border-color: rgba(251, 191, 36, 0.3);
+}
+
+/* Professional Form Styling */
+.form-world-class {
+    position: relative;
+}
+
+.form-world-class input,
+.form-world-class textarea,
+.form-world-class select {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 16px 20px;
+    color: white;
+    font-size: 16px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100%;
+}
+
+.form-world-class input:focus,
+.form-world-class textarea:focus,
+.form-world-class select:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #fbbf24;
+    box-shadow: 
+        0 0 0 4px rgba(251, 191, 36, 0.2),
+        0 8px 25px rgba(251, 191, 36, 0.15);
+    outline: none;
+}
+
+/* Advanced Loading States */
+.loading-world-class {
+    position: relative;
+    overflow: hidden;
+}
+
+.loading-world-class::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.3), 
+        transparent);
+    animation: shimmer-world-class 2s infinite;
+}
+
+@keyframes shimmer-world-class {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Professional Navigation */
+.nav-world-class {
+    backdrop-filter: blur(25px) saturate(180%);
+    background: rgba(15, 15, 35, 0.85);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Advanced Testimonial Cards */
+.testimonial-world-class {
+    position: relative;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 32px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.testimonial-world-class::before {
+    content: '"';
+    position: absolute;
+    top: -20px;
+    left: 30px;
+    font-size: 80px;
+    color: rgba(251, 191, 36, 0.3);
+    font-family: serif;
+    line-height: 1;
+}
+
+.testimonial-world-class:hover {
+    transform: translateY(-8px);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(251, 191, 36, 0.3);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Professional Pricing Cards */
+.pricing-world-class {
+    position: relative;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.pricing-world-class::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #fbbf24, #f59e0b, #d97706);
+}
+
+.pricing-world-class.featured {
+    border-color: #fbbf24;
+    box-shadow: 0 0 40px rgba(251, 191, 36, 0.3);
+    transform: scale(1.05);
+}
+
+.pricing-world-class:hover {
+    transform: translateY(-10px) scale(1.02);
+    border-color: rgba(251, 191, 36, 0.5);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+}
+
+/* Advanced Statistics Display */
+.stat-world-class {
+    text-align: center;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.stat-world-class:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-4px);
+}
+
+.stat-number {
+    font-size: 3rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+/* Professional Footer */
+.footer-world-class {
+    background: linear-gradient(135deg, 
+        rgba(15, 15, 35, 0.98) 0%, 
+        rgba(26, 26, 62, 0.98) 100%);
+    backdrop-filter: blur(25px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive Enhancements */
+@media (max-width: 768px) {
+    .card-world-class:hover {
+        transform: translateY(-10px);
+    }
+    
+    .btn-world-class:hover {
+        transform: translateY(-2px) scale(1.02);
+    }
+    
+    .pricing-world-class.featured {
+        transform: none;
+    }
+}
+
+/* Accessibility Enhancements */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .glass-world-class {
+        background: rgba(0, 0, 0, 0.8);
+        border-color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .btn-world-class {
+        background: #fbbf24;
+        color: #000;
+    }
+}

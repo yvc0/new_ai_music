@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Neural Sonic Genesis{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 pt-8 pb-16">
+    <!-- Dashboard Header -->
+    <div class="flex items-center justify-between mb-12">
+        <div>
+            <h1 class="text-4xl font-black text-white mb-2">Professional Dashboard</h1>
+            <p class="text-white/70">Manage your sonic transformations and track analytics</p>
+        </div>
+        <div class="flex items-center space-x-4">
+            <div class="glass-world-class rounded-xl px-6 py-3">
+                <div class="text-white/70 text-sm">Credits Remaining</div>
+                <div class="text-2xl font-bold text-yellow-400">247</div>
+            </div>
+            <button class="btn-world-class text-black px-6 py-3 rounded-xl font-bold">
+                <i class="fas fa-plus mr-2"></i>Upgrade Plan
+            </button>
+        </div>
+    </div>
+
+    <!-- Analytics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+        <div class="glass-world-class card-world-class p-6">
+            <div class="flex items-center justify-between mb-4">
+                <i class="fas fa-music text-yellow-400 text-2xl"></i>
+                <span class="text-green-400 text-sm font-medium">+12%</span>
+            </div>
+            <div class="text-3xl font-black text-white mb-1">1,247</div>
+            <div class="text-white/70 text-sm">Tracks Mastered</div>
+        </div>
+
+        <div class="glass-world-class card-world-class p-6">
+            <div class="flex items-center justify-between mb-4">
+                <i class="fas fa-clock text-purple-400 text-2xl"></i>
+                <span class="text-green-400 text-sm font-medium">-2.3s</span>
+            </div>
+            <div class="text-3xl font-black text-white mb-1">8.2s</div>
+            <div class="text-white/70 text-sm">Avg Processing</div>
+        </div>
+
+        <div class="glass-world-class card-world-class p-6">
+            <div class="flex items-center justify-between mb-4">
+                <i class="fas fa-chart-line text-blue-400 text-2xl"></i>
+                <span class="text-green-400 text-sm font-medium">+18%</span>
+            </div>
+            <div class="text-3xl font-black text-white mb-1">94.7%</div>
+            <div class="text-white/70 text-sm">Quality Score</div>
+        </div>
+
+        <div class="glass-world-class card-world-class p-6">
+            <div class="flex items-center justify-between mb-4">
+                <i class="fas fa-download text-green-400 text-2xl"></i>
+                <span class="text-green-400 text-sm font-medium">+24%</span>
+            </div>
+            <div class="text-3xl font-black text-white mb-1">892</div>
+            <div class="text-white/70 text-sm">Downloads</div>
+        </div>
+    </div>
+
+    <!-- Recent Projects -->
+    <div class="glass-world-class rounded-3xl p-8 mb-12">
+        <div class="flex items-center justify-between mb-8">
+            <h2 class="text-2xl font-bold text-white">Recent Projects</h2>
+            <button class="text-yellow-400 hover:text-yellow-300 font-medium">
+                <i class="fas fa-eye mr-2"></i>View All
+            </button>
+        </div>
+
+        <div class="space-y-4">
+            <div class="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-waveform-lines text-white"></i>
+                    </div>
+                    <div>
+                        <div class="text-white font-medium">Midnight Dreams.wav</div>
+                        <div class="text-white/60 text-sm">Mastered 2 hours ago</div>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm font-medium">Complete</span>
+                    <button class="text-white/70 hover:text-white">
+                        <i class="fas fa-download"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-waveform-lines text-white"></i>
+                    </div>
+                    <div>
+                        <div class="text-white font-medium">Electric Pulse.mp3</div>
+                        <div class="text-white/60 text-sm">Mastered 5 hours ago</div>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm font-medium">Complete</span>
+                    <button class="text-white/70 hover:text-white">
+                        <i class="fas fa-download"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-waveform-lines text-black"></i>
+                    </div>
+                    <div>
+                        <div class="text-white font-medium">Cosmic Journey.wav</div>
+                        <div class="text-white/60 text-sm">Processing...</div>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full text-sm font-medium">Processing</span>
+                    <div class="w-6 h-6">
+                        <i class="fas fa-spinner fa-spin text-white/70"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="glass-world-class rounded-3xl p-8">
+            <h3 class="text-xl font-bold text-white mb-6">Quick Master</h3>
+            <div class="border-2 border-dashed border-white/30 rounded-xl p-8 text-center hover:border-yellow-400 transition-colors cursor-pointer">
+                <i class="fas fa-cloud-upload-alt text-white text-4xl mb-4"></i>
+                <p class="text-white font-medium mb-2">Drop your track here</p>
+                <p class="text-white/60 text-sm">Or click to browse files</p>
+            </div>
+        </div>
+
+        <div class="glass-world-class rounded-3xl p-8">
+            <h3 class="text-xl font-bold text-white mb-6">AI Insights</h3>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <span class="text-white/80">Optimal Upload Time</span>
+                    <span class="text-yellow-400 font-medium">2-4 PM EST</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-white/80">Best Genre Performance</span>
+                    <span class="text-yellow-400 font-medium">Electronic</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-white/80">Quality Improvement</span>
+                    <span class="text-green-400 font-medium">+23.4%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

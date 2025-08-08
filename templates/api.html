@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}API Documentation - Neural Sonic Genesis{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-6 pt-8 pb-16">
+    <!-- API Header -->
+    <div class="text-center mb-20">
+        <div class="float inline-block mb-8">
+            <i class="fas fa-code text-white text-8xl text-glow"></i>
+        </div>
+        
+        <h1 class="text-6xl md:text-8xl font-black text-white mb-6 text-glow">
+            <span class="gradient-text">Developer</span><br>
+            API
+        </h1>
+        
+        <p class="text-2xl md:text-3xl text-white/90 max-w-4xl mx-auto mb-12 font-light leading-relaxed">
+            Integrate <strong class="font-bold text-yellow-400">quantum-neural mastering</strong> 
+            directly into your applications with our enterprise-grade API
+        </p>
+    </div>
+
+    <!-- Quick Start -->
+    <div class="glass-world-class rounded-3xl p-12 mb-20">
+        <h2 class="text-4xl font-bold text-white mb-8 text-center">Quick Start</h2>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div>
+                <h3 class="text-2xl font-bold text-white mb-4">Authentication</h3>
+                <div class="bg-black/50 rounded-xl p-6 mb-6">
+                    <code class="text-green-400 text-sm">
+curl -X POST https://api.neuralsonic.ai/v1/auth<br>
+  -H "Content-Type: application/json"<br>
+  -d '{"api_key": "your_api_key_here"}'
+                    </code>
+                </div>
+                
+                <h3 class="text-2xl font-bold text-white mb-4">Upload & Master</h3>
+                <div class="bg-black/50 rounded-xl p-6">
+                    <code class="text-green-400 text-sm">
+curl -X POST https://api.neuralsonic.ai/v1/master<br>
+  -H "Authorization: Bearer {token}"<br>
+  -F "audio=@track.wav"<br>
+  -F "preset=professional"
+                    </code>
+                </div>
+            </div>
+            
+            <div>
+                <h3 class="text-2xl font-bold text-white mb-4">Response Format</h3>
+                <div class="bg-black/50 rounded-xl p-6">
+                    <code class="text-blue-400 text-sm">
+{<br>
+  "job_id": "ns_12345",<br>
+  "status": "processing",<br>
+  "estimated_time": "8.2s",<br>
+  "webhook_url": "optional",<br>
+  "download_url": null<br>
+}
+                    </code>
+                </div>
+                
+                <div class="mt-6 p-4 bg-yellow-400/10 border border-yellow-400/30 rounded-xl">
+                    <div class="flex items-center text-yellow-400 mb-2">
+                        <i class="fas fa-key mr-2"></i>
+                        <span class="font-bold">Get API Key</span>
+                    </div>
+                    <p class="text-white/80 text-sm">Contact our enterprise team to get your production API key and start integrating.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="text-center">
+        <div class="glass-world-class rounded-3xl p-12">
+            <h2 class="text-4xl font-bold text-white mb-6 text-glow">Ready to Integrate?</h2>
+            <p class="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
+                Get your API key and start building with Neural Sonic Genesis today
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <button class="btn-world-class text-black px-8 py-4 rounded-xl font-bold">
+                    <i class="fas fa-key mr-2"></i>Get API Key
+                </button>
+                <a href="/contact" class="bg-white/10 text-white px-8 py-4 rounded-xl font-bold hover:bg-white/20 transition-all duration-300 border border-white/20">
+                    <i class="fas fa-phone mr-2"></i>Contact Sales
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
