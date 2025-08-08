@@ -6,18 +6,19 @@ from datetime import datetime
 from pathlib import Path
 from base64 import b64decode
 
-# Keep ffmpeg setup at the very top
+# -------------------------------------------------
+# Setup FFmpeg path early so librosa & soundfile work
+# -------------------------------------------------
 import imageio_ffmpeg
 _ffmpeg = imageio_ffmpeg.get_ffmpeg_exe()
 os.environ["PATH"] = os.path.dirname(_ffmpeg) + os.pathsep + os.environ.get("PATH", "")
+os.environ["FFMPEG_BINARY"] = _ffmpeg  # help some backends find it
 
-from flask import Flask, render_template, request, jsonify, url_for
-from werkzeug.utils import secure_filename
-
+# Fix for soundfile/librosa 'no compiled object' error
+import soundfile as sf
 import numpy as np
 import librosa
 import pyloudnorm as pyln
-import soundfile as sf
 
 # Optional dependency
 try:
@@ -25,6 +26,9 @@ try:
     MATCHERING_AVAILABLE = True
 except Exception:
     MATCHERING_AVAILABLE = False
+
+from flask import Flask, render_template, request, jsonify, url_for
+from werkzeug.utils import secure_filename
 
 ALLOWED_EXTENSIONS = {"wav", "flac", "ogg", "mp3", "m4a"}
 
@@ -49,16 +53,13 @@ def master_audio(y: np.ndarray, sr: int, target_lufs: float = -14.0):
     meter = pyln.Meter(sr)
     loudness = meter.integrated_loudness(y)
 
-    # Gain to reach target LUFS
     loudness_diff_db = target_lufs - loudness
     gain_lin = 10.0 ** (loudness_diff_db / 20.0)
     y = y * gain_lin
 
-    # Soft limiter
     pre_gain = 1.5
     y = np.tanh(y * pre_gain) / np.tanh(pre_gain)
 
-    # Short fades (5 ms)
     fade_samples = max(1, int(0.005 * sr))
     if fade_samples * 2 < len(y):
         fade_in = np.linspace(0.0, 1.0, fade_samples)
@@ -66,7 +67,6 @@ def master_audio(y: np.ndarray, sr: int, target_lufs: float = -14.0):
         y[:fade_samples] *= fade_in
         y[-fade_samples:] *= fade_out
 
-    # Normalize to safe peak
     peak = np.max(np.abs(y)) + 1e-12
     y = y / peak * 0.98
     return y
@@ -74,9 +74,8 @@ def master_audio(y: np.ndarray, sr: int, target_lufs: float = -14.0):
 
 class MasterAIApp:
     def __init__(self):
-        # Serve assets from Static_1 at URL /static (matches your templates)
         self.app = Flask(__name__, static_folder="Static_1", static_url_path="/static")
-        self.app.config["MAX_CONTENT_LENGTH"] = 200 * 1024 * 1024  # 200 MB
+        self.app.config["MAX_CONTENT_LENGTH"] = 200 * 1024 * 1024
         self.app.config["UPLOAD_FOLDER"] = os.path.join(self.app.static_folder, "uploads")
         self.app.config["JSON_AS_ASCII"] = False
         self.app.config["FFMPEG_PATH"] = _ffmpeg
@@ -87,6 +86,7 @@ class MasterAIApp:
     def register_routes(self):
         app = self.app
 
+        # ---------- UI routes ----------
         @app.route("/")
         def home():
             return render_template("index.html")
@@ -125,19 +125,16 @@ class MasterAIApp:
 
         @app.route("/api/stats")
         def api_stats():
-            return jsonify(
-                {
-                    "users": 1284,
-                    "processed_tracks": 8742,
-                    "avg_processing_time_sec": 3.7,
-                    "timestamp": datetime.utcnow().isoformat() + "Z",
-                }
-            )
+            return jsonify({
+                "users": 1284,
+                "processed_tracks": 8742,
+                "avg_processing_time_sec": 3.7,
+                "timestamp": datetime.utcnow().isoformat() + "Z",
+            })
 
         @app.route("/diag")
         def diag():
             import subprocess, sys
-
             try:
                 out = subprocess.check_output(
                     [app.config["FFMPEG_PATH"], "-version"],
@@ -146,33 +143,20 @@ class MasterAIApp:
                 ).splitlines()[0]
             except Exception as e:
                 out = f"ffmpeg not working: {e}"
-            return jsonify(
-                {
-                    "python": sys.version,
-                    "ffmpeg_path": app.config["FFMPEG_PATH"],
-                    "ffmpeg_version": out,
-                    "matchering": MATCHERING_AVAILABLE,
-                }
-            )
+            return jsonify({
+                "python": sys.version,
+                "ffmpeg_path": app.config["FFMPEG_PATH"],
+                "ffmpeg_version": out,
+                "matchering": MATCHERING_AVAILABLE,
+            })
 
+        # ---------- API route ----------
         @app.route("/upload", methods=["POST"])
         def upload():
-            """
-            Accepts:
-              - multipart/form-data:
-                  - primary audio under keys: audio, file, audioFile, track, upload
-                  - optional reference track under key: reference
-              - raw binary: Content-Type: audio/* or application/octet-stream (for primary audio)
-              - JSON: base64 at 'file' or 'data' (for primary audio)
-            If a reference track is present AND Matchering is installed, uses Matchering.
-            Otherwise falls back to the built-in mastering chain.
-            Always returns: { success, originalUrl, masteredUrl, improvements, analysis? }
-            """
             try:
                 # --- Gather primary audio ---
                 main_keys = ["audio", "file", "audioFile", "track", "upload"]
                 primary = None
-
                 for k in main_keys:
                     if k in request.files and request.files[k].filename:
                         primary = request.files[k]
@@ -188,13 +172,11 @@ class MasterAIApp:
                 raw_ext = "wav"
                 ct = (request.headers.get("Content-Type") or "").lower()
 
-                # Raw binary upload
                 if primary is None and (ct.startswith("audio/") or "application/octet-stream" in ct):
                     if ct.startswith("audio/"):
                         raw_ext = ct.split("/", 1)[1].split(";")[0] or "wav"
                     raw_fp = BytesIO(request.get_data() or b"")
 
-                # JSON base64 upload
                 if primary is None and raw_fp is None and "application/json" in ct:
                     try:
                         payload = request.get_json(silent=True) or {}
@@ -214,10 +196,8 @@ class MasterAIApp:
                     return jsonify({"success": False, "error": "No file provided"}), 400
 
                 upload_dir = Path(app.config["UPLOAD_FOLDER"])
-                upload_dir.mkdir(parents=True, exist_ok=True)
                 uid = uuid.uuid4().hex[:8]
 
-                # Save primary
                 if primary is not None:
                     original_name = secure_filename(primary.filename or f"upload_{uid}.wav")
                     ext = original_name.rsplit(".", 1)[1].lower() if "." in original_name else "wav"
@@ -233,7 +213,7 @@ class MasterAIApp:
                     with open(primary_path, "wb") as f:
                         f.write(raw_fp.getvalue())
 
-                # --- Gather optional reference track (multipart only) ---
+                # --- Optional reference ---
                 reference_storage = request.files.get("reference")
                 reference_path = None
                 if reference_storage and reference_storage.filename:
@@ -243,7 +223,7 @@ class MasterAIApp:
                     reference_path = upload_dir / f"{ref_base}.{ref_ext}"
                     reference_storage.save(str(reference_path))
 
-                # --- If we have a reference and Matchering is available, use it ---
+                # --- Mastering ---
                 used_matchering = False
                 mastered_path = upload_dir / f"{Path(primary_path).stem}_mastered.wav"
 
@@ -256,14 +236,13 @@ class MasterAIApp:
                         )
                         used_matchering = True
                     except Exception:
-                        used_matchering = False  # fall back below
+                        used_matchering = False
 
                 if not used_matchering:
-                    # Load primary
                     try:
                         y, sr = librosa.load(str(primary_path), sr=44100, mono=True)
                     except Exception as e:
-                        return jsonify({"success": False, "error": f"Failed to read audio: {e}"}), 400
+                        return jsonify({"success": False, "error": f"Failed to read audio: {type(e).__name__}: {e}"}), 400
 
                     y_master = master_audio(y, sr, target_lufs=-14.0)
                     try:
@@ -271,7 +250,7 @@ class MasterAIApp:
                     except Exception as e:
                         return jsonify({"success": False, "error": f"Failed to write mastered audio: {e}"}), 500
 
-                # --- Analyze pre/post (best-effort) ---
+                # --- Analysis ---
                 try:
                     y_pre, sr_pre = librosa.load(str(primary_path), sr=44100, mono=True)
                     y_post, sr_post = librosa.load(str(mastered_path), sr=44100, mono=True)
@@ -280,11 +259,9 @@ class MasterAIApp:
                 except Exception:
                     pre = post = None
 
-                # URLs for frontend
                 original_url = url_for("static", filename=f"uploads/{primary_path.name}", _external=False)
                 mastered_url = url_for("static", filename=f"uploads/{mastered_path.name}", _external=False)
 
-                # Improvements blob for your UI
                 if pre and post:
                     lufs_diff = round(post["loudness_lufs"] - pre["loudness_lufs"], 2)
                     loudness_label = f"{'+' if lufs_diff >= 0 else ''}{lufs_diff} LU"
@@ -306,15 +283,13 @@ class MasterAIApp:
                 }
                 if pre and post:
                     payload["analysis"] = {"pre": pre, "post": post}
-
-                # If Matchering not installed but reference provided, inform gently
                 if reference_path and not MATCHERING_AVAILABLE:
                     payload["note"] = "Reference provided but Matchering is not installed; used standard mastering."
 
                 return jsonify(payload)
 
             except Exception as e:
-                return jsonify({"success": False, "error": f"Server error: {e}"}), 500
+                return jsonify({"success": False, "error": f"Server error: {type(e).__name__}: {e}"}), 500
 
 
 def create_app():
@@ -324,5 +299,4 @@ def create_app():
 app = create_app()
 
 if __name__ == "__main__":
-    # Use PORT env or default 5000
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
