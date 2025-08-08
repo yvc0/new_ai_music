@@ -10,7 +10,7 @@ from base64 import b64decode
 # -------------------------------------------------
 # Environment tweaks for low-RAM servers
 # -------------------------------------------------
-os.environ["NUMBA_DISABLE_JIT"] = "1"  # disable numba JIT to save RAM
+os.environ["NUMBA_DISABLE_JIT"] = "1"  # disable numba JIT (defensive)
 MAX_AUDIO_SECONDS = int(os.environ.get("MAX_AUDIO_SECONDS", "600"))  # max 10 min audio
 DEBUG_API = os.environ.get("DEBUG_API", "0") == "1"
 
@@ -25,15 +25,15 @@ os.environ["FFMPEG_BINARY"] = _ffmpeg
 # Core audio deps
 import soundfile as sf
 import numpy as np
-import librosa
 import pyloudnorm as pyln
 
-# Prefer soxr if available (avoids resampy/numba)
+# Prefer soxr if available (no numba); else scipy
 try:
     import soxr  # noqa: F401
-    _RES_TYPE = "soxr_hq"
+    _USE_SOXR = True
 except Exception:
-    _RES_TYPE = "scipy"  # pure scipy polyphase resampler (no numba)
+    _USE_SOXR = False
+from scipy.signal import resample_poly  # fallback resampler
 
 # Optional dependency (reference-based mastering)
 try:
@@ -41,6 +41,9 @@ try:
     MATCHERING_AVAILABLE = True
 except Exception:
     MATCHERING_AVAILABLE = False
+
+# Fallback decoder for mp3/m4a/etc when SoundFile can't open
+import audioread
 
 from flask import Flask, render_template, request, jsonify, url_for
 from werkzeug.utils import secure_filename
@@ -75,50 +78,109 @@ def master_audio(y: np.ndarray, sr: int, target_lufs: float = -14.0):
     meter = pyln.Meter(sr)
     loudness = meter.integrated_loudness(y)
 
+    # Gain to reach target LUFS
     loudness_diff_db = target_lufs - loudness
     gain_lin = 10.0 ** (loudness_diff_db / 20.0)
     y = y * gain_lin
 
+    # Soft limiter
     pre_gain = 1.5
     y = np.tanh(y * pre_gain) / np.tanh(pre_gain)
 
+    # Short fades (5 ms)
     fade_samples = max(1, int(0.005 * sr))
     if fade_samples * 2 < len(y):
-        fade_in = np.linspace(0.0, 1.0, fade_samples)
-        fade_out = np.linspace(1.0, 0.0, fade_samples)
+        fade_in = np.linspace(0.0, 1.0, fade_samples, dtype=np.float32)
+        fade_out = np.linspace(1.0, 0.0, fade_samples, dtype=np.float32)
         y[:fade_samples] *= fade_in
         y[-fade_samples:] *= fade_out
 
+    # Normalize to safe peak
     peak = np.max(np.abs(y)) + 1e-12
     y = y / peak * 0.98
-    return y
+    return y.astype(np.float32, copy=False)
 
 
-def safe_load_audio(path, sr=22050, mono=True, max_seconds=MAX_AUDIO_SECONDS):
+def _to_mono(x: np.ndarray) -> np.ndarray:
+    # x shape: (n,) or (n, ch)
+    if x.ndim == 1:
+        return x
+    return np.mean(x, axis=1, dtype=np.float32)
+
+
+def _resample(x: np.ndarray, sr_in: int, sr_out: int) -> np.ndarray:
+    if sr_in == sr_out:
+        return x
+    if _USE_SOXR:
+        # soxr supports 1D or 2D; we pass mono
+        return soxr.resample(x, sr_in, sr_out, quality="HQ").astype(np.float32, copy=False)
+    # scipy fallback via polyphase (operate mono)
+    # up/down factors as integers approximations
+    from math import gcd
+    g = gcd(sr_in, sr_out)
+    up = sr_out // g
+    down = sr_in // g
+    return resample_poly(x, up, down).astype(np.float32, copy=False)
+
+
+def safe_load_audio_manual(path, target_sr=22050, mono=True, max_seconds=MAX_AUDIO_SECONDS):
     """
-    Duration-capped load with resampler that avoids resampy/numba.
-    Uses soxr (preferred) or scipy; falls back to audioread if soundfile fails.
+    Decode audio without librosa:
+    1) Try SoundFile (wav/flac/ogg); if unsupported, 2) use audioread (mp3/m4a/…).
+    Resample with soxr/scipy. Enforce duration cap.
+    Returns: (y: float32 mono, sr: int)
     """
+    path = str(path)
+
+    # First try SoundFile
     try:
-        return librosa.load(
-            str(path),
-            sr=sr,
-            mono=mono,
-            dtype="float32",
-            duration=max_seconds,
-            res_type=_RES_TYPE,  # << no resampy
-        )
+        data, sr = sf.read(path, dtype="float32", always_2d=True)
+        # data shape: (frames, channels)
+        if mono:
+            y = _to_mono(data)
+        else:
+            y = data
     except Exception:
-        # fallback avoids libsndfile dependency
-        return librosa.load(
-            str(path),
-            sr=sr,
-            mono=mono,
-            dtype="float32",
-            duration=max_seconds,
-            backend="audioread",
-            res_type=_RES_TYPE,
-        )
+        # Fallback to audioread (gstreamer/ffmpeg-backed)
+        with audioread.audio_open(path) as f:
+            sr = f.samplerate
+            ch = f.channels
+            # Collect into int16 then convert
+            pcm = bytearray()
+            max_bytes = int(max_seconds * sr * ch * 2)  # 2 bytes per sample
+            read_bytes = 0
+            for buf in f:
+                pcm.extend(buf)
+                read_bytes += len(buf)
+                if read_bytes >= max_bytes:
+                    break
+            if not pcm:
+                raise RuntimeError("No audio data decoded")
+            # Convert bytes → int16 → float32
+            arr = np.frombuffer(bytes(pcm), dtype=np.int16)
+            if ch > 1:
+                arr = arr.reshape(-1, ch)
+                if mono:
+                    y = _to_mono(arr.astype(np.float32) / 32768.0)
+                else:
+                    y = (arr.astype(np.float32) / 32768.0)
+            else:
+                y = (arr.astype(np.float32) / 32768.0)
+
+    # Enforce duration cap (if SoundFile path)
+    if y.ndim > 1:
+        y = _to_mono(y)
+    if max_seconds is not None and max_seconds > 0:
+        max_len = int(max_seconds * sr)
+        if y.shape[0] > max_len:
+            y = y[:max_len]
+
+    # Resample if needed
+    if target_sr is not None:
+        y = _resample(y, sr, target_sr)
+        sr = target_sr
+
+    return y.astype(np.float32, copy=False), int(sr)
 
 
 class MasterAIApp:
@@ -197,18 +259,14 @@ class MasterAIApp:
                 "ffmpeg_path": app.config["FFMPEG_PATH"],
                 "ffmpeg_version": out,
                 "matchering": MATCHERING_AVAILABLE,
-                "res_type": _RES_TYPE,
+                "uses_soxr": _USE_SOXR,
             })
-
-        @app.route("/health")
-        def health():
-            return jsonify({"ok": True}), 200
 
         @app.route("/env")
         def env():
             import sys, platform, importlib
             pkgs = {}
-            for name in ["numpy","librosa","soundfile","pyloudnorm","audioread","imageio_ffmpeg","matchering","soxr"]:
+            for name in ["numpy","soundfile","pyloudnorm","audioread","imageio_ffmpeg","matchering","scipy","soxr"]:
                 try:
                     m = importlib.import_module(name)
                     pkgs[name] = getattr(m, "__version__", "unknown")
@@ -219,7 +277,7 @@ class MasterAIApp:
                 "platform": platform.platform(),
                 "ffmpeg": app.config.get("FFMPEG_PATH"),
                 "DEBUG_API": DEBUG_API,
-                "res_type": _RES_TYPE,
+                "uses_soxr": _USE_SOXR,
                 "packages": pkgs
             })
 
@@ -291,14 +349,15 @@ class MasterAIApp:
                 if Path(primary_path).is_dir():
                     return err_response("Got a directory, expected an audio file", 400)
 
-                # Reject overly long files early
+                # Early duration estimation (best-effort)
+                dur = None
                 try:
                     info = sf.info(str(primary_path))
                     dur = float(info.frames) / float(info.samplerate or 1)
-                except Exception as e:
-                    return err_response(f"Failed to inspect audio: {type(e).__name__}: {e}", 400, e)
-
-                if dur > MAX_AUDIO_SECONDS:
+                except Exception:
+                    # may be mp3 etc.; we'll enforce the cap after decode
+                    pass
+                if dur is not None and dur > MAX_AUDIO_SECONDS:
                     return err_response(
                         f"Audio too long ({dur:.1f}s). Max allowed is {MAX_AUDIO_SECONDS}s", 400
                     )
@@ -330,7 +389,7 @@ class MasterAIApp:
 
                 if not used_matchering:
                     try:
-                        y, sr = safe_load_audio(primary_path)
+                        y, sr = safe_load_audio_manual(primary_path, target_sr=22050, mono=True)
                     except Exception as e:
                         return err_response(f"Failed to read audio: {type(e).__name__}: {e}", 400, e)
 
@@ -342,8 +401,8 @@ class MasterAIApp:
 
                 # --- Analysis ---
                 try:
-                    y_pre, sr_pre = safe_load_audio(primary_path)
-                    y_post, sr_post = safe_load_audio(mastered_path)
+                    y_pre, sr_pre = safe_load_audio_manual(primary_path, target_sr=22050, mono=True)
+                    y_post, sr_post = safe_load_audio_manual(mastered_path, target_sr=22050, mono=True)
                     pre = analyze_audio(y_pre, sr_pre)
                     post = analyze_audio(y_post, sr_post)
                 except Exception:
@@ -371,14 +430,14 @@ class MasterAIApp:
                     "masteredUrl": mastered_url,
                     "improvements": improvements,
                     "processing_time_sec": round(time.time() - start_time, 2),
-                    "res_type": _RES_TYPE,
+                    "uses_soxr": _USE_SOXR,
                 }
                 if pre and post:
                     payload["analysis"] = {"pre": pre, "post": post}
                 if reference_path and not MATCHERING_AVAILABLE:
                     payload["note"] = "Reference provided but Matchering is not installed; used standard mastering."
 
-                print(f"[UPLOAD] Done in {payload['processing_time_sec']}s, resampler={_RES_TYPE}")
+                print(f"[UPLOAD] Done in {payload['processing_time_sec']}s, soxr={_USE_SOXR}")
                 return jsonify(payload)
 
             except Exception as e:
