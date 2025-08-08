@@ -1,7 +1,19 @@
-Flask==2.3.3
-Werkzeug==2.3.7
+update requirements with this
+# Web
+Flask==3.0.3
 gunicorn==21.2.0
-pydub
-pyloudnorm
-librosa
-numpy
+Flask-Cors==4.0.0 # optional, only if you need cross-origin requests
+
+# Audio / DSP stack
+numpy==1.26.4
+scipy==1.11.4
+numba==0.58.1
+llvmlite==0.41.1
+librosa==0.10.1
+soundfile==0.12.1
+audioread==3.0.0
+pyloudnorm==0.1.1
+soxr==0.3.7 # optional, speeds up resampling if librosa uses it
+
+# Reference-based mastering
+matchering==2.0.8
