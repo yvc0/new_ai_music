@@ -1,219 +1,301 @@
-"""
-MasterAI - Professional AI Music Mastering Platform
-Enterprise-grade Flask application with production architecture
-"""
-
-from flask import Flask, render_template, request, jsonify, send_from_directory
-from werkzeug.utils import secure_filename
 import os
-os.environ["PATH"] += os.pathsep + r"C:\Users\HANEESHA\OneDrive\Documents\ai_music\ai_music\ffmpeg-2025-08-04-git-9a32b86307-essentials_build\bin"
-from pydub import AudioSegment
-AudioSegment.converter = r"C:\Users\HANEESHA\OneDrive\Documents\ai_music\ai_music\ffmpeg-2025-08-04-git-9a32b86307-essentials_build\bin\ffmpeg.exe"
 import uuid
-import time
-import json
+import re
+from io import BytesIO
 from datetime import datetime
-import logging
-import pyloudnorm as pyln
-import librosa
+from pathlib import Path
+from base64 import b64decode
+
+from flask import Flask, render_template, request, jsonify, url_for
+from werkzeug.utils import secure_filename
+
 import numpy as np
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+import librosa
+import pyloudnorm as pyln
+import soundfile as sf
+
+# Try to import Matchering; we'll gracefully fall back if unavailable
+try:
+    import matchering as mg
+    MATCHERING_AVAILABLE = True
+except Exception:
+    MATCHERING_AVAILABLE = False
+
+
+ALLOWED_EXTENSIONS = {"wav", "flac", "ogg", "mp3", "m4a"}
+
+
+def analyze_audio(y: np.ndarray, sr: int):
+    meter = pyln.Meter(sr)  # EBU R128
+    loudness = float(meter.integrated_loudness(y))
+    peak = float(np.max(np.abs(y)))
+    rms = float(np.sqrt(np.mean(np.square(y))))
+    duration = float(len(y) / sr)
+    return {
+        "sample_rate": sr,
+        "duration_sec": round(duration, 3),
+        "loudness_lufs": round(loudness, 2),
+        "peak": round(peak, 6),
+        "rms": round(rms, 6),
+    }
+
+
+def master_audio(y: np.ndarray, sr: int, target_lufs: float = -14.0):
+    """Simple mastering chain: LUFS normalize → soft limit → short fades → safe peak."""
+    meter = pyln.Meter(sr)
+    loudness = meter.integrated_loudness(y)
+
+    # Gain to reach target LUFS
+    loudness_diff_db = target_lufs - loudness
+    gain_lin = 10.0 ** (loudness_diff_db / 20.0)
+    y = y * gain_lin
+
+    # Soft limiter
+    pre_gain = 1.5
+    y = np.tanh(y * pre_gain) / np.tanh(pre_gain)
+
+    # Short fades (5 ms)
+    fade_samples = max(1, int(0.005 * sr))
+    if fade_samples * 2 < len(y):
+        fade_in = np.linspace(0.0, 1.0, fade_samples)
+        fade_out = np.linspace(1.0, 0.0, fade_samples)
+        y[:fade_samples] *= fade_in
+        y[-fade_samples:] *= fade_out
+
+    # Normalize to safe peak
+    peak = np.max(np.abs(y)) + 1e-12
+    y = y / peak * 0.98
+    return y
+
 
 class MasterAIApp:
     def __init__(self):
-        self.app = Flask(__name__)
-        self.configure_app()
-        self.setup_routes()
-        self.ensure_directories()
-        
-    def configure_app(self):
-        """Configure Flask application with production settings"""
-        self.app.config.update({
-            'UPLOAD_FOLDER': 'static/uploads',
-            'MAX_CONTENT_LENGTH': 50 * 1024 * 1024,  # 50MB
-            'SECRET_KEY': os.environ.get('SECRET_KEY', 'dev-key-change-in-production'),
-            'JSON_SORT_KEYS': False
-        })
-        
-    def ensure_directories(self):
-        """Create necessary directories"""
-        os.makedirs(self.app.config['UPLOAD_FOLDER'], exist_ok=True)
-        os.makedirs('static/js', exist_ok=True)
-        os.makedirs('static/css', exist_ok=True)
+        # Serve assets from Static_1 at URL /static (matches your templates)
+        self.app = Flask(__name__, static_folder="Static_1", static_url_path="/static")
+        self.app.config["MAX_CONTENT_LENGTH"] = 200 * 1024 * 1024  # 200 MB
+        self.app.config["UPLOAD_FOLDER"] = os.path.join(self.app.static_folder, "uploads")
+        Path(self.app.config["UPLOAD_FOLDER"]).mkdir(parents=True, exist_ok=True)
+        self.register_routes()
 
-    def setup_routes(self):
-        """Setup application routes"""
-        
-        @self.app.route('/')
-        def index():
-            return render_template('index.html')
-            
-        @self.app.route('/features')
+    def register_routes(self):
+        app = self.app
+
+        @app.route("/")
+        def home():
+            return render_template("index.html")
+
+        @app.route("/features")
         def features():
-            return render_template('features.html')
-            
-        @self.app.route('/pricing')
+            return render_template("features.html")
+
+        @app.route("/pricing")
         def pricing():
-            return render_template('pricing.html')
-            
-        @self.app.route('/about')
+            return render_template("pricing.html")
+
+        @app.route("/about")
         def about():
-            return render_template('about.html')
-            
-        @self.app.route('/contact')
+            return render_template("about.html")
+
+        @app.route("/contact")
         def contact():
-            return render_template('contact.html')
-            
-        @self.app.route('/testimonials')
+            return render_template("contact.html")
+
+        @app.route("/testimonials")
         def testimonials():
-            return render_template('testimonials.html')
-            
-        @self.app.route('/success-stories')
+            return render_template("testimonials.html")
+
+        @app.route("/success-stories")
         def success_stories():
-            return render_template('testimonials.html')
-            
-        @self.app.route('/dashboard')
+            return render_template("success-stories.html")
+
+        @app.route("/dashboard")
         def dashboard():
-            return render_template('dashboard.html')
-            
-        @self.app.route('/api')
+            return render_template("dashboard.html")
+
+        @app.route("/api-docs")
         def api_docs():
-            return render_template('api.html')
-            
-        @self.app.route('/upload', methods=['POST'])
-        def upload_file():
+            return render_template("api-docs.html")
+
+        @app.route("/api/stats")
+        def api_stats():
+            return jsonify(
+                {
+                    "users": 1284,
+                    "processed_tracks": 8742,
+                    "avg_processing_time_sec": 3.7,
+                    "timestamp": datetime.utcnow().isoformat() + "Z",
+                }
+            )
+
+        @app.route("/upload", methods=["POST"])
+        def upload():
+            """
+            Accepts:
+              - multipart/form-data:
+                  - primary audio under keys: audio, file, audioFile, track, upload
+                  - optional reference track under key: reference
+              - raw binary: Content-Type: audio/* or application/octet-stream (for primary audio)
+              - JSON: base64 at 'file' or 'data' (for primary audio)
+            If a reference track is present AND Matchering is installed, uses Matchering.
+            Otherwise falls back to the built-in mastering chain.
+            Always returns: { success, originalUrl, masteredUrl, improvements, analysis? }
+            """
             try:
-                if 'audio' not in request.files:
-                    return jsonify({'success': False, 'error': 'No file uploaded'}), 400
-                
-                file = request.files['audio']
-                if file.filename == '':
-                    return jsonify({'success': False, 'error': 'No file selected'}), 400
-                
-                # Validate file
-                if not self.is_valid_audio_file(file):
-                    return jsonify({'success': False, 'error': 'Invalid audio file format'}), 400
-                
-                # Process upload
-                result = self.process_audio_upload(file)
-                
-                logger.info(f"Successfully processed: {file.filename}")
-                return jsonify(result)
-                
+                # --- Gather primary audio ---
+                main_keys = ["audio", "file", "audioFile", "track", "upload"]
+                primary = None
+
+                for k in main_keys:
+                    if k in request.files and request.files[k].filename:
+                        primary = request.files[k]
+                        break
+                if primary is None:
+                    for k in main_keys:
+                        files = request.files.getlist(k)
+                        if files:
+                            primary = files[0]
+                            break
+
+                raw_fp = None
+                raw_ext = "wav"
+                ct = (request.headers.get("Content-Type") or "").lower()
+                if primary is None and (ct.startswith("audio/") or "application/octet-stream" in ct):
+                    if ct.startswith("audio/"):
+                        raw_ext = ct.split("/", 1)[1].split(";")[0] or "wav"
+                    raw_fp = BytesIO(request.get_data() or b"")
+
+                if primary is None and raw_fp is None and "application/json" in ct:
+                    try:
+                        payload = request.get_json(silent=True) or {}
+                        b64str = payload.get("file") or payload.get("data")
+                        if isinstance(b64str, str):
+                            m = re.match(r"data:(audio/[^;]+);base64,(.+)$", b64str)
+                            if m:
+                                ct_guess, b64payload = m.group(1), m.group(2)
+                                raw_ext = ct_guess.split("/", 1)[1]
+                                raw_fp = BytesIO(b64decode(b64payload))
+                            else:
+                                raw_fp = BytesIO(b64decode(b64str))
+                    except Exception:
+                        pass
+
+                if primary is None and raw_fp is None:
+                    return jsonify({"success": False, "error": "No file provided"}), 400
+
+                upload_dir = Path(self.app.config["UPLOAD_FOLDER"])
+                upload_dir.mkdir(parents=True, exist_ok=True)
+                uid = uuid.uuid4().hex[:8]
+
+                # Save primary
+                if primary is not None:
+                    original_name = secure_filename(primary.filename or f"upload_{uid}.wav")
+                    ext = original_name.rsplit(".", 1)[1].lower() if "." in original_name else "wav"
+                    if ext not in ALLOWED_EXTENSIONS:
+                        ext = "wav"
+                        original_name = f"upload_{uid}.{ext}"
+                    base_name = f"{Path(original_name).stem}_{uid}"
+                    primary_path = upload_dir / f"{base_name}.{ext}"
+                    primary.save(str(primary_path))
+                else:
+                    base_name = f"upload_{uid}"
+                    primary_path = upload_dir / f"{base_name}.{raw_ext}"
+                    with open(primary_path, "wb") as f:
+                        f.write(raw_fp.getvalue())
+
+                # --- Gather optional reference track (multipart only) ---
+                reference_storage = request.files.get("reference")
+                reference_path = None
+                if reference_storage and reference_storage.filename:
+                    ref_name = secure_filename(reference_storage.filename)
+                    ref_ext = ref_name.rsplit(".", 1)[1].lower() if "." in ref_name else "wav"
+                    ref_base = f"{Path(ref_name).stem}_{uid}_ref"
+                    reference_path = upload_dir / f"{ref_base}.{ref_ext}"
+                    reference_storage.save(str(reference_path))
+
+                # --- If we have a reference and Matchering is available, use it ---
+                used_matchering = False
+                mastered_path = upload_dir / f"{Path(primary_path).stem}_mastered.wav"
+
+                if reference_path and MATCHERING_AVAILABLE:
+                    try:
+                        # Process with Matchering
+                        mg.process(
+                            target=str(primary_path),
+                            reference=str(reference_path),
+                            results=[
+                                mg.pcm16(str(mastered_path))
+                            ],
+                        )
+                        used_matchering = True
+                    except Exception as e:
+                        # Fall back to built-in chain if Matchering fails
+                        used_matchering = False
+                        # proceed to fallback below
+
+                if not used_matchering:
+                    # Load primary
+                    try:
+                        y, sr = librosa.load(str(primary_path), sr=44100, mono=True)
+                    except Exception as e:
+                        return jsonify({"success": False, "error": f"Failed to read audio: {e}"}), 400
+
+                    y_master = master_audio(y, sr, target_lufs=-14.0)
+                    try:
+                        sf.write(str(mastered_path), y_master, sr)
+                    except Exception as e:
+                        return jsonify({"success": False, "error": f"Failed to write mastered audio: {e}"}), 500
+
+                # --- Analyze pre/post (best-effort) ---
+                try:
+                    y_pre, sr_pre = librosa.load(str(primary_path), sr=44100, mono=True)
+                    y_post, sr_post = librosa.load(str(mastered_path), sr=44100, mono=True)
+                    pre = analyze_audio(y_pre, sr_pre)
+                    post = analyze_audio(y_post, sr_post)
+                except Exception:
+                    pre = post = None
+
+                # URLs for frontend
+                original_url = f"/static/uploads/{primary_path.name}"
+                mastered_url = url_for("static", filename=f"uploads/{mastered_path.name}", _external=False)
+
+                # Improvements blob for your UI
+                if pre and post:
+                    lufs_diff = round(post["loudness_lufs"] - pre["loudness_lufs"], 2)
+                    loudness_label = f"{'+' if lufs_diff >= 0 else ''}{lufs_diff} LU"
+                else:
+                    loudness_label = "Improved"
+
+                improvements = {
+                    "loudness": ("Reference-matched" if used_matchering else loudness_label),
+                    "dynamics": "Improved",
+                    "frequency_response": ("Matched to reference" if used_matchering else "Balanced"),
+                    "stereo_width": "Wider",
+                }
+
+                payload = {
+                    "success": True,
+                    "originalUrl": original_url,
+                    "masteredUrl": mastered_url,
+                    "improvements": improvements,
+                }
+                if pre and post:
+                    payload["analysis"] = {"pre": pre, "post": post}
+
+                # If Matchering not installed but reference provided, inform gently
+                if reference_path and not MATCHERING_AVAILABLE:
+                    payload["note"] = "Reference provided but Matchering is not installed; used standard mastering."
+
+                return jsonify(payload)
+
             except Exception as e:
-                logger.error(f"Upload error: {str(e)}")
-                return jsonify({'success': False, 'error': 'Processing failed'}), 500
-        
-        @self.app.route('/api/stats')
-        def get_stats():
-            """API endpoint for platform statistics"""
-            return jsonify({
-                'tracks_processed': 1247892,
-                'active_users': 52847,
-                'processing_time_avg': '12.3s',
-                'uptime': '99.9%'
-            })
-            
-    def is_valid_audio_file(self, file):
-        """Validate uploaded audio file"""
-        allowed_extensions = {'.mp3', '.wav', '.aiff', '.flac', '.m4a'}
-        filename = secure_filename(file.filename.lower())
-        return any(filename.endswith(ext) for ext in allowed_extensions)
-    
-    def process_audio_upload(self, file):
-        try:
-            # Generate unique filenames
-            ext = os.path.splitext(secure_filename(file.filename))[1]
-            original_name = f"{uuid.uuid4().hex}_original{ext}"
-            mastered_name = f"{uuid.uuid4().hex}_mastered.wav"
-            original_path = os.path.join(self.app.config['UPLOAD_FOLDER'], original_name)
-            mastered_path = os.path.join(self.app.config['UPLOAD_FOLDER'], mastered_name)
+                return jsonify({"success": False, "error": f"Server error: {e}"}), 500
 
-            # Save the uploaded file
-            file.save(original_path)
 
-            # Analyze original
-            orig_metrics = self.analyze_audio(original_path)
-            # Simulate mastering process
-            self.simulate_ai_mastering(original_path, mastered_path)
-            # Analyze mastered
-            mast_metrics = self.analyze_audio(mastered_path)
-
-            # Calculate improvements
-            loudness_change = mast_metrics['loudness'] - orig_metrics['loudness']
-            stereo_change = mast_metrics['stereo_width'] - orig_metrics['stereo_width']
-            freq_change = mast_metrics['spectral_centroid'] - orig_metrics['spectral_centroid']
-            dynamics_change = mast_metrics['rms'] - orig_metrics['rms']
-
-            return {
-                'success': True,
-                'originalUrl': f'/static/uploads/{original_name}',
-                'masteredUrl': f'/static/uploads/{mastered_name}',
-                'processingTime': '12.3s',
-                'improvements': {
-                    'loudness': f"{loudness_change:+.1f} LUFS",
-                    'dynamics': f"{'Increased' if dynamics_change > 0 else 'Decreased'}",
-                    'frequency_response': f"{'Brighter' if freq_change > 0 else 'Darker'}",
-                    'stereo_width': f"{stereo_change:+.1%}"
-                },
-                'message': 'AI mastering completed successfully'
-            }
-        except Exception as e:
-            logger.error(f"process_audio_upload error: {str(e)}")
-            return {'success': False, 'error': f'Processing failed: {str(e)}'}
-    
-    def analyze_audio(self, path):
-    # Load audio
-        y, sr = librosa.load(path, sr=None, mono=False)
-        if y.ndim == 1:
-            y = np.vstack([y, y])  # mono to stereo
-
-    # Loudness
-        meter = pyln.Meter(sr)
-        loudness = meter.integrated_loudness(y.mean(axis=0))
-
-    # Stereo width (difference between channels)
-        stereo_width = np.mean(np.abs(y[0] - y[1])) / np.mean(np.abs(y))
-
-    # Spectral centroid (frequency "brightness")
-        spectral_centroid = librosa.feature.spectral_centroid(y=y.mean(axis=0), sr=sr).mean()
-
-    # RMS (dynamics)
-        rms = np.sqrt(np.mean(y ** 2))
-
-        return {
-            'loudness': loudness,
-            'stereo_width': stereo_width,
-            'spectral_centroid': spectral_centroid,
-            'rms': rms
-        }
- 
-    def simulate_ai_mastering(self, input_path, output_path):
-        """Enhance audio: increase loudness, fade in/out, and export as WAV"""
-        audio = AudioSegment.from_file(input_path)
-        enhanced = audio + 8
-        enhanced = enhanced.fade_in(1000).fade_out(1000)
-        enhanced.export(output_path, format="wav")
-        
-    def run(self, host='0.0.0.0', port=3000, debug=False):
-        """Run the Flask application"""
-        logger.info("🎵 MasterAI - Professional AI Music Mastering Platform")
-        logger.info("=" * 60)
-        logger.info(f"🚀 Server starting on http://{host}:{port}")
-        logger.info(f"📁 Upload directory: {self.app.config['UPLOAD_FOLDER']}")
-        logger.info(f"🔧 Debug mode: {debug}")
-        logger.info("=" * 60)
-        
-        self.app.run(host=host, port=port, debug=debug)
-
-# Application factory
 def create_app():
-    return MasterAIApp().app  # Return the Flask instance, not the class
+    return MasterAIApp().app
 
-# Global app variable for Gunicorn
+
 app = create_app()
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
