@@ -13,8 +13,9 @@ import numpy as np
 import librosa
 import pyloudnorm as pyln
 import soundfile as sf
-
-# Try to import Matchering; we'll gracefully fall back if unavailable
+import imageio_ffmpeg  # add this
+_ffmpeg = imageio_ffmpeg.get_ffmpeg_exe()
+os.environ["PATH"] = os.path.dirname(_ffmpeg) + os.pathsep + os.environ.get("PATH", "")
 try:
     import matchering as mg
     MATCHERING_AVAILABLE = True
