@@ -8,4 +8,4 @@ soundfile==0.12.1
 audioread==3.0.1
 pyloudnorm==0.1.1
 soxr==0.3.7
-matchering==2.0.8
+matchering==2.0.6
