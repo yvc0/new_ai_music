@@ -6,6 +6,11 @@ from datetime import datetime
 from pathlib import Path
 from base64 import b64decode
 
+# Keep ffmpeg setup at the very top
+import imageio_ffmpeg
+_ffmpeg = imageio_ffmpeg.get_ffmpeg_exe()
+os.environ["PATH"] = os.path.dirname(_ffmpeg) + os.pathsep + os.environ.get("PATH", "")
+
 from flask import Flask, render_template, request, jsonify, url_for
 from werkzeug.utils import secure_filename
 
@@ -13,15 +18,13 @@ import numpy as np
 import librosa
 import pyloudnorm as pyln
 import soundfile as sf
-import imageio_ffmpeg  # add this
-_ffmpeg = imageio_ffmpeg.get_ffmpeg_exe()
-os.environ["PATH"] = os.path.dirname(_ffmpeg) + os.pathsep + os.environ.get("PATH", "")
+
+# Optional dependency
 try:
     import matchering as mg
     MATCHERING_AVAILABLE = True
 except Exception:
     MATCHERING_AVAILABLE = False
-
 
 ALLOWED_EXTENSIONS = {"wav", "flac", "ogg", "mp3", "m4a"}
 
@@ -75,6 +78,9 @@ class MasterAIApp:
         self.app = Flask(__name__, static_folder="Static_1", static_url_path="/static")
         self.app.config["MAX_CONTENT_LENGTH"] = 200 * 1024 * 1024  # 200 MB
         self.app.config["UPLOAD_FOLDER"] = os.path.join(self.app.static_folder, "uploads")
+        self.app.config["JSON_AS_ASCII"] = False
+        self.app.config["FFMPEG_PATH"] = _ffmpeg
+
         Path(self.app.config["UPLOAD_FOLDER"]).mkdir(parents=True, exist_ok=True)
         self.register_routes()
 
@@ -128,6 +134,27 @@ class MasterAIApp:
                 }
             )
 
+        @app.route("/diag")
+        def diag():
+            import subprocess, sys
+
+            try:
+                out = subprocess.check_output(
+                    [app.config["FFMPEG_PATH"], "-version"],
+                    stderr=subprocess.STDOUT,
+                    text=True,
+                ).splitlines()[0]
+            except Exception as e:
+                out = f"ffmpeg not working: {e}"
+            return jsonify(
+                {
+                    "python": sys.version,
+                    "ffmpeg_path": app.config["FFMPEG_PATH"],
+                    "ffmpeg_version": out,
+                    "matchering": MATCHERING_AVAILABLE,
+                }
+            )
+
         @app.route("/upload", methods=["POST"])
         def upload():
             """
@@ -160,11 +187,14 @@ class MasterAIApp:
                 raw_fp = None
                 raw_ext = "wav"
                 ct = (request.headers.get("Content-Type") or "").lower()
+
+                # Raw binary upload
                 if primary is None and (ct.startswith("audio/") or "application/octet-stream" in ct):
                     if ct.startswith("audio/"):
                         raw_ext = ct.split("/", 1)[1].split(";")[0] or "wav"
                     raw_fp = BytesIO(request.get_data() or b"")
 
+                # JSON base64 upload
                 if primary is None and raw_fp is None and "application/json" in ct:
                     try:
                         payload = request.get_json(silent=True) or {}
@@ -183,7 +213,7 @@ class MasterAIApp:
                 if primary is None and raw_fp is None:
                     return jsonify({"success": False, "error": "No file provided"}), 400
 
-                upload_dir = Path(self.app.config["UPLOAD_FOLDER"])
+                upload_dir = Path(app.config["UPLOAD_FOLDER"])
                 upload_dir.mkdir(parents=True, exist_ok=True)
                 uid = uuid.uuid4().hex[:8]
 
@@ -219,19 +249,14 @@ class MasterAIApp:
 
                 if reference_path and MATCHERING_AVAILABLE:
                     try:
-                        # Process with Matchering
                         mg.process(
                             target=str(primary_path),
                             reference=str(reference_path),
-                            results=[
-                                mg.pcm16(str(mastered_path))
-                            ],
+                            results=[mg.pcm16(str(mastered_path))],
                         )
                         used_matchering = True
-                    except Exception as e:
-                        # Fall back to built-in chain if Matchering fails
-                        used_matchering = False
-                        # proceed to fallback below
+                    except Exception:
+                        used_matchering = False  # fall back below
 
                 if not used_matchering:
                     # Load primary
@@ -256,7 +281,7 @@ class MasterAIApp:
                     pre = post = None
 
                 # URLs for frontend
-                original_url = f"/static/uploads/{primary_path.name}"
+                original_url = url_for("static", filename=f"uploads/{primary_path.name}", _external=False)
                 mastered_url = url_for("static", filename=f"uploads/{mastered_path.name}", _external=False)
 
                 # Improvements blob for your UI
@@ -299,4 +324,5 @@ def create_app():
 app = create_app()
 
 if __name__ == "__main__":
+    # Use PORT env or default 5000
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
