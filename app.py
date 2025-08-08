@@ -1,7 +1,7 @@
 import os
 import uuid
 import re
-import time  # NEW for timing
+import time
 from io import BytesIO
 from datetime import datetime
 from pathlib import Path
@@ -12,6 +12,7 @@ from base64 import b64decode
 # -------------------------------------------------
 os.environ["NUMBA_DISABLE_JIT"] = "1"  # disable numba JIT to save RAM
 MAX_AUDIO_SECONDS = int(os.environ.get("MAX_AUDIO_SECONDS", "600"))  # max 10 min audio
+DEBUG_API = os.environ.get("DEBUG_API", "0") == "1"
 
 # -------------------------------------------------
 # Setup FFmpeg path early
@@ -27,6 +28,13 @@ import numpy as np
 import librosa
 import pyloudnorm as pyln
 
+# Prefer soxr if available (avoids resampy/numba)
+try:
+    import soxr  # noqa: F401
+    _RES_TYPE = "soxr_hq"
+except Exception:
+    _RES_TYPE = "scipy"  # pure scipy polyphase resampler (no numba)
+
 # Optional dependency (reference-based mastering)
 try:
     import matchering as mg
@@ -36,8 +44,16 @@ except Exception:
 
 from flask import Flask, render_template, request, jsonify, url_for
 from werkzeug.utils import secure_filename
+import traceback
 
 ALLOWED_EXTENSIONS = {"wav", "flac", "ogg", "mp3", "m4a"}
+
+
+def err_response(msg, status=400, exc: Exception | None = None):
+    payload = {"success": False, "error": msg}
+    if DEBUG_API and exc is not None:
+        payload["traceback"] = traceback.format_exc()
+    return jsonify(payload), status
 
 
 def analyze_audio(y: np.ndarray, sr: int):
@@ -80,8 +96,8 @@ def master_audio(y: np.ndarray, sr: int, target_lufs: float = -14.0):
 
 def safe_load_audio(path, sr=22050, mono=True, max_seconds=MAX_AUDIO_SECONDS):
     """
-    Load audio with duration cap + fast resampling.
-    Falls back to audioread if libsndfile missing.
+    Duration-capped load with resampler that avoids resampy/numba.
+    Uses soxr (preferred) or scipy; falls back to audioread if soundfile fails.
     """
     try:
         return librosa.load(
@@ -90,9 +106,10 @@ def safe_load_audio(path, sr=22050, mono=True, max_seconds=MAX_AUDIO_SECONDS):
             mono=mono,
             dtype="float32",
             duration=max_seconds,
-            res_type="kaiser_fast",
+            res_type=_RES_TYPE,  # << no resampy
         )
     except Exception:
+        # fallback avoids libsndfile dependency
         return librosa.load(
             str(path),
             sr=sr,
@@ -100,7 +117,7 @@ def safe_load_audio(path, sr=22050, mono=True, max_seconds=MAX_AUDIO_SECONDS):
             dtype="float32",
             duration=max_seconds,
             backend="audioread",
-            res_type="kaiser_fast",
+            res_type=_RES_TYPE,
         )
 
 
@@ -180,12 +197,36 @@ class MasterAIApp:
                 "ffmpeg_path": app.config["FFMPEG_PATH"],
                 "ffmpeg_version": out,
                 "matchering": MATCHERING_AVAILABLE,
+                "res_type": _RES_TYPE,
+            })
+
+        @app.route("/health")
+        def health():
+            return jsonify({"ok": True}), 200
+
+        @app.route("/env")
+        def env():
+            import sys, platform, importlib
+            pkgs = {}
+            for name in ["numpy","librosa","soundfile","pyloudnorm","audioread","imageio_ffmpeg","matchering","soxr"]:
+                try:
+                    m = importlib.import_module(name)
+                    pkgs[name] = getattr(m, "__version__", "unknown")
+                except Exception as e:
+                    pkgs[name] = f"not importable: {e}"
+            return jsonify({
+                "python": sys.version.split()[0],
+                "platform": platform.platform(),
+                "ffmpeg": app.config.get("FFMPEG_PATH"),
+                "DEBUG_API": DEBUG_API,
+                "res_type": _RES_TYPE,
+                "packages": pkgs
             })
 
         # ---------- API route ----------
         @app.route("/upload", methods=["POST"])
         def upload():
-            start_time = time.time()  # timing start
+            start_time = time.time()
             try:
                 # --- Gather primary audio ---
                 main_keys = ["audio", "file", "audioFile", "track", "upload"]
@@ -226,7 +267,7 @@ class MasterAIApp:
                         pass
 
                 if primary is None and raw_fp is None:
-                    return jsonify({"success": False, "error": "No file provided"}), 400
+                    return err_response("No file provided", 400)
 
                 upload_dir = Path(app.config["UPLOAD_FOLDER"])
                 uid = uuid.uuid4().hex[:8]
@@ -246,15 +287,23 @@ class MasterAIApp:
                     with open(primary_path, "wb") as f:
                         f.write(raw_fp.getvalue())
 
+                # Reject directories
                 if Path(primary_path).is_dir():
-                    return jsonify({"success": False, "error": "Got a directory, expected an audio file"}), 400
+                    return err_response("Got a directory, expected an audio file", 400)
 
-                info = sf.info(str(primary_path))
-                dur = float(info.frames) / float(info.samplerate or 1)
+                # Reject overly long files early
+                try:
+                    info = sf.info(str(primary_path))
+                    dur = float(info.frames) / float(info.samplerate or 1)
+                except Exception as e:
+                    return err_response(f"Failed to inspect audio: {type(e).__name__}: {e}", 400, e)
+
                 if dur > MAX_AUDIO_SECONDS:
-                    return jsonify({"success": False,
-                                    "error": f"Audio too long ({dur:.1f}s). Max allowed is {MAX_AUDIO_SECONDS}s"}), 400
+                    return err_response(
+                        f"Audio too long ({dur:.1f}s). Max allowed is {MAX_AUDIO_SECONDS}s", 400
+                    )
 
+                # --- Optional reference ---
                 reference_storage = request.files.get("reference")
                 reference_path = None
                 if reference_storage and reference_storage.filename:
@@ -264,6 +313,7 @@ class MasterAIApp:
                     reference_path = upload_dir / f"{ref_base}.{ref_ext}"
                     reference_storage.save(str(reference_path))
 
+                # --- Mastering ---
                 used_matchering = False
                 mastered_path = upload_dir / f"{Path(primary_path).stem}_mastered.wav"
 
@@ -282,14 +332,15 @@ class MasterAIApp:
                     try:
                         y, sr = safe_load_audio(primary_path)
                     except Exception as e:
-                        return jsonify({"success": False, "error": f"Failed to read audio: {type(e).__name__}: {e}"}), 400
+                        return err_response(f"Failed to read audio: {type(e).__name__}: {e}", 400, e)
 
                     y_master = master_audio(y, sr, target_lufs=-14.0)
                     try:
                         sf.write(str(mastered_path), y_master, sr)
                     except Exception as e:
-                        return jsonify({"success": False, "error": f"Failed to write mastered audio: {e}"}), 500
+                        return err_response(f"Failed to write mastered audio: {e}", 500, e)
 
+                # --- Analysis ---
                 try:
                     y_pre, sr_pre = safe_load_audio(primary_path)
                     y_post, sr_post = safe_load_audio(mastered_path)
@@ -319,20 +370,19 @@ class MasterAIApp:
                     "originalUrl": original_url,
                     "masteredUrl": mastered_url,
                     "improvements": improvements,
-                    "processing_time_sec": round(time.time() - start_time, 2),  # NEW: log in response
+                    "processing_time_sec": round(time.time() - start_time, 2),
+                    "res_type": _RES_TYPE,
                 }
                 if pre and post:
                     payload["analysis"] = {"pre": pre, "post": post}
                 if reference_path and not MATCHERING_AVAILABLE:
                     payload["note"] = "Reference provided but Matchering is not installed; used standard mastering."
 
-                # Log to server console too
-                print(f"[UPLOAD] Processing time: {payload['processing_time_sec']} sec")
-
+                print(f"[UPLOAD] Done in {payload['processing_time_sec']}s, resampler={_RES_TYPE}")
                 return jsonify(payload)
 
             except Exception as e:
-                return jsonify({"success": False, "error": f"Server error: {type(e).__name__}: {e}"}), 500
+                return err_response(f"Server error: {type(e).__name__}: {e}", 500, e)
 
 
 def create_app():
