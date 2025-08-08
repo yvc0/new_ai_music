@@ -2,6 +2,12 @@ services:
   - type: web
     name: new_ai_music
     env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
     pythonVersion: 3.10.14
+    buildCommand: |
+      apt-get update && apt-get install -y libsndfile1
+      pip install --upgrade pip
+      pip install -r requirements.txt
+    startCommand: gunicorn app:app --workers=1 --threads=1 --timeout=120
+    envVars:
+      - key: WEB_CONCURRENCY
+        value: "1"
