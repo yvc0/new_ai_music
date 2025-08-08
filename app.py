@@ -1,26 +1,33 @@
 import os
 import uuid
 import re
+import time  # NEW for timing
 from io import BytesIO
 from datetime import datetime
 from pathlib import Path
 from base64 import b64decode
 
 # -------------------------------------------------
-# Setup FFmpeg path early so librosa & soundfile work
+# Environment tweaks for low-RAM servers
+# -------------------------------------------------
+os.environ["NUMBA_DISABLE_JIT"] = "1"  # disable numba JIT to save RAM
+MAX_AUDIO_SECONDS = int(os.environ.get("MAX_AUDIO_SECONDS", "600"))  # max 10 min audio
+
+# -------------------------------------------------
+# Setup FFmpeg path early
 # -------------------------------------------------
 import imageio_ffmpeg
 _ffmpeg = imageio_ffmpeg.get_ffmpeg_exe()
 os.environ["PATH"] = os.path.dirname(_ffmpeg) + os.pathsep + os.environ.get("PATH", "")
-os.environ["FFMPEG_BINARY"] = _ffmpeg  # help some backends find it
+os.environ["FFMPEG_BINARY"] = _ffmpeg
 
-# Fix for soundfile/librosa 'no compiled object' error
+# Core audio deps
 import soundfile as sf
 import numpy as np
 import librosa
 import pyloudnorm as pyln
 
-# Optional dependency
+# Optional dependency (reference-based mastering)
 try:
     import matchering as mg
     MATCHERING_AVAILABLE = True
@@ -34,7 +41,7 @@ ALLOWED_EXTENSIONS = {"wav", "flac", "ogg", "mp3", "m4a"}
 
 
 def analyze_audio(y: np.ndarray, sr: int):
-    meter = pyln.Meter(sr)  # EBU R128
+    meter = pyln.Meter(sr)
     loudness = float(meter.integrated_loudness(y))
     peak = float(np.max(np.abs(y)))
     rms = float(np.sqrt(np.mean(np.square(y))))
@@ -49,7 +56,6 @@ def analyze_audio(y: np.ndarray, sr: int):
 
 
 def master_audio(y: np.ndarray, sr: int, target_lufs: float = -14.0):
-    """Simple mastering chain: LUFS normalize → soft limit → short fades → safe peak."""
     meter = pyln.Meter(sr)
     loudness = meter.integrated_loudness(y)
 
@@ -70,6 +76,32 @@ def master_audio(y: np.ndarray, sr: int, target_lufs: float = -14.0):
     peak = np.max(np.abs(y)) + 1e-12
     y = y / peak * 0.98
     return y
+
+
+def safe_load_audio(path, sr=22050, mono=True, max_seconds=MAX_AUDIO_SECONDS):
+    """
+    Load audio with duration cap + fast resampling.
+    Falls back to audioread if libsndfile missing.
+    """
+    try:
+        return librosa.load(
+            str(path),
+            sr=sr,
+            mono=mono,
+            dtype="float32",
+            duration=max_seconds,
+            res_type="kaiser_fast",
+        )
+    except Exception:
+        return librosa.load(
+            str(path),
+            sr=sr,
+            mono=mono,
+            dtype="float32",
+            duration=max_seconds,
+            backend="audioread",
+            res_type="kaiser_fast",
+        )
 
 
 class MasterAIApp:
@@ -153,6 +185,7 @@ class MasterAIApp:
         # ---------- API route ----------
         @app.route("/upload", methods=["POST"])
         def upload():
+            start_time = time.time()  # timing start
             try:
                 # --- Gather primary audio ---
                 main_keys = ["audio", "file", "audioFile", "track", "upload"]
@@ -213,7 +246,15 @@ class MasterAIApp:
                     with open(primary_path, "wb") as f:
                         f.write(raw_fp.getvalue())
 
-                # --- Optional reference ---
+                if Path(primary_path).is_dir():
+                    return jsonify({"success": False, "error": "Got a directory, expected an audio file"}), 400
+
+                info = sf.info(str(primary_path))
+                dur = float(info.frames) / float(info.samplerate or 1)
+                if dur > MAX_AUDIO_SECONDS:
+                    return jsonify({"success": False,
+                                    "error": f"Audio too long ({dur:.1f}s). Max allowed is {MAX_AUDIO_SECONDS}s"}), 400
+
                 reference_storage = request.files.get("reference")
                 reference_path = None
                 if reference_storage and reference_storage.filename:
@@ -223,7 +264,6 @@ class MasterAIApp:
                     reference_path = upload_dir / f"{ref_base}.{ref_ext}"
                     reference_storage.save(str(reference_path))
 
-                # --- Mastering ---
                 used_matchering = False
                 mastered_path = upload_dir / f"{Path(primary_path).stem}_mastered.wav"
 
@@ -240,7 +280,7 @@ class MasterAIApp:
 
                 if not used_matchering:
                     try:
-                        y, sr = librosa.load(str(primary_path), sr=44100, mono=True)
+                        y, sr = safe_load_audio(primary_path)
                     except Exception as e:
                         return jsonify({"success": False, "error": f"Failed to read audio: {type(e).__name__}: {e}"}), 400
 
@@ -250,10 +290,9 @@ class MasterAIApp:
                     except Exception as e:
                         return jsonify({"success": False, "error": f"Failed to write mastered audio: {e}"}), 500
 
-                # --- Analysis ---
                 try:
-                    y_pre, sr_pre = librosa.load(str(primary_path), sr=44100, mono=True)
-                    y_post, sr_post = librosa.load(str(mastered_path), sr=44100, mono=True)
+                    y_pre, sr_pre = safe_load_audio(primary_path)
+                    y_post, sr_post = safe_load_audio(mastered_path)
                     pre = analyze_audio(y_pre, sr_pre)
                     post = analyze_audio(y_post, sr_post)
                 except Exception:
@@ -280,11 +319,15 @@ class MasterAIApp:
                     "originalUrl": original_url,
                     "masteredUrl": mastered_url,
                     "improvements": improvements,
+                    "processing_time_sec": round(time.time() - start_time, 2),  # NEW: log in response
                 }
                 if pre and post:
                     payload["analysis"] = {"pre": pre, "post": post}
                 if reference_path and not MATCHERING_AVAILABLE:
                     payload["note"] = "Reference provided but Matchering is not installed; used standard mastering."
+
+                # Log to server console too
+                print(f"[UPLOAD] Processing time: {payload['processing_time_sec']} sec")
 
                 return jsonify(payload)
 
