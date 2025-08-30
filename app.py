@@ -18,8 +18,8 @@ DEBUG_API = os.environ.get("DEBUG_API", "0") == "1"
 FAST_MASTER = os.environ.get("FAST_MASTER", "0") == "1"
 TARGET_SR_MASTER = 32000 if FAST_MASTER else 44100   # 32k fast / 44.1k quality
 TARGET_LUFS = float(os.environ.get("TARGET_LUFS", "-15.0"))
-LOOKAHEAD_MS = float(os.environ.get("LOOKAHEAD_MS", "4.0"))
-RELEASE_MS = float(os.environ.get("RELEASE_MS", "70.0"))
+LOOKAHEAD_MS = float(os.environ.get("LOOKAHEAD_MS", "6.0"))   # safer default
+RELEASE_MS = float(os.environ.get("RELEASE_MS", "150.0"))     # smoother release
 
 # -------------------------------------------------
 # FFmpeg path early
@@ -211,16 +211,15 @@ def _limiter_lookahead_fast(x_st: np.ndarray,
 def master_audio(y: np.ndarray, sr: int, target_lufs: float = TARGET_LUFS) -> np.ndarray:
     """
     Mastering chain:
-      - LUFS estimate on downsampled mono (cheap)
+      - LUFS estimate (downsampled mono for speed)
       - Gain to target
       - Lookahead limiter
-      - Safe peak normalization
     Returns stereo float32 (n,2).
     """
     y = y.astype(np.float32, copy=False)
     y_st = np.stack([y, y], axis=-1) if y.ndim == 1 else y
 
-    # Loudness (downsampled mono)
+    # Loudness (downsampled mono for speed)
     y_mono = y_st.mean(axis=1).astype(np.float32, copy=False)
     if sr != 22050:
         y_mono_ds = _resample_arr(y_mono, sr, 22050)
@@ -230,16 +229,12 @@ def master_audio(y: np.ndarray, sr: int, target_lufs: float = TARGET_LUFS) -> np
         meter = pyln.Meter(sr)
         loudness = meter.integrated_loudness(y_mono)
 
-    # Gain to target
+    # Gain to target LUFS
     gain = 10.0 ** ((target_lufs - loudness) / 20.0)
     y_st = y_st * gain
 
-    # Limiter
+    # Lookahead limiter to about -1 dBFS (leave headroom; no post-normalization)
     y_st = _limiter_lookahead_fast(y_st, sr=sr, ceiling_db=-1.0)
-
-    # Normalize to safe peak
-    pk = np.max(np.abs(y_st)) + 1e-12
-    y_st = y_st / pk * 0.98
 
     return y_st.astype(np.float32, copy=False)
 
@@ -324,6 +319,8 @@ class MasterAIApp:
                 "uses_soxr": _USE_SOXR,
                 "fast_master": FAST_MASTER,
                 "target_sr": TARGET_SR_MASTER,
+                "lookahead_ms": LOOKAHEAD_MS,
+                "release_ms": RELEASE_MS,
             })
 
         @app.route("/env")
@@ -343,6 +340,9 @@ class MasterAIApp:
                 "DEBUG_API": DEBUG_API,
                 "uses_soxr": _USE_SOXR,
                 "FAST_MASTER": FAST_MASTER,
+                "TARGET_LUFS": TARGET_LUFS,
+                "LOOKAHEAD_MS": LOOKAHEAD_MS,
+                "RELEASE_MS": RELEASE_MS,
                 "packages": pkgs
             })
 
@@ -445,7 +445,6 @@ class MasterAIApp:
                 t2 = time.time()
 
                 # --- pre analysis (in memory) ---
-                # do quick downsample to speed metric calc
                 y_pre_mono = y.mean(axis=1).astype(np.float32, copy=False) if y.ndim == 2 else y
                 y_pre_ds = _resample_arr(y_pre_mono, sr, 22050) if sr != 22050 else y_pre_mono
                 pre = analyze_audio_from_array(y_pre_ds, 22050)
