@@ -1,3 +1,2 @@
-libsndfile1
 ffmpeg
-libsoxr0
+libsndfile1
