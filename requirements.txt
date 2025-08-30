@@ -1,17 +1,26 @@
+# Python ≥ 3.10 recommended (needed for `Exception | None` syntax)
+
 # Web server
 Flask==3.0.3
-gunicorn==21.2.0
+Werkzeug==3.0.3
 Flask-Cors==4.0.0
+
+# Production server (Linux/macOS). On Windows, prefer Waitress instead.
+gunicorn==21.2.0
+# waitress==3.0.0  # (Windows alternative to gunicorn)
 
 # Core audio / DSP
 numpy==1.26.4
 scipy==1.11.4
-librosa==0.10.2.post1
 soundfile==0.12.1
 audioread==3.0.1
 pyloudnorm==0.1.1
-soxr==0.3.7
-imageio-ffmpeg==0.4.9
+imageio-ffmpeg==0.4.9   # app auto-locates ffmpeg via this
 
-# Optional reference-based mastering
+# Optional — faster resampling (your code falls back if missing)
+soxr==0.3.7
+
+# Optional — reference-based mastering support
+# (Only needed if you plan to use the "reference" upload feature)
+librosa==0.10.2.post1
 matchering==2.0.6
