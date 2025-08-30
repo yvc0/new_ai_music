@@ -29,7 +29,7 @@
   <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
 </div>
 
-<!-- (Second bg + visualizer, kept if you want both) -->
+<!-- Optional second layer -->
 <div class="bg-animation">
   <div class="floating-note" style="left: 10%; animation-delay: 0s;">♪</div>
   <div class="floating-note" style="left: 20%; animation-delay: 2s;">♫</div>
@@ -48,11 +48,13 @@
   <div class="particle" style="left: 65%; animation-delay: 11s;"></div>
   <div class="particle" style="left: 85%; animation-delay: 13s;"></div>
 </div>
-
 <div class="music-visualizer">
   <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
   <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
 </div>
+
+<!-- Optional neural net layer the JS can target -->
+<div id="neural-network" class="neural-network"></div>
 
 <style>
   body { overflow-x: hidden; position: relative; }
@@ -80,9 +82,6 @@
   @keyframes neural-pulse { 0%,100%{transform:scale(.5);opacity:.3}50%{transform:scale(1.5);opacity:.8} }
   .neural-connection { position: absolute; height: 1px; background: linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent); animation: neural-flow 3s ease-in-out infinite; }
   @keyframes neural-flow { 0%{opacity:0;transform:scaleX(0)}50%{opacity:1;transform:scaleX(1)}100%{opacity:0;transform:scaleX(0)} }
-  .spectrum-analyzer { position: fixed; top: 50%; left: 20px; transform: translateY(-50%); display: flex; flex-direction: column; gap: 2px; opacity: 0.2; z-index: 1; }
-  .spectrum-bar { width: 3px; background: linear-gradient(to right,#667eea,#764ba2); border-radius: 1px; animation: spectrum 2s ease-in-out infinite; }
-  @keyframes spectrum { 0%,100%{transform:scaleX(.3)}50%{transform:scaleX(1)} }
   .typing { overflow: hidden; border-right: 3px solid #fbbf24; white-space: nowrap; animation: typing 3s steps(20), blink 0.75s step-end infinite; }
   .fade-in-up { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
   .fade-in-up.visible { opacity: 1; transform: translateY(0); }
@@ -91,7 +90,7 @@
   .card-hover-effect:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 25px 50px rgba(0,0,0,0.15); }
 </style>
 
-<!-- Page content (nav is provided by base.html) -->
+<!-- Page content (nav comes from base.html) -->
 <div class="container mx-auto px-6 pt-28 pb-16">
   <!-- Hero -->
   <div class="text-center mb-24 slide-up">
@@ -279,7 +278,7 @@
   </div>
 </div>
 
-<!-- Community Feedback (toned down) -->
+<!-- Community Feedback -->
 <div id="testimonials" class="mt-32">
   <div class="text-center mb-16">
     <h2 class="text-5xl font-black text-white mb-6 text-glow">What <span class="gradient-text">Artists Say</span></h2>
@@ -376,6 +375,7 @@
 
 <script>
   const app = { elements: {}, currentTrack: null, isProcessing: false };
+
   document.addEventListener('DOMContentLoaded', function() {
     createDynamicAnimations();
     app.elements = {
@@ -423,9 +423,16 @@
     showProcessing();
     try {
       const result = await uploadAndProcess(file);
-      if (result.success) { showResults(result); } else { showError(result.error); }
-    } catch (error) { showError('Processing failed. Please try again.'); }
-    finally { app.isProcessing = false; }
+      if (result.success) {
+        showResults(result);
+      } else {
+        showError(result.error || 'Unknown error');
+      }
+    } catch (error) {
+      showError(error.message || 'Processing failed. Please try again.');
+    } finally {
+      app.isProcessing = false;
+    }
   }
 
   function validateFile(file) {
@@ -452,19 +459,38 @@
     }, 400);
   }
 
+  // UPDATED: robust error surfacing (shows server message + step)
   async function uploadAndProcess(file) {
     const formData = new FormData();
     formData.append('audio', file);
-    const response = await fetch('/upload', { method: 'POST', body: formData });
-    return await response.json();
+
+    const res = await fetch('/upload', { method: 'POST', body: formData });
+    const ct = (res.headers.get('content-type') || '').toLowerCase();
+
+    if (ct.includes('application/json')) {
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        const msg = (data && (data.error || data.message))
+          ? `${data.error || data.message}${data.step ? "  (step: " + data.step + ")" : ""}`
+          : `HTTP ${res.status}`;
+        throw new Error(msg);
+      }
+      return data;
+    } else {
+      const text = await res.text();
+      throw new Error(`HTTP ${res.status}${text ? (": " + text.slice(0, 300)) : ""}`);
+    }
   }
 
   function showResults(result) {
     app.elements.progressBar.style.width = '100%';
     app.elements.processingStatus.textContent = 'Processing complete!';
     setTimeout(() => {
-      app.elements.originalAudio.src = result.originalUrl;
-      app.elements.masteredAudio.src = result.masteredUrl;
+      // Cache-busting query to avoid stale audio in some hosts/CDNs
+      const bust = `?t=${Date.now()}`;
+      app.elements.originalAudio.src = result.originalUrl + bust;
+      app.elements.masteredAudio.src = result.masteredUrl + bust;
+
       if (result.improvements) {
         app.elements.improvements.innerHTML = `
           <div class="grid grid-cols-2 gap-4 text-sm">
@@ -478,15 +504,19 @@
       app.elements.uploadSection.classList.add('hidden');
       app.elements.comparisonSection.classList.remove('hidden');
       app.elements.comparisonSection.scrollIntoView({ behavior: 'smooth' });
-    }, 1000);
+    }, 800);
   }
 
-  function showError(message) { alert('Error: ' + message); resetProcessing(); }
+  function showError(message) {
+    alert('Error: ' + message);  // now includes server-provided step (e.g., decode, write_output)
+    resetProcessing();
+  }
+
   function resetProcessing() {
     app.elements.progress.classList.add('hidden');
     app.elements.progressBar.style.width = '0%';
     app.elements.uploadBtn.disabled = false;
-    app.elements.uploadBtn.innerHTML = '<i class="fas fa-rocket mr-3"></i>LAUNCH MASTERING';
+    app.elements.uploadBtn.innerHTML = '<i class="fas fa-atom mr-3"></i>INITIATE SONIC GENESIS';
   }
 
   function switchPlayer(type) {
@@ -508,7 +538,9 @@
       a.href = app.elements.masteredAudio.src;
       a.download = 'neural-sonic-genesis-mastered.wav';
       a.click();
-    } else { alert('No mastered track available for download.'); }
+    } else {
+      alert('No mastered track available for download.');
+    }
   }
 
   function showDownloadMessage() {
@@ -553,63 +585,3 @@
     }, 3000);
     setInterval(() => {
       if (Math.random() > 0.85) {
-        const icon = document.createElement('i');
-        icon.className = 'fas floating-icon';
-        icon.style.left = Math.random() * 100 + '%';
-        icon.style.animationDuration = (18 + Math.random() * 7) + 's';
-        icon.style.color = `rgba(${255},${255},${255},${0.06 + Math.random() * 0.08})`;
-        const iconClasses = ['fa-microchip','fa-wave-square','fa-broadcast-tower','fa-satellite-dish'];
-        icon.classList.add(iconClasses[Math.floor(Math.random() * iconClasses.length)]);
-        bgAnimation.appendChild(icon);
-        setTimeout(() => { if (icon.parentNode) icon.parentNode.removeChild(icon); }, 25000);
-      }
-    }, 4000);
-    setInterval(() => {
-      if (Math.random() > 0.8) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.left = Math.random() * 100 + '%';
-        particle.style.animationDuration = (10 + Math.random() * 5) + 's';
-        particle.style.animationDelay = Math.random() * 2 + 's';
-        bgAnimation.appendChild(particle);
-        setTimeout(() => { if (particle.parentNode) particle.parentNode.removeChild(particle); }, 15000);
-      }
-    }, 2000);
-    setInterval(() => {
-      if (Math.random() > 0.9) {
-        const circle = document.createElement('div');
-        circle.className = 'pulse-circle';
-        circle.style.left = Math.random() * 100 + '%';
-        circle.style.top = Math.random() * 100 + '%';
-        circle.style.width = (50 + Math.random() * 100) + 'px';
-        circle.style.height = circle.style.width;
-        bgAnimation.appendChild(circle);
-        setTimeout(() => { if (circle.parentNode) circle.parentNode.removeChild(circle); }, 6000);
-      }
-    }, 5000);
-  }
-
-  function createNeuralNetwork() {
-    const network = document.getElementById('neural-network');
-    if (!network) return;
-    for (let i = 0; i < 15; i++) {
-      const node = document.createElement('div');
-      node.className = 'neural-node';
-      node.style.left = Math.random() * 100 + '%';
-      node.style.top = Math.random() * 100 + '%';
-      node.style.animationDelay = Math.random() * 4 + 's';
-      network.appendChild(node);
-    }
-    for (let i = 0; i < 8; i++) {
-      const connection = document.createElement('div');
-      connection.className = 'neural-connection';
-      connection.style.left = Math.random() * 80 + '%';
-      connection.style.top = Math.random() * 80 + '%';
-      connection.style.width = (100 + Math.random() * 200) + 'px';
-      connection.style.transform = `rotate(${Math.random() * 360}deg)`;
-      connection.style.animationDelay = Math.random() * 3 + 's';
-      network.appendChild(connection);
-    }
-  }
-</script>
-{% endblock %}
