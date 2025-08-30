@@ -5,1052 +5,611 @@
 {% block content %}
 <!-- Animated Background -->
 <div class="bg-animation">
-    <div class="floating-note" style="left: 10%; animation-delay: 0s;">♪</div>
-    <div class="floating-note" style="left: 20%; animation-delay: 2s;">♫</div>
-    <div class="floating-note" style="left: 30%; animation-delay: 4s;">♬</div>
-    <div class="floating-note" style="left: 40%; animation-delay: 6s;">♩</div>
-    <div class="floating-note" style="left: 50%; animation-delay: 8s;">♪</div>
-    <div class="floating-note" style="left: 60%; animation-delay: 10s;">♫</div>
-    <div class="floating-note" style="left: 70%; animation-delay: 12s;">♬</div>
-    <div class="floating-note" style="left: 80%; animation-delay: 14s;">♩</div>
-    <div class="floating-note" style="left: 90%; animation-delay: 16s;">♪</div>
-    
-    <div class="particle" style="left: 15%; animation-delay: 1s;"></div>
-    <div class="particle" style="left: 35%; animation-delay: 3s;"></div>
-    <div class="particle" style="left: 55%; animation-delay: 5s;"></div>
-    <div class="particle" style="left: 75%; animation-delay: 7s;"></div>
-    <div class="particle" style="left: 25%; animation-delay: 9s;"></div>
-    <div class="particle" style="left: 65%; animation-delay: 11s;"></div>
-    <div class="particle" style="left: 85%; animation-delay: 13s;"></div>
+  <div class="floating-note" style="left: 10%; animation-delay: 0s;">♪</div>
+  <div class="floating-note" style="left: 20%; animation-delay: 2s;">♫</div>
+  <div class="floating-note" style="left: 30%; animation-delay: 4s;">♬</div>
+  <div class="floating-note" style="left: 40%; animation-delay: 6s;">♩</div>
+  <div class="floating-note" style="left: 50%; animation-delay: 8s;">♪</div>
+  <div class="floating-note" style="left: 60%; animation-delay: 10s;">♫</div>
+  <div class="floating-note" style="left: 70%; animation-delay: 12s;">♬</div>
+  <div class="floating-note" style="left: 80%; animation-delay: 14s;">♩</div>
+  <div class="floating-note" style="left: 90%; animation-delay: 16s;">♪</div>
+  <div class="particle" style="left: 15%; animation-delay: 1s;"></div>
+  <div class="particle" style="left: 35%; animation-delay: 3s;"></div>
+  <div class="particle" style="left: 55%; animation-delay: 5s;"></div>
+  <div class="particle" style="left: 75%; animation-delay: 7s;"></div>
+  <div class="particle" style="left: 25%; animation-delay: 9s;"></div>
+  <div class="particle" style="left: 65%; animation-delay: 11s;"></div>
+  <div class="particle" style="left: 85%; animation-delay: 13s;"></div>
 </div>
 
 <!-- Music Visualizer -->
 <div class="music-visualizer">
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
+  <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+  <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
 </div>
-<!-- Animated Background -->
+
+<!-- (Second bg + visualizer, kept if you want both) -->
 <div class="bg-animation">
-    <div class="floating-note" style="left: 10%; animation-delay: 0s;">♪</div>
-    <div class="floating-note" style="left: 20%; animation-delay: 2s;">♫</div>
-    <div class="floating-note" style="left: 30%; animation-delay: 4s;">♬</div>
-    <div class="floating-note" style="left: 40%; animation-delay: 6s;">♩</div>
-    <div class="floating-note" style="left: 50%; animation-delay: 8s;">♪</div>
-    <div class="floating-note" style="left: 60%; animation-delay: 10s;">♫</div>
-    <div class="floating-note" style="left: 70%; animation-delay: 12s;">♬</div>
-    <div class="floating-note" style="left: 80%; animation-delay: 14s;">♩</div>
-    <div class="floating-note" style="left: 90%; animation-delay: 16s;">♪</div>
-    
-    <div class="particle" style="left: 15%; animation-delay: 1s;"></div>
-    <div class="particle" style="left: 35%; animation-delay: 3s;"></div>
-    <div class="particle" style="left: 55%; animation-delay: 5s;"></div>
-    <div class="particle" style="left: 75%; animation-delay: 7s;"></div>
-    <div class="particle" style="left: 25%; animation-delay: 9s;"></div>
-    <div class="particle" style="left: 65%; animation-delay: 11s;"></div>
-    <div class="particle" style="left: 85%; animation-delay: 13s;"></div>
+  <div class="floating-note" style="left: 10%; animation-delay: 0s;">♪</div>
+  <div class="floating-note" style="left: 20%; animation-delay: 2s;">♫</div>
+  <div class="floating-note" style="left: 30%; animation-delay: 4s;">♬</div>
+  <div class="floating-note" style="left: 40%; animation-delay: 6s;">♩</div>
+  <div class="floating-note" style="left: 50%; animation-delay: 8s;">♪</div>
+  <div class="floating-note" style="left: 60%; animation-delay: 10s;">♫</div>
+  <div class="floating-note" style="left: 70%; animation-delay: 12s;">♬</div>
+  <div class="floating-note" style="left: 80%; animation-delay: 14s;">♩</div>
+  <div class="floating-note" style="left: 90%; animation-delay: 16s;">♪</div>
+  <div class="particle" style="left: 15%; animation-delay: 1s;"></div>
+  <div class="particle" style="left: 35%; animation-delay: 3s;"></div>
+  <div class="particle" style="left: 55%; animation-delay: 5s;"></div>
+  <div class="particle" style="left: 75%; animation-delay: 7s;"></div>
+  <div class="particle" style="left: 25%; animation-delay: 9s;"></div>
+  <div class="particle" style="left: 65%; animation-delay: 11s;"></div>
+  <div class="particle" style="left: 85%; animation-delay: 13s;"></div>
 </div>
 
-<!-- Music Visualizer -->
 <div class="music-visualizer">
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
-    <div class="bar"></div>
+  <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+  <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
 </div>
+
 <style>
-    body {
-        overflow-x: hidden;
-        position: relative;
-    }
-    
-    /* Animated Background Elements */
-    .bg-animation {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: -1;
-    }
-    
-    .floating-note {
-        position: absolute;
-        color: rgba(255, 255, 255, 0.1);
-        animation: float 15s infinite linear;
-        font-size: 2rem;
-    }
-    
-    .floating-note:nth-child(odd) {
-        animation-duration: 20s;
-        color: rgba(255, 235, 167, 0.15);
-    }
-    
-    .floating-note:nth-child(3n) {
-        animation-duration: 25s;
-        color: rgba(174, 214, 241, 0.1);
-    }
-    
-    @keyframes float {
-        0% {
-            transform: translateY(100vh) rotate(0deg);
-            opacity: 0;
-        }
-        10% {
-            opacity: 1;
-        }
-        90% {
-            opacity: 1;
-        }
-        100% {
-            transform: translateY(-100px) rotate(360deg);
-            opacity: 0;
-        }
-    }
-    
-    .particle {
-        position: absolute;
-        width: 4px;
-        height: 4px;
-        background: radial-gradient(circle, rgba(255,255,255,0.6), transparent);
-        border-radius: 50%;
-        animation: particle 12s infinite linear;
-    }
-    
-    @keyframes particle {
-        0% {
-            transform: translateY(100vh) translateX(0);
-            opacity: 0;
-        }
-        10% {
-            opacity: 1;
-        }
-        90% {
-            opacity: 1;
-        }
-        100% {
-            transform: translateY(-100px) translateX(200px);
-            opacity: 0;
-        }
-    }
-    
-    .music-visualizer {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        display: flex;
-        gap: 3px;
-        opacity: 0.3;
-        z-index: 1;
-    }
-    
-    .bar {
-        width: 4px;
-        background: linear-gradient(to top, #fbbf24, #f59e0b);
-        border-radius: 2px;
-        animation: visualizer 1.5s ease-in-out infinite;
-    }
-    
-    .bar:nth-child(1) { height: 20px; animation-delay: 0s; }
-    .bar:nth-child(2) { height: 35px; animation-delay: 0.1s; }
-    .bar:nth-child(3) { height: 50px; animation-delay: 0.2s; }
-    .bar:nth-child(4) { height: 30px; animation-delay: 0.3s; }
-    .bar:nth-child(5) { height: 45px; animation-delay: 0.4s; }
-    .bar:nth-child(6) { height: 25px; animation-delay: 0.5s; }
-    .bar:nth-child(7) { height: 40px; animation-delay: 0.6s; }
-    .bar:nth-child(8) { height: 35px; animation-delay: 0.7s; }
-    
-    @keyframes visualizer {
-        0%, 100% { transform: scaleY(0.3); }
-        50% { transform: scaleY(1); }
-    }
-    
-    /* Advanced Animations */
-    .waveform {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 100px;
-        opacity: 0.1;
-        z-index: -1;
-        background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%);
-        animation: waveform 8s ease-in-out infinite;
-    }
-    
-    @keyframes waveform {
-        0%, 100% { transform: translateX(-100%) scaleY(0.5); }
-        50% { transform: translateX(100%) scaleY(1.2); }
-    }
-    
-    .pulse-circle {
-        position: absolute;
-        border: 2px solid rgba(255, 255, 255, 0.1);
-        border-radius: 50%;
-        animation: pulse-expand 6s ease-out infinite;
-    }
-    
-    @keyframes pulse-expand {
-        0% { transform: scale(0); opacity: 1; }
-        100% { transform: scale(3); opacity: 0; }
-    }
-    
-    .floating-icon {
-        position: absolute;
-        color: rgba(255, 255, 255, 0.08);
-        animation: float-rotate 20s infinite linear;
-        font-size: 1.5rem;
-    }
-    
-    @keyframes float-rotate {
-        0% {
-            transform: translateY(100vh) rotate(0deg) scale(0.5);
-            opacity: 0;
-        }
-        10% { opacity: 1; }
-        50% { transform: translateY(50vh) rotate(180deg) scale(1); }
-        90% { opacity: 1; }
-        100% {
-            transform: translateY(-100px) rotate(360deg) scale(0.5);
-            opacity: 0;
-        }
-    }
-    
-    .neural-network {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: -1;
-    }
-    
-    .neural-node {
-        position: absolute;
-        width: 6px;
-        height: 6px;
-        background: radial-gradient(circle, rgba(255,255,255,0.4), transparent);
-        border-radius: 50%;
-        animation: neural-pulse 4s ease-in-out infinite;
-    }
-    
-    @keyframes neural-pulse {
-        0%, 100% { transform: scale(0.5); opacity: 0.3; }
-        50% { transform: scale(1.5); opacity: 0.8; }
-    }
-    
-    .neural-connection {
-        position: absolute;
-        height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-        animation: neural-flow 3s ease-in-out infinite;
-    }
-    
-    @keyframes neural-flow {
-        0% { opacity: 0; transform: scaleX(0); }
-        50% { opacity: 1; transform: scaleX(1); }
-        100% { opacity: 0; transform: scaleX(0); }
-    }
-    
-    .spectrum-analyzer {
-        position: fixed;
-        top: 50%;
-        left: 20px;
-        transform: translateY(-50%);
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-        opacity: 0.2;
-        z-index: 1;
-    }
-    
-    .spectrum-bar {
-        width: 3px;
-        background: linear-gradient(to right, #667eea, #764ba2);
-        border-radius: 1px;
-        animation: spectrum 2s ease-in-out infinite;
-    }
-    
-    @keyframes spectrum {
-        0%, 100% { transform: scaleX(0.3); }
-        50% { transform: scaleX(1); }
-    }
-    
-    .typing { 
-        overflow: hidden; 
-        border-right: 3px solid #fbbf24; 
-        white-space: nowrap; 
-        animation: typing 3s steps(20), blink 0.75s step-end infinite; 
-    }
-    
-    /* Scroll-triggered animations */
-    .fade-in-up {
-        opacity: 0;
-        transform: translateY(30px);
-        transition: all 0.8s ease-out;
-    }
-    
-    .fade-in-up.visible {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    
-    @keyframes typing { from { width: 0; } to { width: 100%; } }
-    @keyframes blink { 50% { border-color: transparent; } }
-    
-    /* Interactive Hover Effects */
-    .glass:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-        border-color: rgba(255,255,255,0.3);
-    }
-    
-    .card-hover-effect {
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    
-    .card-hover-effect:hover {
-        transform: translateY(-10px) scale(1.02);
-        box-shadow: 0 25px 50px rgba(0,0,0,0.15);
-    }
+  body { overflow-x: hidden; position: relative; }
+  .bg-animation { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
+  .floating-note { position: absolute; color: rgba(255, 255, 255, 0.1); animation: float 15s infinite linear; font-size: 2rem; }
+  .floating-note:nth-child(odd) { animation-duration: 20s; color: rgba(255,235,167,0.15); }
+  .floating-note:nth-child(3n) { animation-duration: 25s; color: rgba(174,214,241,0.1); }
+  @keyframes float { 0%{transform:translateY(100vh) rotate(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-100px) rotate(360deg);opacity:0} }
+  .particle { position: absolute; width: 4px; height: 4px; background: radial-gradient(circle, rgba(255,255,255,0.6), transparent); border-radius: 50%; animation: particle 12s infinite linear; }
+  @keyframes particle { 0%{transform:translateY(100vh) translateX(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-100px) translateX(200px);opacity:0} }
+  .music-visualizer { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 3px; opacity: 0.3; z-index: 1; }
+  .bar { width: 4px; background: linear-gradient(to top,#fbbf24,#f59e0b); border-radius: 2px; animation: visualizer 1.5s ease-in-out infinite; }
+  .bar:nth-child(1){height:20px;animation-delay:0s}.bar:nth-child(2){height:35px;animation-delay:.1s}.bar:nth-child(3){height:50px;animation-delay:.2s}
+  .bar:nth-child(4){height:30px;animation-delay:.3s}.bar:nth-child(5){height:45px;animation-delay:.4s}.bar:nth-child(6){height:25px;animation-delay:.5s}
+  .bar:nth-child(7){height:40px;animation-delay:.6s}.bar:nth-child(8){height:35px;animation-delay:.7s}
+  @keyframes visualizer { 0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)} }
+  .waveform { position: fixed; bottom: 0; left: 0; width: 100%; height: 100px; opacity: 0.1; z-index: -1; background: linear-gradient(45deg,transparent 40%,rgba(255,255,255,0.1) 50%,transparent 60%); animation: waveform 8s ease-in-out infinite; }
+  @keyframes waveform { 0%,100%{transform:translateX(-100%) scaleY(.5)}50%{transform:translateX(100%) scaleY(1.2)} }
+  .pulse-circle { position: absolute; border: 2px solid rgba(255,255,255,0.1); border-radius: 50%; animation: pulse-expand 6s ease-out infinite; }
+  @keyframes pulse-expand { 0%{transform:scale(0);opacity:1}100%{transform:scale(3);opacity:0} }
+  .floating-icon { position: absolute; color: rgba(255,255,255,0.08); animation: float-rotate 20s infinite linear; font-size: 1.5rem; }
+  @keyframes float-rotate { 0%{transform:translateY(100vh) rotate(0) scale(.5);opacity:0}10%{opacity:1}50%{transform:translateY(50vh) rotate(180deg) scale(1)}90%{opacity:1}100%{transform:translateY(-100px) rotate(360deg) scale(.5);opacity:0} }
+  .neural-network { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; }
+  .neural-node { position: absolute; width: 6px; height: 6px; background: radial-gradient(circle, rgba(255,255,255,0.4), transparent); border-radius: 50%; animation: neural-pulse 4s ease-in-out infinite; }
+  @keyframes neural-pulse { 0%,100%{transform:scale(.5);opacity:.3}50%{transform:scale(1.5);opacity:.8} }
+  .neural-connection { position: absolute; height: 1px; background: linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent); animation: neural-flow 3s ease-in-out infinite; }
+  @keyframes neural-flow { 0%{opacity:0;transform:scaleX(0)}50%{opacity:1;transform:scaleX(1)}100%{opacity:0;transform:scaleX(0)} }
+  .spectrum-analyzer { position: fixed; top: 50%; left: 20px; transform: translateY(-50%); display: flex; flex-direction: column; gap: 2px; opacity: 0.2; z-index: 1; }
+  .spectrum-bar { width: 3px; background: linear-gradient(to right,#667eea,#764ba2); border-radius: 1px; animation: spectrum 2s ease-in-out infinite; }
+  @keyframes spectrum { 0%,100%{transform:scaleX(.3)}50%{transform:scaleX(1)} }
+  .typing { overflow: hidden; border-right: 3px solid #fbbf24; white-space: nowrap; animation: typing 3s steps(20), blink 0.75s step-end infinite; }
+  .fade-in-up { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
+  .fade-in-up.visible { opacity: 1; transform: translateY(0); }
+  .glass:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.2); border-color: rgba(255,255,255,0.3); }
+  .card-hover-effect { transition: all 0.4s cubic-bezier(0.175,0.885,0.32,1.275); }
+  .card-hover-effect:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 25px 50px rgba(0,0,0,0.15); }
 </style>
-    <!-- Navigation -->
-    <nav class="glass fixed w-full top-0 z-50 border-b border-white/10">
-        <div class="container mx-auto px-6 py-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-4">
-                    <div class="relative">
-                        <i class="fas fa-waveform-lines text-yellow-400 text-3xl pulse-glow"></i>
-                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                    </div>
-                    <div>
-                        <span class="text-white font-black text-3xl gradient-text">MasterAI</span>
-                        <div class="text-white/60 text-sm font-medium">Revolutionary Mastering</div>
-                    </div>
-                </div>
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="/features" class="text-white/80 hover:text-yellow-400 transition-all duration-300 font-medium">Features</a>
-                    <a href="/testimonials" class="text-white/80 hover:text-yellow-400 transition-all duration-300 font-medium">Success Stories</a>
-                    <a href="/pricing" class="text-white/80 hover:text-yellow-400 transition-all duration-300 font-medium">Pricing</a>
-                    <a href="/about" class="text-white/80 hover:text-yellow-400 transition-all duration-300 font-medium">About</a>
-                    <button class="bg-white/10 text-white px-5 py-2 rounded-lg hover:bg-white/20 transition-all duration-300 font-medium border border-white/20">Sign In</button>
-                    <a href="/dashboard" class="bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-8 py-3 rounded-lg hover:from-yellow-500 hover:to-orange-600 transition-all duration-300 font-bold shadow-lg transform hover:scale-105 inline-block">Launch App</a>
-                </div>
-            </div>
-        </div>
-    </nav>
 
-    <div class="container mx-auto px-6 pt-28 pb-16">
-        <!-- Hero Section -->
-        <div class="text-center mb-24 slide-up">
-            <div class="float inline-block mb-8">
-                <div class="relative">
-                    <div class="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full blur-xl opacity-30 animate-pulse"></div>
-                    <i class="fas fa-brain text-white text-8xl relative z-10 text-glow"></i>
-                </div>
-            </div>
-            
-            <h1 class="text-7xl md:text-9xl font-black text-white mb-6 text-glow">
-                <span class="gradient-text">Neural</span><br>
-                <span class="typing inline-block">Sonic Genesis</span>
-            </h1>
-            
-            <div class="text-3xl md:text-4xl font-light text-white/95 mb-4">
-                <strong class="font-bold text-yellow-400">Quantum-Powered</strong> Audio Intelligence
-            </div>
-            <div class="text-xl text-white/80 mb-12">
-                Trusted by <strong class="text-yellow-400">Grammy Winners</strong> • Used by <strong class="text-yellow-400">Major Labels</strong>
-            </div>
-            
-            <p class="text-2xl md:text-3xl text-white/90 max-w-5xl mx-auto mb-16 font-light leading-relaxed">
-                Breakthrough <strong class="font-bold text-yellow-400">quantum-neural architecture</strong> that transmutes your 
-                <strong class="font-bold text-yellow-400">raw sonic essence</strong> into <strong class="font-bold text-yellow-400">platinum-grade audio perfection</strong>. 
-                Our AI consciousness has absorbed the wisdom of <strong class="font-bold text-yellow-400">10 million legendary masters</strong>.
-            </p>
-            
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16 max-w-5xl mx-auto">
-                <div class="glass rounded-2xl p-6 hover-lift card-hover-effect">
-                    <i class="fas fa-bolt text-yellow-400 text-3xl mb-3"></i>
-                    <div class="text-white font-bold text-2xl">8.2s</div>
-                    <div class="text-white/70">Avg Processing</div>
-                </div>
-                <div class="glass rounded-2xl p-6 hover-lift card-hover-effect">
-                    <i class="fas fa-trophy text-yellow-400 text-3xl mb-3"></i>
-                    <div class="text-white font-bold text-2xl">Grammy</div>
-                    <div class="text-white/70">Quality Output</div>
-                </div>
-                <div class="glass rounded-2xl p-6 hover-lift card-hover-effect">
-                    <i class="fas fa-shield-check text-yellow-400 text-3xl mb-3"></i>
-                    <div class="text-white font-bold text-2xl">100%</div>
-                    <div class="text-white/70">Secure & Private</div>
-                </div>
-                <div class="glass rounded-2xl p-6 hover-lift card-hover-effect">
-                    <i class="fas fa-users text-yellow-400 text-3xl mb-3"></i>
-                    <div class="text-white font-bold text-2xl">127K+</div>
-                    <div class="text-white/70">Active Artists</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Upload Section -->
-        <div class="max-w-6xl mx-auto mb-24">
-            <div id="upload-section" class="glass rounded-3xl p-12 border border-white/10 hover-lift glow">
-                <div class="text-center mb-8">
-                    <h2 class="text-4xl font-bold text-white mb-4">Experience the Future</h2>
-                    <p class="text-xl text-white/80">Upload your track and witness AI mastering magic</p>
-                </div>
-                
-                <div id="upload-area" class="border-2 border-dashed border-white/30 rounded-2xl p-16 text-center cursor-pointer hover:border-yellow-400 transition-all duration-300 hover:bg-white/5">
-                    <div class="space-y-8">
-                        <div class="relative">
-                            <div class="absolute inset-0 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full blur-2xl opacity-20 animate-pulse"></div>
-                            <i class="fas fa-cloud-upload-alt text-white text-8xl relative z-10"></i>
-                        </div>
-                        <div>
-                            <p class="text-3xl font-bold text-white mb-3">Drop Your Masterpiece</p>
-                            <p class="text-white/70 text-xl">Drag & drop or click to select • MP3, WAV, AIFF, FLAC</p>
-                            <p class="text-white/50 text-sm mt-3">Maximum file size: 50MB • Processing time: ~10 seconds</p>
-                        </div>
-                        <input type="file" id="audio-input" accept=".mp3,.wav,.aiff,.flac,.m4a" class="hidden">
-                        <button type="button" id="upload-btn" class="bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-black px-12 py-6 rounded-2xl hover:from-yellow-500 hover:via-orange-600 hover:to-red-600 transition-all duration-300 font-black text-xl shadow-2xl transform hover:scale-105 glow">
-                            <i class="fas fa-atom mr-3"></i>INITIATE SONIC GENESIS
-                        </button>
-                    </div>
-                </div>
-                
-                <div id="progress" class="hidden mt-12">
-                    <div class="bg-white/10 rounded-full h-4 overflow-hidden mb-4">
-                        <div id="progress-bar" class="bg-gradient-to-r from-yellow-400 to-orange-500 h-4 rounded-full transition-all duration-300 shadow-lg" style="width: 0%"></div>
-                    </div>
-                    <div class="flex items-center justify-center">
-                        <i class="fas fa-brain fa-spin text-yellow-400 mr-3 text-2xl"></i>
-                        <p class="text-white font-bold text-xl">AI Neural Network Processing...</p>
-                    </div>
-                    <div class="text-center mt-4">
-                        <div id="processing-status" class="text-white/70">Analyzing audio characteristics...</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Results Section -->
-            <div id="comparison-section" class="hidden glass rounded-3xl p-12 mt-12 border border-white/10 glow">
-                <div class="text-center mb-12">
-                    <i class="fas fa-magic text-yellow-400 text-5xl mb-6"></i>
-                    <h2 class="text-4xl font-bold text-white mb-4">Mastering Complete!</h2>
-                    <p class="text-xl text-white/80">Compare your original track with our AI-enhanced version</p>
-                </div>
-                
-                <div class="flex justify-center mb-12">
-                    <div class="bg-white/10 p-2 rounded-2xl flex backdrop-blur-sm">
-                        <button id="original-btn" class="px-8 py-4 rounded-xl bg-white/20 text-white font-bold transition-all duration-300">
-                            <i class="fas fa-file-audio mr-2"></i>Original
-                        </button>
-                        <button id="mastered-btn" class="px-8 py-4 rounded-xl text-white/70 hover:text-white font-bold transition-all duration-300">
-                            <i class="fas fa-wand-magic-sparkles mr-2"></i>AI Mastered
-                        </button>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-                    <div class="glass rounded-2xl p-8 border border-white/10">
-                        <div class="flex items-center justify-between mb-6">
-                            <h3 class="font-bold text-white text-xl">Original Track</h3>
-                            <span class="bg-gray-500 text-white text-xs px-3 py-1 rounded-full">RAW</span>
-                        </div>
-                        <audio id="original-audio" controls class="w-full mb-4" style="filter: invert(1) hue-rotate(180deg);"></audio>
-                        <div class="text-sm text-white/60">
-                            <i class="fas fa-info-circle mr-2"></i>Unprocessed audio file
-                        </div>
-                    </div>
-                    
-                    <div class="glass rounded-2xl p-8 border border-yellow-400/30">
-                        <div class="flex items-center justify-between mb-6">
-                            <h3 class="font-bold text-white text-xl">AI Mastered</h3>
-                            <span class="bg-gradient-to-r from-yellow-400 to-orange-500 text-black text-xs px-3 py-1 rounded-full font-bold">ENHANCED</span>
-                        </div>
-                        <audio id="mastered-audio" controls class="w-full mb-4" style="filter: invert(1) hue-rotate(180deg);"></audio>
-                        <div id="improvements" class="text-sm text-white/80">
-                            <i class="fas fa-chart-line text-green-400 mr-2"></i>AI enhancements applied
-                        </div>
-                    </div>
-                </div>
-
-                <div class="text-center">
-                    <div class="glass rounded-2xl p-8 mb-8 border border-white/10">
-                        <i class="fas fa-crown text-yellow-400 text-4xl mb-4"></i>
-                        <h3 class="text-2xl font-bold text-white mb-4">Ready to Download?</h3>
-                        <p class="text-white/80 text-lg mb-6">Get your professionally mastered track in studio quality</p>
-                        <button id="signup-btn" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-12 py-4 rounded-xl hover:from-green-600 hover:to-emerald-700 font-bold text-lg shadow-lg transform hover:scale-105 transition-all duration-300 mr-4">
-                            <i class="fas fa-download mr-2"></i>Download Master
-                        </button>
-                        <div class="text-white/60 text-sm mt-4">
-                            <i class="fas fa-shield-check mr-1"></i>
-                            Secure download • No watermarks • Commercial license included
-                        </div>
-                    </div>
-                    
-                    <button id="new-upload-btn" class="text-white/80 hover:text-yellow-400 transition-colors font-medium">
-                        <i class="fas fa-plus-circle mr-2"></i>Master Another Track
-                    </button>
-                </div>
-            </div>
-        </div>
+<!-- Page content (nav is provided by base.html) -->
+<div class="container mx-auto px-6 pt-28 pb-16">
+  <!-- Hero -->
+  <div class="text-center mb-24 slide-up">
+    <div class="inline-block mb-8">
+      <div class="relative">
+        <div class="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full blur-xl opacity-30 animate-pulse"></div>
+        <i class="fas fa-brain text-white text-8xl relative z-10 text-glow"></i>
+      </div>
     </div>
 
-    <!-- Features Section -->
-    <div id="features" class="mt-32">
-        <div class="text-center mb-16">
-            <h2 class="text-5xl font-black text-white mb-6 text-glow">Revolutionary <span class="gradient-text">Features</span></h2>
-            <p class="text-xl text-white/80 max-w-3xl mx-auto">Discover the cutting-edge technology that powers the world's most advanced AI mastering platform</p>
-        </div>
-        
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
-            <div class="glass-world-class card-world-class p-8 text-center">
-                <div class="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <i class="fas fa-brain text-black text-2xl"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-white mb-4">Neural Network AI</h3>
-                <p class="text-white/80 mb-6">Advanced deep learning algorithms trained on 10 million professional masters from Grammy-winning engineers.</p>
-                <ul class="space-y-2 text-white/70 text-left">
-                    <li><i class="fas fa-check text-green-400 mr-2"></i>Multi-layer neural processing</li>
-                    <li><i class="fas fa-check text-green-400 mr-2"></i>Real-time audio analysis</li>
-                    <li><i class="fas fa-check text-green-400 mr-2"></i>Adaptive learning system</li>
-                </ul>
-            </div>
+    <h1 class="text-7xl md:text-9xl font-black text-white mb-6 text-glow">
+      <span class="gradient-text">Neural</span><br>
+      <span class="typing inline-block">Sonic Genesis</span>
+    </h1>
 
-            <div class="glass-world-class card-world-class p-8 text-center">
-                <div class="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <i class="fas fa-bolt text-white text-2xl"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-white mb-4">Lightning Speed</h3>
-                <p class="text-white/80 mb-6">Process your tracks in under 10 seconds with our optimized cloud infrastructure and parallel processing.</p>
-                <ul class="space-y-2 text-white/70 text-left">
-                    <li><i class="fas fa-check text-green-400 mr-2"></i>8.2s average processing time</li>
-                    <li><i class="fas fa-check text-green-400 mr-2"></i>Real-time progress tracking</li>
-                    <li><i class="fas fa-check text-green-400 mr-2"></i>Instant preview generation</li>
-                </ul>
-            </div>
+    <p class="text-2xl md:text-3xl text-white/90 max-w-5xl mx-auto mb-16 font-light leading-relaxed">
+      Breakthrough <strong class="font-bold text-yellow-400">quantum-neural architecture</strong> that transmutes your
+      <strong class="font-bold text-yellow-400">raw sonic essence</strong> into <strong class="font-bold text-yellow-400">polished, release-ready audio</strong>.
+    </p>
 
-            <div class="glass-world-class card-world-class p-8 text-center">
-                <div class="w-16 h-16 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <i class="fas fa-award text-white text-2xl"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-white mb-4">Grammy Quality</h3>
-                <p class="text-white/80 mb-6">Achieve professional mastering quality that rivals $500/hour engineers, trusted by major labels worldwide.</p>
-                <ul class="space-y-2 text-white/70 text-left">
-                    <li><i class="fas fa-check text-green-400 mr-2"></i>Industry-standard loudness</li>
-                    <li><i class="fas fa-check text-green-400 mr-2"></i>Professional EQ curves</li>
-                    <li><i class="fas fa-check text-green-400 mr-2"></i>Streaming-optimized output</li>
-                </ul>
-            </div>
+    <!-- Metrics -->
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-8 mb-16 max-w-5xl mx-auto">
+      <div class="glass rounded-2xl p-6 hover-lift card-hover-effect">
+        <i class="fas fa-bolt text-yellow-400 text-3xl mb-3"></i>
+        <div class="text-white font-bold text-2xl">8.2s</div>
+        <div class="text-white/70">Avg Processing</div>
+      </div>
+      <div class="glass rounded-2xl p-6 hover-lift card-hover-effect">
+        <i class="fas fa-shield-alt text-yellow-400 text-3xl mb-3"></i>
+        <div class="text-white font-bold text-2xl">100%</div>
+        <div class="text-white/70">Secure & Private</div>
+      </div>
+      <div class="glass rounded-2xl p-6 hover-lift card-hover-effect">
+        <i class="fas fa-users text-yellow-400 text-3xl mb-3"></i>
+        <div class="text-white font-bold text-2xl">100+</div>
+        <div class="text-white/70">Active Artists</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upload -->
+  <div class="max-w-6xl mx-auto mb-24">
+    <div id="upload-section" class="glass rounded-3xl p-12 border border-white/10 hover-lift glow">
+      <div class="text-center mb-8">
+        <h2 class="text-4xl font-bold text-white mb-4">Experience the Future</h2>
+        <p class="text-xl text-white/80">Upload your track and witness AI mastering magic</p>
+      </div>
+
+      <div id="upload-area" class="border-2 border-dashed border-white/30 rounded-2xl p-16 text-center cursor-pointer hover:border-yellow-400 transition-all duration-300 hover:bg-white/5">
+        <div class="space-y-8">
+          <div class="relative">
+            <div class="absolute inset-0 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full blur-2xl opacity-20 animate-pulse"></div>
+            <i class="fas fa-cloud-upload-alt text-white text-8xl relative z-10"></i>
+          </div>
+          <div>
+            <p class="text-3xl font-bold text-white mb-3">Drop Your Masterpiece</p>
+            <p class="text-white/70 text-xl">Drag & drop or click to select • MP3, WAV, AIFF, FLAC</p>
+            <p class="text-white/50 text-sm mt-3">Maximum file size: 50MB • Processing time: ~10 seconds</p>
+          </div>
+          <input type="file" id="audio-input" accept=".mp3,.wav,.aiff,.flac,.m4a" class="hidden">
+          <button type="button" id="upload-btn" class="bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-black px-12 py-6 rounded-2xl hover:from-yellow-500 hover:via-orange-600 hover:to-red-600 transition-all duration-300 font-black text-xl shadow-2xl transform hover:scale-105 glow">
+            <i class="fas fa-atom mr-3"></i>INITIATE SONIC GENESIS
+          </button>
         </div>
-        
-        <div class="text-center">
-            <a href="/features" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 font-bold transform hover:scale-105 inline-block">
-                <i class="fas fa-arrow-right mr-2"></i>Explore All Features
-            </a>
+      </div>
+
+      <div id="progress" class="hidden mt-12">
+        <div class="bg-white/10 rounded-full h-4 overflow-hidden mb-4">
+          <div id="progress-bar" class="bg-gradient-to-r from-yellow-400 to-orange-500 h-4 rounded-full transition-all duration-300 shadow-lg" style="width: 0%"></div>
         </div>
+        <div class="flex items-center justify-center">
+          <i class="fas fa-brain fa-spin text-yellow-400 mr-3 text-2xl"></i>
+          <p class="text-white font-bold text-xl">AI Neural Network Processing...</p>
+        </div>
+        <div class="text-center mt-4">
+          <div id="processing-status" class="text-white/70">Analyzing audio characteristics...</div>
+        </div>
+      </div>
     </div>
 
-    <!-- Success Stories Section -->
-    <div id="testimonials" class="mt-32">
-        <div class="text-center mb-16">
-            <h2 class="text-5xl font-black text-white mb-6 text-glow">Trusted by <span class="gradient-text">Industry Leaders</span></h2>
-            <p class="text-xl text-white/80 max-w-3xl mx-auto">See why Grammy winners, platinum artists, and major labels choose MasterAI</p>
+    <!-- Results -->
+    <div id="comparison-section" class="hidden glass rounded-3xl p-12 mt-12 border border-white/10 glow">
+      <div class="text-center mb-12">
+        <i class="fas fa-magic text-yellow-400 text-5xl mb-6"></i>
+        <h2 class="text-4xl font-bold text-white mb-4">Mastering Complete!</h2>
+        <p class="text-xl text-white/80">Compare your original track with our AI-enhanced version</p>
+      </div>
+
+      <div class="flex justify-center mb-12">
+        <div class="bg-white/10 p-2 rounded-2xl flex backdrop-blur-sm">
+          <button id="original-btn" class="px-8 py-4 rounded-xl bg-white/20 text-white font-bold transition-all duration-300">
+            <i class="fas fa-file-audio mr-2"></i>Original
+          </button>
+          <button id="mastered-btn" class="px-8 py-4 rounded-xl text-white/70 hover:text-white font-bold transition-all duration-300">
+            <i class="fas fa-wand-magic-sparkles mr-2"></i>AI Mastered
+          </button>
         </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-            <div class="testimonial-world-class">
-                <div class="flex items-center mb-4">
-                    <div class="w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mr-4">
-                        <i class="fas fa-trophy text-black text-xl"></i>
-                    </div>
-                    <div>
-                        <div class="text-white font-bold">Sarah Chen</div>
-                        <div class="text-yellow-400 text-sm">Grammy Winner • Producer</div>
-                    </div>
-                </div>
-                <div class="text-yellow-400 text-2xl mb-3">★★★★★</div>
-                <p class="text-white/90 italic">MasterAI saved me 6 hours per track. The quality rivals my $300/hour mastering engineer. This is the future of music production.</p>
-            </div>
-            
-            <div class="testimonial-world-class">
-                <div class="flex items-center mb-4">
-                    <div class="w-12 h-12 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center mr-4">
-                        <i class="fas fa-microphone text-white text-xl"></i>
-                    </div>
-                    <div>
-                        <div class="text-white font-bold">Marcus Rodriguez</div>
-                        <div class="text-yellow-400 text-sm">Platinum Artist • 10M+ Streams</div>
-                    </div>
-                </div>
-                <div class="text-yellow-400 text-2xl mb-3">★★★★★</div>
-                <p class="text-white/90 italic">My streams increased 40% after using MasterAI. The loudness and clarity are incredible. Every independent artist needs this.</p>
-            </div>
-            
-            <div class="testimonial-world-class">
-                <div class="flex items-center mb-4">
-                    <div class="w-12 h-12 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-full flex items-center justify-center mr-4">
-                        <i class="fas fa-building text-white text-xl"></i>
-                    </div>
-                    <div>
-                        <div class="text-white font-bold">Universal Music Group</div>
-                        <div class="text-yellow-400 text-sm">A&R Team</div>
-                    </div>
-                </div>
-                <div class="text-yellow-400 text-2xl mb-3">★★★★★</div>
-                <p class="text-white/90 italic">We use MasterAI for all our demos. It's faster than our studio engineers and the quality is consistently excellent. Game changer.</p>
-            </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <div class="glass rounded-2xl p-8 border border-white/10">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="font-bold text-white text-xl">Original Track</h3>
+            <span class="bg-gray-500 text-white text-xs px-3 py-1 rounded-full">RAW</span>
+          </div>
+          <audio id="original-audio" controls class="w-full mb-4" style="filter: invert(1) hue-rotate(180deg);"></audio>
+          <div class="text-sm text-white/60">
+            <i class="fas fa-info-circle mr-2"></i>Unprocessed audio file
+          </div>
         </div>
-        
-        <div class="glass-world-class rounded-3xl p-12 text-center mb-8">
-            <h3 class="text-3xl font-bold text-white mb-6">Success by the Numbers</h3>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-                <div class="stat-world-class">
-                    <div class="stat-number" data-count="2100000">2.1M+</div>
-                    <div class="text-white font-medium">Tracks Mastered</div>
-                </div>
-                <div class="stat-world-class">
-                    <div class="stat-number" data-count="15">15</div>
-                    <div class="text-white font-medium">Grammy Winners</div>
-                </div>
-                <div class="stat-world-class">
-                    <div class="stat-number" data-count="127000">127K+</div>
-                    <div class="text-white font-medium">Active Artists</div>
-                </div>
-                <div class="stat-world-class">
-                    <div class="stat-number" data-count="98">98%</div>
-                    <div class="text-white font-medium">Satisfaction Rate</div>
-                </div>
-            </div>
+
+        <div class="glass rounded-2xl p-8 border border-yellow-400/30">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="font-bold text-white text-xl">AI Mastered</h3>
+            <span class="bg-gradient-to-r from-yellow-400 to-orange-500 text-black text-xs px-3 py-1 rounded-full font-bold">ENHANCED</span>
+          </div>
+          <audio id="mastered-audio" controls class="w-full mb-4" style="filter: invert(1) hue-rotate(180deg);"></audio>
+          <div id="improvements" class="text-sm text-white/80">
+            <i class="fas fa-chart-line text-green-400 mr-2"></i>AI enhancements applied
+          </div>
         </div>
-        
-        <div class="text-center">
-            <a href="/testimonials" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-xl hover:from-green-600 hover:to-emerald-700 transition-all duration-300 font-bold transform hover:scale-105 inline-block">
-                <i class="fas fa-star mr-2"></i>Read All Success Stories
-            </a>
+      </div>
+
+      <div class="text-center">
+        <div class="glass rounded-2xl p-8 mb-8 border border-white/10">
+          <i class="fas fa-crown text-yellow-400 text-4xl mb-4"></i>
+          <h3 class="text-2xl font-bold text-white mb-4">Ready to Download?</h3>
+          <p class="text-white/80 text-lg mb-6">Get your professionally mastered track in studio quality</p>
+          <button id="signup-btn" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-12 py-4 rounded-xl hover:from-green-600 hover:to-emerald-700 font-bold text-lg shadow-lg transform hover:scale-105 transition-all duration-300 mr-4">
+            <i class="fas fa-download mr-2"></i>Download Master
+          </button>
+          <div class="text-white/60 text-sm mt-4">
+            <i class="fas fa-shield-check mr-1"></i>
+            Secure download • No watermarks • Commercial license included
+          </div>
         </div>
+
+        <button id="new-upload-btn" class="text-white/80 hover:text-yellow-400 transition-colors font-medium">
+          <i class="fas fa-plus-circle mr-2"></i>Master Another Track
+        </button>
+      </div>
     </div>
-
-
-
-    <!-- Final CTA Section -->
-    <div class="mt-32 text-center">
-        <div class="glass-world-class rounded-3xl p-16">
-            <h2 class="text-5xl font-black text-white mb-6 text-glow">Ready to <span class="gradient-text">Transform</span> Your Music?</h2>
-            <p class="text-2xl text-white/90 mb-8 max-w-3xl mx-auto">Join 127,000+ artists who've already discovered the future of music mastering</p>
-            
-            <div class="flex flex-col sm:flex-row gap-6 justify-center items-center mb-8">
-                <a href="/dashboard" class="btn-world-class text-black px-12 py-6 rounded-2xl font-black text-xl transform hover:scale-105 inline-block">
-                    <i class="fas fa-rocket mr-3"></i>START MASTERING NOW
-                </a>
-                <div class="text-white/80">
-                    <div class="font-bold text-lg">100% Risk-Free</div>
-                    <div class="text-sm">30-day money-back guarantee</div>
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                <div>
-                    <div class="text-3xl font-black text-yellow-400">127K+</div>
-                    <div class="text-white/70">Happy Artists</div>
-                </div>
-                <div>
-                    <div class="text-3xl font-black text-yellow-400">2.1M+</div>
-                    <div class="text-white/70">Tracks Mastered</div>
-                </div>
-                <div>
-                    <div class="text-3xl font-black text-yellow-400">99.9%</div>
-                    <div class="text-white/70">Uptime</div>
-                </div>
-                <div>
-                    <div class="text-3xl font-black text-yellow-400">4.9/5</div>
-                    <div class="text-white/70">User Rating</div>
-                </div>
-            </div>
-        </div>
-    </div>
+  </div>
 </div>
 
-    <script>
-        // Application State
-        const app = {
-            elements: {},
-            currentTrack: null,
-            isProcessing: false
-        };
+<!-- Features -->
+<div id="features" class="mt-32">
+  <div class="text-center mb-16">
+    <h2 class="text-5xl font-black text-white mb-6 text-glow">Revolutionary <span class="gradient-text">Features</span></h2>
+    <p class="text-xl text-white/80 max-w-3xl mx-auto">Discover the technology that powers fast, consistent AI mastering.</p>
+  </div>
 
-        // Initialize DOM elements
-        document.addEventListener('DOMContentLoaded', function() {
-            createDynamicAnimations();
-            app.elements = {
-                uploadArea: document.getElementById('upload-area'),
-                audioInput: document.getElementById('audio-input'),
-                uploadBtn: document.getElementById('upload-btn'),
-                progress: document.getElementById('progress'),
-                progressBar: document.getElementById('progress-bar'),
-                processingStatus: document.getElementById('processing-status'),
-                uploadSection: document.getElementById('upload-section'),
-                comparisonSection: document.getElementById('comparison-section'),
-                originalAudio: document.getElementById('original-audio'),
-                masteredAudio: document.getElementById('mastered-audio'),
-                originalBtn: document.getElementById('original-btn'),
-                masteredBtn: document.getElementById('mastered-btn'),
-                signupBtn: document.getElementById('signup-btn'),
-                newUploadBtn: document.getElementById('new-upload-btn'),
-                improvements: document.getElementById('improvements')
-            };
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+    <div class="glass-world-class card-world-class p-8 text-center">
+      <div class="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+        <i class="fas fa-brain text-black text-2xl"></i>
+      </div>
+      <h3 class="text-2xl font-bold text-white mb-4">Neural Network AI</h3>
+      <p class="text-white/80 mb-6">Deep-learning models trained on many professionally mastered references.</p>
+      <ul class="space-y-2 text-white/70 text-left">
+        <li><i class="fas fa-check text-green-400 mr-2"></i>Multi-layer neural processing</li>
+        <li><i class="fas fa-check text-green-400 mr-2"></i>Real-time audio analysis</li>
+        <li><i class="fas fa-check text-green-400 mr-2"></i>Adaptive learning system</li>
+      </ul>
+    </div>
 
-            initializeEventListeners();
-        });
+    <div class="glass-world-class card-world-class p-8 text-center">
+      <div class="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+        <i class="fas fa-bolt text-white text-2xl"></i>
+      </div>
+      <h3 class="text-2xl font-bold text-white mb-4">Lightning Speed</h3>
+      <p class="text-white/80 mb-6">Process tracks in seconds with our optimized cloud pipeline.</p>
+      <ul class="space-y-2 text-white/70 text-left">
+        <li><i class="fas fa-check text-green-400 mr-2"></i>8.2s average processing time</li>
+        <li><i class="fas fa-check text-green-400 mr-2"></i>Real-time progress tracking</li>
+        <li><i class="fas fa-check text-green-400 mr-2"></i>Instant preview generation</li>
+      </ul>
+    </div>
+  </div>
 
-        function initializeEventListeners() {
-            // Upload functionality
-            app.elements.uploadBtn.addEventListener('click', () => app.elements.audioInput.click());
-            app.elements.audioInput.addEventListener('change', handleFileUpload);
+  <div class="text-center">
+    <a href="/features" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 font-bold transform hover:scale-105 inline-block">
+      <i class="fas fa-arrow-right mr-2"></i>Explore All Features
+    </a>
+  </div>
+</div>
 
-            // Drag and drop
-            app.elements.uploadArea.addEventListener('dragover', handleDragOver);
-            app.elements.uploadArea.addEventListener('dragleave', handleDragLeave);
-            app.elements.uploadArea.addEventListener('drop', handleDrop);
+<!-- Community Feedback (toned down) -->
+<div id="testimonials" class="mt-32">
+  <div class="text-center mb-16">
+    <h2 class="text-5xl font-black text-white mb-6 text-glow">What <span class="gradient-text">Artists Say</span></h2>
+    <p class="text-xl text-white/80 max-w-3xl mx-auto">Notes from early users — indie creators, home producers, and small studios.</p>
+  </div>
 
-            // Player controls
-            app.elements.originalBtn.addEventListener('click', () => switchPlayer('original'));
-            app.elements.masteredBtn.addEventListener('click', () => switchPlayer('mastered'));
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+    <div class="testimonial-world-class">
+      <div class="flex items-center mb-4">
+        <div class="w-12 h-12 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full flex items-center justify-center mr-4">
+          <i class="fas fa-headphones text-black text-xl"></i>
+        </div>
+        <div>
+          <div class="text-white font-bold">Jay M.</div>
+          <div class="text-yellow-400 text-sm">Indie producer</div>
+        </div>
+      </div>
+      <div class="text-yellow-400 text-2xl mb-3">★★★★★</div>
+      <p class="text-white/90 italic">“Used it for my EP demos. Minutes to get a clean, loud ref master. Perfect for late-night sessions.”</p>
+    </div>
 
-            // Actions
-            app.elements.signupBtn.addEventListener('click', downloadMasteredTrack);
-            app.elements.newUploadBtn.addEventListener('click', resetUpload);
-        }
+    <div class="testimonial-world-class">
+      <div class="flex items-center mb-4">
+        <div class="w-12 h-12 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center mr-4">
+          <i class="fas fa-music text-white text-xl"></i>
+        </div>
+        <div>
+          <div class="text-white font-bold">Ananya S.</div>
+          <div class="text-yellow-400 text-sm">Bedroom musician</div>
+        </div>
+      </div>
+      <div class="text-yellow-400 text-2xl mb-3">★★★★★</div>
+      <p class="text-white/90 italic">“Uploaded a rough mix and got something I felt proud to share the same day. Simple and encouraging.”</p>
+    </div>
 
-        function handleDragOver(e) {
-            e.preventDefault();
-            app.elements.uploadArea.style.borderColor = '#fbbf24';
-            app.elements.uploadArea.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
-        }
+    <div class="testimonial-world-class">
+      <div class="flex items-center mb-4">
+        <div class="w-12 h-12 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-full flex items-center justify-center mr-4">
+          <i class="fas fa-home text-white text-xl"></i>
+        </div>
+        <div>
+          <div class="text-white font-bold">Small Room Studios</div>
+          <div class="text-yellow-400 text-sm">Project studio</div>
+        </div>
+      </div>
+      <div class="text-yellow-400 text-2xl mb-3">★★★★★</div>
+      <p class="text-white/90 italic">“Great for quick reference masters. Clients love hearing before/after instantly while arranging.”</p>
+    </div>
+  </div>
 
-        function handleDragLeave(e) {
-            e.preventDefault();
-            app.elements.uploadArea.style.borderColor = '';
-            app.elements.uploadArea.style.backgroundColor = '';
-        }
+  <div class="text-center">
+    <a href="/testimonials" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-xl hover:from-green-600 hover:to-emerald-700 transition-all duration-300 font-bold transform hover:scale-105 inline-block">
+      <i class="fas fa-star mr-2"></i>See more feedback
+    </a>
+  </div>
+</div>
 
-        function handleDrop(e) {
-            e.preventDefault();
-            app.elements.uploadArea.style.borderColor = '';
-            app.elements.uploadArea.style.backgroundColor = '';
-            
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                app.elements.audioInput.files = files;
-                handleFileUpload({ target: { files: files } });
-            }
-        }
+<!-- Final CTA -->
+<div class="mt-32 text-center">
+  <div class="glass-world-class rounded-3xl p-16">
+    <h2 class="text-5xl font-black text-white mb-6 text-glow">Ready to <span class="gradient-text">Transform</span> Your Music?</h2>
+    <p class="text-2xl text-white/90 mb-8 max-w-3xl mx-auto">Join 100+ artists who’ve already tried AI mastering.</p>
 
-        async function handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (!file || app.isProcessing) return;
+    <div class="flex flex-col sm:flex-row gap-6 justify-center items-center mb-8">
+      <a href="/dashboard" class="btn-world-class text-black px-12 py-6 rounded-2xl font-black text-xl transform hover:scale-105 inline-block">
+        <i class="fas fa-rocket mr-3"></i>START MASTERING NOW
+      </a>
+      <div class="text-white/80">
+        <div class="font-bold text-lg">100% Risk-Free</div>
+        <div class="text-sm">30-day money-back guarantee</div>
+      </div>
+    </div>
 
-            if (!validateFile(file)) return;
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+      <div>
+        <div class="text-3xl font-black text-yellow-400">100+</div>
+        <div class="text-white/70">Happy Artists</div>
+      </div>
+      <div>
+        <div class="text-3xl font-black text-yellow-400">100+</div>
+        <div class="text-white/70">Tracks Mastered</div>
+      </div>
+      <div>
+        <div class="text-3xl font-black text-yellow-400">99.9%</div>
+        <div class="text-white/70">Uptime</div>
+      </div>
+      <div>
+        <div class="text-3xl font-black text-yellow-400">4.9/5</div>
+        <div class="text-white/70">User Rating</div>
+      </div>
+    </div>
+  </div>
+</div>
 
-            app.isProcessing = true;
-            app.currentTrack = file;
+<script>
+  const app = { elements: {}, currentTrack: null, isProcessing: false };
+  document.addEventListener('DOMContentLoaded', function() {
+    createDynamicAnimations();
+    app.elements = {
+      uploadArea: document.getElementById('upload-area'),
+      audioInput: document.getElementById('audio-input'),
+      uploadBtn: document.getElementById('upload-btn'),
+      progress: document.getElementById('progress'),
+      progressBar: document.getElementById('progress-bar'),
+      processingStatus: document.getElementById('processing-status'),
+      uploadSection: document.getElementById('upload-section'),
+      comparisonSection: document.getElementById('comparison-section'),
+      originalAudio: document.getElementById('original-audio'),
+      masteredAudio: document.getElementById('mastered-audio'),
+      originalBtn: document.getElementById('original-btn'),
+      masteredBtn: document.getElementById('mastered-btn'),
+      signupBtn: document.getElementById('signup-btn'),
+      newUploadBtn: document.getElementById('new-upload-btn'),
+      improvements: document.getElementById('improvements')
+    };
+    initializeEventListeners();
+  });
 
-            showProcessing();
-            
-            try {
-                const result = await uploadAndProcess(file);
-                if (result.success) {
-                    showResults(result);
-                } else {
-                    showError(result.error);
-                }
-            } catch (error) {
-                showError('Processing failed. Please try again.');
-            } finally {
-                app.isProcessing = false;
-            }
-        }
+  function initializeEventListeners() {
+    app.elements.uploadBtn.addEventListener('click', () => app.elements.audioInput.click());
+    app.elements.audioInput.addEventListener('change', handleFileUpload);
+    app.elements.uploadArea.addEventListener('dragover', handleDragOver);
+    app.elements.uploadArea.addEventListener('dragleave', handleDragLeave);
+    app.elements.uploadArea.addEventListener('drop', handleDrop);
+    app.elements.originalBtn.addEventListener('click', () => switchPlayer('original'));
+    app.elements.masteredBtn.addEventListener('click', () => switchPlayer('mastered'));
+    app.elements.signupBtn.addEventListener('click', downloadMasteredTrack);
+    app.elements.newUploadBtn.addEventListener('click', resetUpload);
+  }
 
-        function validateFile(file) {
-            const validTypes = ['audio/mpeg', 'audio/wav', 'audio/x-wav', 'audio/aiff', 'audio/flac', 'audio/mp4'];
-            const validExtensions = ['.mp3', '.wav', '.aiff', '.flac', '.m4a'];
-            const fileExt = '.' + file.name.split('.').pop().toLowerCase();
+  function handleDragOver(e) { e.preventDefault(); app.elements.uploadArea.style.borderColor = '#fbbf24'; app.elements.uploadArea.style.backgroundColor = 'rgba(255,255,255,0.1)'; }
+  function handleDragLeave(e) { e.preventDefault(); app.elements.uploadArea.style.borderColor = ''; app.elements.uploadArea.style.backgroundColor = ''; }
+  function handleDrop(e) { e.preventDefault(); app.elements.uploadArea.style.borderColor = ''; app.elements.uploadArea.style.backgroundColor = ''; const files = e.dataTransfer.files; if (files.length > 0) { app.elements.audioInput.files = files; handleFileUpload({ target: { files: files } }); } }
 
-            if (!validTypes.includes(file.type) && !validExtensions.includes(fileExt)) {
-                alert('Please upload a valid audio file (MP3, WAV, AIFF, FLAC, M4A)');
-                return false;
-            }
+  async function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (!file || app.isProcessing) return;
+    if (!validateFile(file)) return;
+    app.isProcessing = true;
+    app.currentTrack = file;
+    showProcessing();
+    try {
+      const result = await uploadAndProcess(file);
+      if (result.success) { showResults(result); } else { showError(result.error); }
+    } catch (error) { showError('Processing failed. Please try again.'); }
+    finally { app.isProcessing = false; }
+  }
 
-            if (file.size > 50 * 1024 * 1024) {
-                alert('File size must be less than 50MB');
-                return false;
-            }
+  function validateFile(file) {
+    const validTypes = ['audio/mpeg','audio/wav','audio/x-wav','audio/aiff','audio/flac','audio/mp4'];
+    const validExtensions = ['.mp3','.wav','.aiff','.flac','.m4a'];
+    const fileExt = '.' + file.name.split('.').pop().toLowerCase();
+    if (!validTypes.includes(file.type) && !validExtensions.includes(fileExt)) { alert('Please upload a valid audio file (MP3, WAV, AIFF, FLAC, M4A)'); return false; }
+    if (file.size > 50 * 1024 * 1024) { alert('File size must be less than 50MB'); return false; }
+    return true;
+  }
 
-            return true;
-        }
+  function showProcessing() {
+    app.elements.progress.classList.remove('hidden');
+    app.elements.uploadBtn.disabled = true;
+    app.elements.uploadBtn.innerHTML = '<i class="fas fa-brain fa-spin mr-3"></i>PROCESSING...';
+    let progress = 0;
+    const statuses = ['Analyzing audio characteristics...','Applying neural network processing...','Enhancing frequency response...','Optimizing dynamics and loudness...','Finalizing master...'];
+    const interval = setInterval(() => {
+      progress += Math.random() * 15;
+      if (progress > 95) progress = 95;
+      app.elements.progressBar.style.width = progress + '%';
+      app.elements.processingStatus.textContent = statuses[Math.floor(progress / 20)] || statuses[4];
+      if (progress >= 95) clearInterval(interval);
+    }, 400);
+  }
 
-        function showProcessing() {
-            app.elements.progress.classList.remove('hidden');
-            app.elements.uploadBtn.disabled = true;
-            app.elements.uploadBtn.innerHTML = '<i class="fas fa-brain fa-spin mr-3"></i>PROCESSING...';
+  async function uploadAndProcess(file) {
+    const formData = new FormData();
+    formData.append('audio', file);
+    const response = await fetch('/upload', { method: 'POST', body: formData });
+    return await response.json();
+  }
 
-            // Animate progress
-            let progress = 0;
-            const statuses = [
-                'Analyzing audio characteristics...',
-                'Applying neural network processing...',
-                'Enhancing frequency response...',
-                'Optimizing dynamics and loudness...',
-                'Finalizing master...'
-            ];
+  function showResults(result) {
+    app.elements.progressBar.style.width = '100%';
+    app.elements.processingStatus.textContent = 'Processing complete!';
+    setTimeout(() => {
+      app.elements.originalAudio.src = result.originalUrl;
+      app.elements.masteredAudio.src = result.masteredUrl;
+      if (result.improvements) {
+        app.elements.improvements.innerHTML = `
+          <div class="grid grid-cols-2 gap-4 text-sm">
+            <div><i class="fas fa-volume-up text-green-400 mr-1"></i>Loudness: ${result.improvements.loudness}</div>
+            <div><i class="fas fa-wave-square text-green-400 mr-1"></i>Dynamics: ${result.improvements.dynamics}</div>
+            <div><i class="fas fa-chart-line text-green-400 mr-1"></i>Frequency: ${result.improvements.frequency_response}</div>
+            <div><i class="fas fa-expand-arrows-alt text-green-400 mr-1"></i>Stereo: ${result.improvements.stereo_width}</div>
+          </div>
+        `;
+      }
+      app.elements.uploadSection.classList.add('hidden');
+      app.elements.comparisonSection.classList.remove('hidden');
+      app.elements.comparisonSection.scrollIntoView({ behavior: 'smooth' });
+    }, 1000);
+  }
 
-            const interval = setInterval(() => {
-                progress += Math.random() * 15;
-                if (progress > 95) progress = 95;
-                
-                app.elements.progressBar.style.width = progress + '%';
-                app.elements.processingStatus.textContent = statuses[Math.floor(progress / 20)] || statuses[4];
-                
-                if (progress >= 95) clearInterval(interval);
-            }, 400);
-        }
+  function showError(message) { alert('Error: ' + message); resetProcessing(); }
+  function resetProcessing() {
+    app.elements.progress.classList.add('hidden');
+    app.elements.progressBar.style.width = '0%';
+    app.elements.uploadBtn.disabled = false;
+    app.elements.uploadBtn.innerHTML = '<i class="fas fa-rocket mr-3"></i>LAUNCH MASTERING';
+  }
 
-        async function uploadAndProcess(file) {
-            const formData = new FormData();
-            formData.append('audio', file);
+  function switchPlayer(type) {
+    if (type === 'original') {
+      app.elements.originalBtn.className = 'px-8 py-4 rounded-xl bg-white/20 text-white font-bold transition-all duration-300';
+      app.elements.masteredBtn.className = 'px-8 py-4 rounded-xl text-white/70 hover:text-white font-bold transition-all duration-300';
+      app.elements.masteredAudio.pause(); app.elements.originalAudio.play();
+    } else {
+      app.elements.masteredBtn.className = 'px-8 py-4 rounded-xl bg-white/20 text-white font-bold transition-all duration-300';
+      app.elements.originalBtn.className = 'px-8 py-4 rounded-xl text-white/70 hover:text-white font-bold transition-all duration-300';
+      app.elements.originalAudio.pause(); app.elements.masteredAudio.play();
+    }
+  }
 
-            const response = await fetch('/upload', {
-                method: 'POST',
-                body: formData
-            });
+  function downloadMasteredTrack() {
+    if (app.elements.masteredAudio.src) {
+      showDownloadMessage();
+      const a = document.createElement('a');
+      a.href = app.elements.masteredAudio.src;
+      a.download = 'neural-sonic-genesis-mastered.wav';
+      a.click();
+    } else { alert('No mastered track available for download.'); }
+  }
 
-            return await response.json();
-        }
+  function showDownloadMessage() {
+    const message = document.createElement('div');
+    message.className = 'fixed top-4 right-4 glass rounded-xl p-6 z-50 border border-green-400/50';
+    message.innerHTML = `
+      <div class="flex items-center space-x-3">
+        <i class="fas fa-download text-green-400 text-2xl"></i>
+        <div>
+          <div class="text-white font-bold">Download Started!</div>
+          <div class="text-white/70 text-sm">Your mastered track is downloading...</div>
+        </div>
+      </div>`;
+    document.body.appendChild(message);
+    setTimeout(() => { message.remove(); }, 4000);
+  }
 
-        function showResults(result) {
-            // Complete progress
-            app.elements.progressBar.style.width = '100%';
-            app.elements.processingStatus.textContent = 'Processing complete!';
+  function resetUpload() {
+    app.elements.uploadSection.classList.remove('hidden');
+    app.elements.comparisonSection.classList.add('hidden');
+    app.elements.audioInput.value = '';
+    resetProcessing();
+    app.elements.uploadSection.scrollIntoView({ behavior: 'smooth' });
+  }
 
-            setTimeout(() => {
-                app.elements.originalAudio.src = result.originalUrl;
-                app.elements.masteredAudio.src = result.masteredUrl;
-                
-                // Show improvements
-                if (result.improvements) {
-                    app.elements.improvements.innerHTML = `
-                        <div class="grid grid-cols-2 gap-4 text-sm">
-                            <div><i class="fas fa-volume-up text-green-400 mr-1"></i>Loudness: ${result.improvements.loudness}</div>
-                            <div><i class="fas fa-wave-square text-green-400 mr-1"></i>Dynamics: ${result.improvements.dynamics}</div>
-                            <div><i class="fas fa-chart-line text-green-400 mr-1"></i>Frequency: ${result.improvements.frequency_response}</div>
-                            <div><i class="fas fa-expand-arrows-alt text-green-400 mr-1"></i>Stereo: ${result.improvements.stereo_width}</div>
-                        </div>
-                    `;
-                }
+  function createDynamicAnimations() {
+    const musicSymbols = ['♪','♫','♬','♩','♭','♯','𝄞','𝄢'];
+    const bgAnimation = document.querySelector('.bg-animation');
+    createNeuralNetwork();
+    setInterval(() => {
+      if (Math.random() > 0.7) {
+        const note = document.createElement('div');
+        note.className = 'floating-note';
+        note.textContent = musicSymbols[Math.floor(Math.random() * musicSymbols.length)];
+        note.style.left = Math.random() * 100 + '%';
+        note.style.fontSize = (1.5 + Math.random() * 1.5) + 'rem';
+        note.style.animationDuration = (15 + Math.random() * 10) + 's';
+        note.style.color = `rgba(${255},${255},${255},${0.05 + Math.random() * 0.1})`;
+        bgAnimation.appendChild(note);
+        setTimeout(() => { if (note.parentNode) note.parentNode.removeChild(note); }, 25000);
+      }
+    }, 3000);
+    setInterval(() => {
+      if (Math.random() > 0.85) {
+        const icon = document.createElement('i');
+        icon.className = 'fas floating-icon';
+        icon.style.left = Math.random() * 100 + '%';
+        icon.style.animationDuration = (18 + Math.random() * 7) + 's';
+        icon.style.color = `rgba(${255},${255},${255},${0.06 + Math.random() * 0.08})`;
+        const iconClasses = ['fa-microchip','fa-wave-square','fa-broadcast-tower','fa-satellite-dish'];
+        icon.classList.add(iconClasses[Math.floor(Math.random() * iconClasses.length)]);
+        bgAnimation.appendChild(icon);
+        setTimeout(() => { if (icon.parentNode) icon.parentNode.removeChild(icon); }, 25000);
+      }
+    }, 4000);
+    setInterval(() => {
+      if (Math.random() > 0.8) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDuration = (10 + Math.random() * 5) + 's';
+        particle.style.animationDelay = Math.random() * 2 + 's';
+        bgAnimation.appendChild(particle);
+        setTimeout(() => { if (particle.parentNode) particle.parentNode.removeChild(particle); }, 15000);
+      }
+    }, 2000);
+    setInterval(() => {
+      if (Math.random() > 0.9) {
+        const circle = document.createElement('div');
+        circle.className = 'pulse-circle';
+        circle.style.left = Math.random() * 100 + '%';
+        circle.style.top = Math.random() * 100 + '%';
+        circle.style.width = (50 + Math.random() * 100) + 'px';
+        circle.style.height = circle.style.width;
+        bgAnimation.appendChild(circle);
+        setTimeout(() => { if (circle.parentNode) circle.parentNode.removeChild(circle); }, 6000);
+      }
+    }, 5000);
+  }
 
-                app.elements.uploadSection.classList.add('hidden');
-                app.elements.comparisonSection.classList.remove('hidden');
-                app.elements.comparisonSection.scrollIntoView({ behavior: 'smooth' });
-            }, 1000);
-        }
-
-        function showError(message) {
-            alert('Error: ' + message);
-            resetProcessing();
-        }
-
-        function resetProcessing() {
-            app.elements.progress.classList.add('hidden');
-            app.elements.progressBar.style.width = '0%';
-            app.elements.uploadBtn.disabled = false;
-            app.elements.uploadBtn.innerHTML = '<i class="fas fa-rocket mr-3"></i>LAUNCH MASTERING';
-        }
-
-        function switchPlayer(type) {
-            if (type === 'original') {
-                app.elements.originalBtn.className = 'px-8 py-4 rounded-xl bg-white/20 text-white font-bold transition-all duration-300';
-                app.elements.masteredBtn.className = 'px-8 py-4 rounded-xl text-white/70 hover:text-white font-bold transition-all duration-300';
-                app.elements.masteredAudio.pause();
-                app.elements.originalAudio.play();
-            } else {
-                app.elements.masteredBtn.className = 'px-8 py-4 rounded-xl bg-white/20 text-white font-bold transition-all duration-300';
-                app.elements.originalBtn.className = 'px-8 py-4 rounded-xl text-white/70 hover:text-white font-bold transition-all duration-300';
-                app.elements.originalAudio.pause();
-                app.elements.masteredAudio.play();
-            }
-        }
-
-        function downloadMasteredTrack() {
-            if (app.elements.masteredAudio.src) {
-                // Show download message
-                showDownloadMessage();
-                
-                // Create download link
-                const a = document.createElement('a');
-                a.href = app.elements.masteredAudio.src;
-                a.download = 'neural-sonic-genesis-mastered.wav';
-                a.click();
-            } else {
-                alert('No mastered track available for download.');
-            }
-        }
-        
-        function showDownloadMessage() {
-            const message = document.createElement('div');
-            message.className = 'fixed top-4 right-4 glass rounded-xl p-6 z-50 border border-green-400/50';
-            message.innerHTML = `
-                <div class="flex items-center space-x-3">
-                    <i class="fas fa-download text-green-400 text-2xl"></i>
-                    <div>
-                        <div class="text-white font-bold">Download Started!</div>
-                        <div class="text-white/70 text-sm">Your mastered track is downloading...</div>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(message);
-            
-            setTimeout(() => {
-                message.remove();
-            }, 4000);
-        }
-
-        function resetUpload() {
-            app.elements.uploadSection.classList.remove('hidden');
-            app.elements.comparisonSection.classList.add('hidden');
-            app.elements.audioInput.value = '';
-            resetProcessing();
-            app.elements.uploadSection.scrollIntoView({ behavior: 'smooth' });
-        }
-        
-        function createDynamicAnimations() {
-            // Create additional floating music symbols
-            const musicSymbols = ['♪', '♫', '♬', '♩', '♭', '♯', '𝄞', '𝄢'];
-            const techIcons = ['', '', '', '', '', ''];
-            const bgAnimation = document.querySelector('.bg-animation');
-            
-            // Create neural network
-            createNeuralNetwork();
-            
-            setInterval(() => {
-                if (Math.random() > 0.7) {
-                    const note = document.createElement('div');
-                    note.className = 'floating-note';
-                    note.textContent = musicSymbols[Math.floor(Math.random() * musicSymbols.length)];
-                    note.style.left = Math.random() * 100 + '%';
-                    note.style.fontSize = (1.5 + Math.random() * 1.5) + 'rem';
-                    note.style.animationDuration = (15 + Math.random() * 10) + 's';
-                    note.style.color = `rgba(${255}, ${255}, ${255}, ${0.05 + Math.random() * 0.1})`;
-                    
-                    bgAnimation.appendChild(note);
-                    
-                    setTimeout(() => {
-                        if (note.parentNode) {
-                            note.parentNode.removeChild(note);
-                        }
-                    }, 25000);
-                }
-            }, 3000);
-            
-            // Create floating tech icons
-            setInterval(() => {
-                if (Math.random() > 0.85) {
-                    const icon = document.createElement('i');
-                    icon.className = 'fas floating-icon';
-                    icon.style.left = Math.random() * 100 + '%';
-                    icon.style.animationDuration = (18 + Math.random() * 7) + 's';
-                    icon.style.color = `rgba(${255}, ${255}, ${255}, ${0.06 + Math.random() * 0.08})`;
-                    
-                    const iconClasses = ['fa-microchip', 'fa-wave-square', 'fa-broadcast-tower', 'fa-satellite-dish'];
-                    icon.classList.add(iconClasses[Math.floor(Math.random() * iconClasses.length)]);
-                    
-                    bgAnimation.appendChild(icon);
-                    
-                    setTimeout(() => {
-                        if (icon.parentNode) {
-                            icon.parentNode.removeChild(icon);
-                        }
-                    }, 25000);
-                }
-            }, 4000);
-            
-            // Create floating particles
-            setInterval(() => {
-                if (Math.random() > 0.8) {
-                    const particle = document.createElement('div');
-                    particle.className = 'particle';
-                    particle.style.left = Math.random() * 100 + '%';
-                    particle.style.animationDuration = (10 + Math.random() * 5) + 's';
-                    particle.style.animationDelay = Math.random() * 2 + 's';
-                    
-                    bgAnimation.appendChild(particle);
-                    
-                    setTimeout(() => {
-                        if (particle.parentNode) {
-                            particle.parentNode.removeChild(particle);
-                        }
-                    }, 15000);
-                }
-            }, 2000);
-            
-            // Create pulse circles
-            setInterval(() => {
-                if (Math.random() > 0.9) {
-                    const circle = document.createElement('div');
-                    circle.className = 'pulse-circle';
-                    circle.style.left = Math.random() * 100 + '%';
-                    circle.style.top = Math.random() * 100 + '%';
-                    circle.style.width = (50 + Math.random() * 100) + 'px';
-                    circle.style.height = circle.style.width;
-                    
-                    bgAnimation.appendChild(circle);
-                    
-                    setTimeout(() => {
-                        if (circle.parentNode) {
-                            circle.parentNode.removeChild(circle);
-                        }
-                    }, 6000);
-                }
-            }, 5000);
-        }
-        
-        function createNeuralNetwork() {
-            const network = document.getElementById('neural-network');
-            if (!network) return;
-            
-            // Create nodes
-            for (let i = 0; i < 15; i++) {
-                const node = document.createElement('div');
-                node.className = 'neural-node';
-                node.style.left = Math.random() * 100 + '%';
-                node.style.top = Math.random() * 100 + '%';
-                node.style.animationDelay = Math.random() * 4 + 's';
-                network.appendChild(node);
-            }
-            
-            // Create connections
-            for (let i = 0; i < 8; i++) {
-                const connection = document.createElement('div');
-                connection.className = 'neural-connection';
-                connection.style.left = Math.random() * 80 + '%';
-                connection.style.top = Math.random() * 80 + '%';
-                connection.style.width = (100 + Math.random() * 200) + 'px';
-                connection.style.transform = `rotate(${Math.random() * 360}deg)`;
-                connection.style.animationDelay = Math.random() * 3 + 's';
-                network.appendChild(connection);
-            }
-        }
-    </script>
+  function createNeuralNetwork() {
+    const network = document.getElementById('neural-network');
+    if (!network) return;
+    for (let i = 0; i < 15; i++) {
+      const node = document.createElement('div');
+      node.className = 'neural-node';
+      node.style.left = Math.random() * 100 + '%';
+      node.style.top = Math.random() * 100 + '%';
+      node.style.animationDelay = Math.random() * 4 + 's';
+      network.appendChild(node);
+    }
+    for (let i = 0; i < 8; i++) {
+      const connection = document.createElement('div');
+      connection.className = 'neural-connection';
+      connection.style.left = Math.random() * 80 + '%';
+      connection.style.top = Math.random() * 80 + '%';
+      connection.style.width = (100 + Math.random() * 200) + 'px';
+      connection.style.transform = `rotate(${Math.random() * 360}deg)`;
+      connection.style.animationDelay = Math.random() * 3 + 's';
+      network.appendChild(connection);
+    }
+  }
+</script>
 {% endblock %}
