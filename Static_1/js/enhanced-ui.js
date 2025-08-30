@@ -198,3 +198,65 @@ const handleScroll = debounce(() => {
 }, 10);
 
 window.addEventListener('scroll', handleScroll);
+
+/* =====================================================================
+   ADDITIONS BELOW — nothing above was removed or modified
+   ===================================================================== */
+
+// Renders the improvements grid in the comparison section (safe if missing)
+function renderImprovements(result) {
+    try {
+        const el = document.getElementById('improvements');
+        if (!el) return;
+
+        // Prefer explicit metrics if backend provides them
+        const loudnessText =
+            (result && result.metrics && result.metrics.loudness_text) ||
+            (result && result.improvements && result.improvements.loudness) ||
+            'Improved';
+
+        const dynamicsText = (result && result.improvements && result.improvements.dynamics) || 'Improved';
+        const freqText = (result && result.improvements && result.improvements.frequency_response) || 'Balanced';
+        const stereoText = (result && result.improvements && result.improvements.stereo_width) || 'Wider';
+
+        el.innerHTML = `
+            <div class="grid grid-cols-2 gap-4 text-sm">
+                <div><i class="fas fa-volume-up text-green-400 mr-1"></i>Loudness: ${loudnessText}</div>
+                <div><i class="fas fa-wave-square text-green-400 mr-1"></i>Dynamics: ${dynamicsText}</div>
+                <div><i class="fas fa-chart-line text-green-400 mr-1"></i>Frequency: ${freqText}</div>
+                <div><i class="fas fa-expand-arrows-alt text-green-400 mr-1"></i>Stereo: ${stereoText}</div>
+            </div>
+        `;
+    } catch (e) {
+        // Never block UI if something goes wrong here
+        console.warn('renderImprovements failed:', e);
+    }
+}
+
+// A safe helper you can call after /upload completes
+// It won't break if some elements are absent on a page.
+function safeShowResults(result) {
+    try {
+        const originalAudio = document.getElementById('original-audio');
+        const masteredAudio = document.getElementById('mastered-audio');
+        const cmp = document.getElementById('comparison-section');
+        const upl = document.getElementById('upload-section');
+
+        if (originalAudio && result && result.originalUrl) originalAudio.src = result.originalUrl;
+        if (masteredAudio && result && result.masteredUrl) masteredAudio.src = result.masteredUrl;
+
+        renderImprovements(result);
+
+        if (upl) upl.classList.add('hidden');
+        if (cmp) {
+            cmp.classList.remove('hidden');
+            try { cmp.scrollIntoView({ behavior: 'smooth' }); } catch(_) {}
+        }
+    } catch (e) {
+        console.warn('safeShowResults failed:', e);
+    }
+}
+
+// Expose helpers globally so your page-level script can call them
+window.renderImprovements = renderImprovements;
+window.safeShowResults = safeShowResults;
