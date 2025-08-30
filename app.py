@@ -2,28 +2,26 @@ import os
 import uuid
 import re
 import time
-import logging
 from io import BytesIO
 from datetime import datetime
 from pathlib import Path
 from base64 import b64decode
+import traceback
 
 # -------------------------------------------------
-# Environment / knobs
+# Environment tweaks / knobs
 # -------------------------------------------------
 os.environ.setdefault("NUMBA_DISABLE_JIT", "1")   # defensive on small servers
 MAX_AUDIO_SECONDS = int(os.environ.get("MAX_AUDIO_SECONDS", "600"))
 DEBUG_API = os.environ.get("DEBUG_API", "0") == "1"
 
-# Speed/quality switch
+# Quick speed/quality switch:
 FAST_MASTER = os.environ.get("FAST_MASTER", "0") == "1"
 TARGET_SR_MASTER = 32000 if FAST_MASTER else 44100   # 32k fast / 44.1k quality
 TARGET_LUFS = float(os.environ.get("TARGET_LUFS", "-15.0"))
 LOOKAHEAD_MS = float(os.environ.get("LOOKAHEAD_MS", "6.0"))   # safer default
 RELEASE_MS = float(os.environ.get("RELEASE_MS", "150.0"))     # smoother release
-
-# Writable upload folder (Render-safe; override with UPLOAD_FOLDER if you mounted a Disk)
-DEFAULT_UPLOAD_DIR = "/tmp/masterai_uploads"
+DISABLE_MATCHERING = os.environ.get("DISABLE_MATCHERING", "0") == "1"
 
 # -------------------------------------------------
 # FFmpeg path early
@@ -50,27 +48,24 @@ from scipy.ndimage import maximum_filter1d
 # Optional reference-based mastering
 try:
     import matchering as mg
-    MATCHERING_AVAILABLE = True
+    _MATCHERING_IMPORTED = True
 except Exception:
-    MATCHERING_AVAILABLE = False
+    _MATCHERING_IMPORTED = False
+
+# Respect env flag to disable it even if installed
+MATCHERING_AVAILABLE = _MATCHERING_IMPORTED and (not DISABLE_MATCHERING)
 
 # Fallback decoder for mp3/m4a/etc
 import audioread
 
-from flask import Flask, render_template, request, jsonify, url_for, send_from_directory
-from werkzeug.utils import secure_filename
-from werkzeug.exceptions import RequestEntityTooLarge
-import traceback
+from flask import Flask, render_template, request, jsonify, url_for
 
-# Logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("masterai")
+from werkzeug.utils import secure_filename
 
 ALLOWED_EXTENSIONS = {"wav", "flac", "ogg", "mp3", "m4a"}
 
+
 def err_response(msg, status=400, exc: Exception | None = None, step: str | None = None):
-    if exc:
-        logger.exception("(%s) %s", step or "error", msg)
     payload = {"success": False, "error": msg}
     if step:
         payload["step"] = step
@@ -82,26 +77,12 @@ def err_response(msg, status=400, exc: Exception | None = None, step: str | None
 # --------------------- Analysis & DSP helpers ---------------------
 
 def analyze_audio_from_array(y: np.ndarray, sr: int):
-    """Analyze mono or stereo array; reduce to mono for metrics."""
+    """Analyze mono or stereo array (we reduce to mono) without reloading from disk."""
     y = y.astype(np.float32, copy=False)
     if y.ndim == 2:
         y_mono = y.mean(axis=1).astype(np.float32, copy=False)
     else:
         y_mono = y
-
-    # Guard: pyloudnorm can be upset by extremely short buffers
-    if y_mono.size < max(1, int(0.5 * sr)):
-        # < ~0.5s -> skip LUFS, return minimal stats
-        peak = float(np.max(np.abs(y_mono))) if y_mono.size else 0.0
-        rms = float(np.sqrt(np.mean(np.square(y_mono)))) if y_mono.size else 0.0
-        duration = float(len(y_mono) / sr) if sr else 0.0
-        return {
-            "sample_rate": sr,
-            "duration_sec": round(duration, 3),
-            "loudness_lufs": float("-inf"),  # sentinel
-            "peak": round(peak, 6),
-            "rms": round(rms, 6),
-        }
 
     meter = pyln.Meter(sr)
     loudness = float(meter.integrated_loudness(y_mono))
@@ -141,6 +122,7 @@ def safe_load_audio_manual(path, target_sr=None, mono=False, max_seconds=MAX_AUD
     """
     Decode audio without librosa:
     1) Try SoundFile (wav/flac/ogg); if unsupported, 2) audioread (mp3/m4a/…).
+    Keep stereo when available (mono=False); enforce duration cap; optional resample.
     """
     path = str(path)
     y = None
@@ -149,7 +131,10 @@ def safe_load_audio_manual(path, target_sr=None, mono=False, max_seconds=MAX_AUD
     # Try SoundFile first (fast for wav/flac/ogg)
     try:
         data, sr = sf.read(path, dtype="float32", always_2d=True)  # (frames, ch)
-        y = data.mean(axis=1).astype(np.float32, copy=False) if mono else data
+        if mono:
+            y = data.mean(axis=1).astype(np.float32, copy=False)
+        else:
+            y = data
     except Exception:
         # Fallback: audioread for compressed formats
         with audioread.audio_open(path) as f:
@@ -172,7 +157,7 @@ def safe_load_audio_manual(path, target_sr=None, mono=False, max_seconds=MAX_AUD
             else:
                 y = arr
 
-    # Duration cap
+    # Enforce duration cap
     if max_seconds and max_seconds > 0:
         max_len = int(max_seconds * sr)
         if y.ndim == 1:
@@ -195,7 +180,10 @@ def _limiter_lookahead_fast(x_st: np.ndarray,
                             ceiling_db: float = -1.0,
                             lookahead_ms: float = LOOKAHEAD_MS,
                             release_ms: float = RELEASE_MS) -> np.ndarray:
-    """Vectorized stereo lookahead limiter. Accepts mono or stereo; returns stereo."""
+    """
+    Vectorized stereo lookahead limiter.
+    Accepts mono or stereo; returns stereo.
+    """
     if x_st.ndim == 1:
         x_st = np.stack([x_st, x_st], axis=-1)
 
@@ -232,7 +220,7 @@ def master_audio(y: np.ndarray, sr: int, target_lufs: float = TARGET_LUFS) -> np
     Mastering chain:
       - LUFS estimate (downsampled mono for speed)
       - Gain to target
-      - Lookahead limiter
+      - Lookahead limiter (-1 dB ceiling)
     Returns stereo float32 (n,2).
     """
     y = y.astype(np.float32, copy=False)
@@ -240,20 +228,21 @@ def master_audio(y: np.ndarray, sr: int, target_lufs: float = TARGET_LUFS) -> np
 
     # Loudness (downsampled mono for speed)
     y_mono = y_st.mean(axis=1).astype(np.float32, copy=False)
-    # If too short, skip LUFS targeting (avoid pyloudnorm issues)
-    if y_mono.size >= max(1, int(0.5 * sr)):
-        if sr != 22050:
-            y_mono_ds = _resample_arr(y_mono, sr, 22050)
-            meter = pyln.Meter(22050)
-            loudness = meter.integrated_loudness(y_mono_ds)
-        else:
-            meter = pyln.Meter(sr)
-            loudness = meter.integrated_loudness(y_mono)
-        gain = 10.0 ** ((target_lufs - loudness) / 20.0)
-        y_st = y_st * gain
+    if sr != 22050:
+        y_mono_ds = _resample_arr(y_mono, sr, 22050)
+        meter = pyln.Meter(22050)
+        loudness = meter.integrated_loudness(y_mono_ds)
+    else:
+        meter = pyln.Meter(sr)
+        loudness = meter.integrated_loudness(y_mono)
 
-    # Lookahead limiter to ~ -1 dBFS
+    # Gain to target LUFS
+    gain = 10.0 ** ((target_lufs - loudness) / 20.0)
+    y_st = y_st * gain
+
+    # Limiter with -1 dBFS ceiling (leave headroom; no final normalize)
     y_st = _limiter_lookahead_fast(y_st, sr=sr, ceiling_db=-1.0)
+
     return y_st.astype(np.float32, copy=False)
 
 
@@ -261,35 +250,16 @@ def master_audio(y: np.ndarray, sr: int, target_lufs: float = TARGET_LUFS) -> np
 
 class MasterAIApp:
     def __init__(self):
+        # NOTE: keep this folder name in sync with your repo (capital S)
         self.app = Flask(__name__, static_folder="Static_1", static_url_path="/static")
-        self.app.config["MAX_CONTENT_LENGTH"] = 200 * 1024 * 1024  # 200 MB
+        # Keep server-side cap modest to avoid OOM/timeouts on small instances
+        self.app.config["MAX_CONTENT_LENGTH"] = 60 * 1024 * 1024  # 60 MB
+        self.app.config["UPLOAD_FOLDER"] = os.path.join(self.app.static_folder, "uploads")
         self.app.config["JSON_AS_ASCII"] = False
         self.app.config["FFMPEG_PATH"] = _ffmpeg
 
-        # Writable uploads directory
-        self.app.config["UPLOAD_FOLDER"] = os.environ.get("UPLOAD_FOLDER", DEFAULT_UPLOAD_DIR)
         Path(self.app.config["UPLOAD_FOLDER"]).mkdir(parents=True, exist_ok=True)
-
         self.register_routes()
-        self.register_error_handlers()
-
-    def register_error_handlers(self):
-        app = self.app
-
-        @app.errorhandler(RequestEntityTooLarge)
-        def _too_large(e):
-            return err_response("File too large. Max allowed is 200MB.", 413, e, step="request_size")
-
-        @app.errorhandler(404)
-        def _not_found(e):
-            if request.path.startswith("/upload") or request.path.startswith("/api/"):
-                return err_response("Not found", 404, step="not_found")
-            return render_template("index.html"), 404
-
-        @app.errorhandler(Exception)
-        def _unhandled(e):
-            # Ensure JSON (so frontend can display it)
-            return err_response(f"Unhandled server error: {type(e).__name__}: {e}", 500, e, step="unhandled")
 
     def register_routes(self):
         app = self.app
@@ -331,12 +301,15 @@ class MasterAIApp:
         def api_docs():
             return render_template("api-docs.html")
 
-        # Serve uploaded files
-        @app.route("/uploads/<path:filename>")
-        def uploaded_file(filename: str):
-            return send_from_directory(app.config["UPLOAD_FOLDER"], filename, as_attachment=False)
+        @app.route("/api/stats")
+        def api_stats():
+            return jsonify({
+                "users": 1284,
+                "processed_tracks": 8742,
+                "avg_processing_time_sec": 3.7,
+                "timestamp": datetime.utcnow().isoformat() + "Z",
+            })
 
-        # Diagnostics
         @app.route("/diag")
         def diag():
             import subprocess, sys
@@ -351,7 +324,8 @@ class MasterAIApp:
                 "python": sys.version,
                 "ffmpeg_path": app.config["FFMPEG_PATH"],
                 "ffmpeg_version": out,
-                "matchering": MATCHERING_AVAILABLE,
+                "matchering_installed": _MATCHERING_IMPORTED,
+                "matchering_enabled": MATCHERING_AVAILABLE,
                 "uses_soxr": _USE_SOXR,
                 "fast_master": FAST_MASTER,
                 "target_sr": TARGET_SR_MASTER,
@@ -379,16 +353,19 @@ class MasterAIApp:
                 "TARGET_LUFS": TARGET_LUFS,
                 "LOOKAHEAD_MS": LOOKAHEAD_MS,
                 "RELEASE_MS": RELEASE_MS,
+                "DISABLE_MATCHERING": DISABLE_MATCHERING,
+                "MATCHERING_ENABLED": MATCHERING_AVAILABLE,
                 "packages": pkgs
             })
 
         # ---------- API: Upload ----------
         @app.route("/upload", methods=["POST"])
         def upload():
+            step = "start"
             t0 = time.time()
             try:
-                step = "find_file"
                 # --- find file ---
+                step = "find_file"
                 main_keys = ["audio", "file", "audioFile", "track", "upload"]
                 primary = None
                 for k in main_keys:
@@ -407,11 +384,13 @@ class MasterAIApp:
                 ct = (request.headers.get("Content-Type") or "").lower()
 
                 if primary is None and (ct.startswith("audio/") or "application/octet-stream" in ct):
+                    step = "read_stream_body"
                     if ct.startswith("audio/"):
                         raw_ext = ct.split("/", 1)[1].split(";")[0] or "wav"
                     raw_fp = BytesIO(request.get_data() or b"")
 
                 if primary is None and raw_fp is None and "application/json" in ct:
+                    step = "read_base64"
                     try:
                         payload = request.get_json(silent=True) or {}
                         b64str = payload.get("file") or payload.get("data")
@@ -427,12 +406,12 @@ class MasterAIApp:
                         pass
 
                 if primary is None and raw_fp is None:
-                    return err_response("No file provided", 400, step="find_file")
+                    return err_response("No file provided", 400, step="no_file")
 
-                step = "save_input"
                 upload_dir = Path(app.config["UPLOAD_FOLDER"])
                 uid = uuid.uuid4().hex[:8]
 
+                step = "save_input"
                 if primary is not None:
                     original_name = secure_filename(primary.filename or f"upload_{uid}.wav")
                     ext = original_name.rsplit(".", 1)[1].lower() if "." in original_name else "wav"
@@ -452,24 +431,22 @@ class MasterAIApp:
                     return err_response("Got a directory, expected an audio file", 400, step="save_input")
 
                 # --- quick duration guard (best effort) ---
-                step = "probe"
+                step = "duration_guard"
                 try:
                     info = sf.info(str(primary_path))
                     dur = float(info.frames) / float(info.samplerate or 1)
-                    if dur <= 0.1:
-                        return err_response("Audio too short (<0.1s). Please upload a longer file.", 400, step="probe")
                     if dur > MAX_AUDIO_SECONDS:
                         return err_response(
-                            f"Audio too long ({dur:.1f}s). Max allowed is {MAX_AUDIO_SECONDS}s", 400, step="probe"
+                            f"Audio too long ({dur:.1f}s). Max allowed is {MAX_AUDIO_SECONDS}s",
+                            400, step="duration_guard"
                         )
                 except Exception:
-                    # if sf.info fails (e.g., compressed), just continue
                     pass
 
                 t1 = time.time()
 
                 # --- optional reference ---
-                step = "optional_reference"
+                step = "reference_input"
                 reference_storage = request.files.get("reference")
                 reference_path = None
                 if reference_storage and reference_storage.filename:
@@ -479,30 +456,24 @@ class MasterAIApp:
                     reference_path = upload_dir / f"{ref_base}.{ref_ext}"
                     reference_storage.save(str(reference_path))
 
+                step = "decode"
                 used_matchering = False
                 mastered_path = upload_dir / f"{Path(primary_path).stem}_mastered.wav"
 
-                # --- load once for mastering ---
-                step = "decode"
+                # --- load once for mastering (stereo, target SR) ---
                 y, sr = safe_load_audio_manual(primary_path, target_sr=TARGET_SR_MASTER, mono=False)
-
-                # Guard against empty/silent decode
-                if y.size == 0:
-                    return err_response("Decoded audio is empty. Unsupported or corrupt file?", 400, step="decode")
 
                 t2 = time.time()
 
                 # --- pre analysis (in memory) ---
                 step = "pre_analysis"
                 y_pre_mono = y.mean(axis=1).astype(np.float32, copy=False) if y.ndim == 2 else y
-                if y_pre_mono.size < max(1, int(0.1 * sr)):
-                    return err_response("Audio too short after decode (<0.1s).", 400, step="pre_analysis")
                 y_pre_ds = _resample_arr(y_pre_mono, sr, 22050) if sr != 22050 else y_pre_mono
                 pre = analyze_audio_from_array(y_pre_ds, 22050)
 
                 # --- mastering ---
-                step = "master"
                 if reference_path and MATCHERING_AVAILABLE:
+                    step = "matchering"
                     try:
                         mg.process(
                             target=str(primary_path),
@@ -510,39 +481,37 @@ class MasterAIApp:
                             results=[mg.pcm16(str(mastered_path))],
                         )
                         used_matchering = True
-                        y_post, _ = safe_load_audio_manual(mastered_path, target_sr=22050, mono=True)
+                        # For post metrics, load mastered (fast wav path)
+                        y_post, sr_post = safe_load_audio_manual(mastered_path, target_sr=22050, mono=True)
                         post = analyze_audio_from_array(y_post, 22050)
-                    except Exception as e:
-                        # Fall back to internal chain
-                        logger.warning("Matchering failed, falling back. %s", e)
+                    except Exception:
+                        # fall back to internal chain
                         used_matchering = False
 
                 if not used_matchering:
+                    step = "mastering"
                     y_master = master_audio(y, sr, target_lufs=TARGET_LUFS)
+
                     # --- post analysis (in memory) ---
                     step = "post_analysis"
                     y_post_mono = y_master.mean(axis=1).astype(np.float32, copy=False)
                     y_post_ds = _resample_arr(y_post_mono, sr, 22050) if sr != 22050 else y_post_mono
                     post = analyze_audio_from_array(y_post_ds, 22050)
+
                     # write mastered file once
-                    step = "write_output"
+                    step = "write_master"
                     sf.write(str(mastered_path), y_master, sr)
 
                 t3 = time.time()
 
-                # Public URLs via /uploads route
-                original_url = url_for("uploaded_file", filename=primary_path.name, _external=False)
-                mastered_url = url_for("uploaded_file", filename=mastered_path.name, _external=False)
+                original_url = url_for("static", filename=f"uploads/{primary_path.name}", _external=False)
+                mastered_url = url_for("static", filename=f"uploads/{mastered_path.name}", _external=False)
 
                 # UI labels
                 pre_lufs = float(pre["loudness_lufs"])
                 post_lufs = float(post["loudness_lufs"])
-                if np.isneginf(pre_lufs) or np.isneginf(post_lufs):
-                    loudness_text = "Auto-levelled"
-                    lufs_delta = None
-                else:
-                    lufs_delta = round(post_lufs - pre_lufs, 2)
-                    loudness_text = f'{post_lufs:.2f} LUFS ({("+" if lufs_delta >= 0 else "")}{lufs_delta} LU)'
+                lufs_delta = round(post_lufs - pre_lufs, 2)
+                loudness_text = f'{post_lufs:.2f} LUFS ({("+" if lufs_delta >= 0 else "")}{lufs_delta} LU)'
 
                 improvements = {
                     "loudness": ("Reference-matched" if used_matchering else loudness_text),
@@ -574,20 +543,13 @@ class MasterAIApp:
                         "loudness_text": loudness_text,
                     }
                 }
-                logger.info(
-                    "[UPLOAD] total=%ss decode=%ss master+metrics=%ss fast=%s sr=%s",
-                    payload['timing']['total'],
-                    payload['timing']['decode'],
-                    payload['timing']['master_and_metrics'],
-                    FAST_MASTER,
-                    TARGET_SR_MASTER,
-                )
+                print(f"[UPLOAD] step=done total={payload['timing']['total']}s decode={payload['timing']['decode']}s master+metrics={payload['timing']['master_and_metrics']}s fast={FAST_MASTER} sr={TARGET_SR_MASTER} matchering={used_matchering}")
                 return jsonify(payload)
 
-            except RequestEntityTooLarge as e:
-                return err_response("File too large. Max allowed is 200MB.", 413, e, step="request_size")
             except Exception as e:
-                return err_response(f"Server error: {type(e).__name__}: {e}", 500, e, step="upload_main")
+                # Log the step that failed for quick diagnosis
+                print(f"[UPLOAD][ERROR] step={step} err={type(e).__name__}: {e}")
+                return err_response(f"Server error: {type(e).__name__}: {e}", 500, e, step=step)
 
 
 def create_app():
@@ -597,5 +559,5 @@ def create_app():
 app = create_app()
 
 if __name__ == "__main__":
-    # Run without Flask reloader for cleaner timing
+    # Run without Flask reloader for cleaner timing (set debug=True only while debugging routes)
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=False)
