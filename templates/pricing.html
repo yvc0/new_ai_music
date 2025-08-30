@@ -1,169 +1,166 @@
 {% extends "base.html" %}
 
-{% block title %}Pricing - Neural Sonic Genesis{% endblock %}
+{% block title %}Pricing & Early Access - Neural Sonic Genesis{% endblock %}
 
 {% block content %}
 <div class="container mx-auto px-6 pt-8 pb-16">
-    <!-- Hero Section -->
-    <div class="text-center mb-20 slide-up">
-        <div class="float inline-block mb-8">
-            <i class="fas fa-rocket text-white text-8xl text-glow"></i>
+  <!-- Hero -->
+  <div class="text-center mb-20 slide-up">
+    <div class="inline-block mb-8">
+      <i class="fas fa-rocket text-white text-8xl text-glow"></i>
+    </div>
+    <h1 class="text-6xl md:text-8xl font-black text-white mb-6 text-glow">
+      <span class="gradient-text">Launching</span><br>
+      Soon
+    </h1>
+    <p class="text-2xl md:text-3xl text-white/90 max-w-4xl mx-auto mb-12 font-light leading-relaxed">
+      We’re polishing an accessible, startup-friendly <strong class="font-bold text-yellow-400">AI mastering tool</strong>.
+      Clear sound, fast turnaround, and simple pricing—no hype.
+    </p>
+  </div>
+
+  <!-- Launch Features -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-20">
+    <div class="glass rounded-3xl p-8 border border-white/20 hover-lift text-center">
+      <i class="fas fa-brain text-yellow-400 text-5xl mb-6"></i>
+      <h3 class="text-2xl font-bold text-white mb-4">AI Mastering Engine</h3>
+      <p class="text-white/80 leading-relaxed">
+        Deep-learning models trained on a wide variety of professionally mastered and community tracks to
+        deliver balanced, streaming-friendly results.
+      </p>
+    </div>
+
+    <div class="glass rounded-3xl p-8 border border-white/20 hover-lift text-center">
+      <i class="fas fa-bolt text-yellow-400 text-5xl mb-6"></i>
+      <h3 class="text-2xl font-bold text-white mb-4">Fast Turnaround</h3>
+      <p class="text-white/80 leading-relaxed">
+        Most songs process in seconds on our servers. Upload, preview, and iterate quickly—no studio bookings needed.
+      </p>
+    </div>
+
+    <div class="glass rounded-3xl p-8 border border-white/20 hover-lift text-center">
+      <i class="fas fa-sliders text-yellow-400 text-5xl mb-6"></i>
+      <h3 class="text-2xl font-bold text-white mb-4">Consistent Results</h3>
+      <p class="text-white/80 leading-relaxed">
+        Sensible loudness targeting and dynamics control aimed at clear, punchy playback across major platforms.
+      </p>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="glass rounded-3xl p-12 mb-20 text-center">
+    <h2 class="text-4xl font-bold text-white mb-8 text-glow">Launch Timeline</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+      <div>
+        <div class="bg-gradient-to-r from-green-400 to-blue-500 w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center">
+          <i class="fas fa-check text-white text-2xl"></i>
         </div>
-        
-        <h1 class="text-6xl md:text-8xl font-black text-white mb-6 text-glow">
-            <span class="gradient-text">Launching</span><br>
-            Soon
-        </h1>
-        
-        <p class="text-2xl md:text-3xl text-white/90 max-w-4xl mx-auto mb-12 font-light leading-relaxed">
-            We're putting the finishing touches on our <strong class="font-bold text-yellow-400">revolutionary AI mastering platform</strong>. 
-            Get ready for the future of professional audio mastering.
+        <h3 class="text-white font-bold text-xl mb-2">Phase 1: Core Engine</h3>
+        <p class="text-white/70">Signal chain + limiter + loudness targeting — Complete</p>
+      </div>
+      <div>
+        <div class="bg-gradient-to-r from-yellow-400 to-orange-500 w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center animate-pulse">
+          <i class="fas fa-cog text-white text-2xl animate-spin"></i>
+        </div>
+        <h3 class="text-white font-bold text-xl mb-2">Phase 2: Closed Beta</h3>
+        <p class="text-white/70">Collecting feedback, fixing edge cases — In progress</p>
+      </div>
+      <div>
+        <div class="bg-gradient-to-r from-purple-500 to-pink-500 w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center">
+          <i class="fas fa-rocket text-white text-2xl"></i>
+        </div>
+        <h3 class="text-white font-bold text-xl mb-2">Phase 3: Public Launch</h3>
+        <p class="text-white/70">Open sign-ups + clear pricing — Coming soon</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Early Access -->
+  <div class="glass rounded-3xl p-12 mb-20 text-center glow">
+    <h2 class="text-4xl font-bold text-white mb-6 text-glow">Early Access (Beta)</h2>
+    <p class="text-xl text-white/80 mb-8 max-w-3xl mx-auto">
+      Try the preview, share feedback, help shape the roadmap. We’ll start with simple, affordable plans.
+    </p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 text-left">
+      <div>
+        <h3 class="text-white font-bold text-xl mb-4">Beta Perks</h3>
+        <ul class="space-y-3 text-white/80">
+          <li class="flex items-center"><i class="fas fa-circle-check text-yellow-400 mr-3"></i>Free credits during beta</li>
+          <li class="flex items-center"><i class="fas fa-circle-check text-yellow-400 mr-3"></i>Priority feedback loop</li>
+          <li class="flex items-center"><i class="fas fa-circle-check text-yellow-400 mr-3"></i>Early feature access</li>
+          <li class="flex items-center"><i class="fas fa-circle-check text-yellow-400 mr-3"></i>Founding-member discounts at launch</li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-white font-bold text-xl mb-4">Great For</h3>
+        <ul class="space-y-3 text-white/80">
+          <li class="flex items-center"><i class="fas fa-music text-yellow-400 mr-3"></i>Indie artists and producers</li>
+          <li class="flex items-center"><i class="fas fa-headphones text-yellow-400 mr-3"></i>Content creators & podcasters</li>
+          <li class="flex items-center"><i class="fas fa-laptop text-yellow-400 mr-3"></i>Small studios & educators</li>
+          <li class="flex items-center"><i class="fas fa-wrench text-yellow-400 mr-3"></i>Anyone experimenting with AI audio</li>
+        </ul>
+      </div>
+    </div>
+
+    <a href="/dashboard" class="bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-black px-12 py-6 rounded-2xl hover:from-yellow-500 hover:via-orange-600 hover:to-red-600 transition-all duration-300 font-black text-xl shadow-2xl transform hover:scale-105 glow inline-block">
+      <i class="fas fa-user-plus mr-3"></i>Get Early Access
+    </a>
+  </div>
+
+  <!-- How it Works / Preview -->
+  <div class="mb-20">
+    <h2 class="text-4xl font-bold text-white text-center mb-12 text-glow">How It Works (Preview)</h2>
+
+    <div class="max-w-4xl mx-auto space-y-6">
+      <div class="glass rounded-2xl p-8">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-wave-square text-yellow-400 text-2xl mr-4"></i>
+          <h3 class="text-2xl font-bold text-white">Signal Analysis & Chain</h3>
+        </div>
+        <p class="text-white/80 text-lg leading-relaxed">
+          We analyze core audio features (balance, peaks, loudness) and apply gain staging, dynamics (look-ahead limiting),
+          and sensible loudness targeting (typically around −14 to −16 LUFS for streaming-friendly playback).
         </p>
-    </div>
+      </div>
 
-    <!-- Launch Features -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-20">
-        <div class="glass rounded-3xl p-8 border border-white/20 hover-lift text-center">
-            <i class="fas fa-brain text-yellow-400 text-5xl mb-6"></i>
-            <h3 class="text-2xl font-bold text-white mb-4">Quantum-Powered AI</h3>
-            <p class="text-white/80 leading-relaxed">
-                Advanced neural networks trained on millions of Grammy-winning tracks for unparalleled mastering quality.
-            </p>
+      <div class="glass rounded-2xl p-8">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-gauge-high text-yellow-400 text-2xl mr-4"></i>
+          <h3 class="text-2xl font-bold text-white">Performance (Internal Tests)</h3>
         </div>
-        
-        <div class="glass rounded-3xl p-8 border border-white/20 hover-lift text-center">
-            <i class="fas fa-lightning-bolt text-yellow-400 text-5xl mb-6"></i>
-            <h3 class="text-2xl font-bold text-white mb-4">Instant Processing</h3>
-            <p class="text-white/80 leading-relaxed">
-                Professional-grade mastering in under 30 seconds. No more waiting days for your tracks to be ready.
-            </p>
-        </div>
-        
-        <div class="glass rounded-3xl p-8 border border-white/20 hover-lift text-center">
-            <i class="fas fa-award text-yellow-400 text-5xl mb-6"></i>
-            <h3 class="text-2xl font-bold text-white mb-4">Industry Standard</h3>
-            <p class="text-white/80 leading-relaxed">
-                Trusted by major labels and Grammy-winning artists. Professional results every time.
-            </p>
-        </div>
-    </div>
-
-    <!-- Launch Timeline -->
-    <div class="glass rounded-3xl p-12 mb-20 text-center">
-        <h2 class="text-4xl font-bold text-white mb-8 text-glow">Platform Launch Timeline</h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-            <div class="relative">
-                <div class="bg-gradient-to-r from-green-400 to-blue-500 w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center">
-                    <i class="fas fa-check text-white text-2xl"></i>
-                </div>
-                <h3 class="text-white font-bold text-xl mb-2">Phase 1: Core Platform</h3>
-                <p class="text-white/70">AI mastering engine development - Complete</p>
-            </div>
-            
-            <div class="relative">
-                <div class="bg-gradient-to-r from-yellow-400 to-orange-500 w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center animate-pulse">
-                    <i class="fas fa-cog text-white text-2xl animate-spin"></i>
-                </div>
-                <h3 class="text-white font-bold text-xl mb-2">Phase 2: Beta Testing</h3>
-                <p class="text-white/70">Professional artist feedback - In Progress</p>
-            </div>
-            
-            <div class="relative">
-                <div class="bg-gradient-to-r from-purple-500 to-pink-500 w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center">
-                    <i class="fas fa-rocket text-white text-2xl"></i>
-                </div>
-                <h3 class="text-white font-bold text-xl mb-2">Phase 3: Public Launch</h3>
-                <p class="text-white/70">Full platform release - Coming Soon</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Early Access -->
-    <div class="glass rounded-3xl p-12 mb-20 text-center glow">
-        <h2 class="text-4xl font-bold text-white mb-6 text-glow">Join Our Exclusive Beta Program</h2>
-        <p class="text-xl text-white/80 mb-8 max-w-3xl mx-auto">
-            Be among the first to experience the future of AI mastering. Limited spots available for industry professionals.
+        <p class="text-white/80 text-lg leading-relaxed">
+          In our internal testing, most tracks preview in seconds and maintain clear, punchy output
+          with predictable loudness. We’ll keep tuning for edge-cases during beta.
         </p>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-            <div class="text-left">
-                <h3 class="text-white font-bold text-xl mb-4">Beta Program Benefits:</h3>
-                <ul class="space-y-3 text-white/80">
-                    <li class="flex items-center"><i class="fas fa-star text-yellow-400 mr-3"></i>Free access during beta period</li>
-                    <li class="flex items-center"><i class="fas fa-star text-yellow-400 mr-3"></i>Direct feedback channel to our team</li>
-                    <li class="flex items-center"><i class="fas fa-star text-yellow-400 mr-3"></i>Exclusive early access benefits</li>
-                    <li class="flex items-center"><i class="fas fa-star text-yellow-400 mr-3"></i>Priority support and features</li>
-                </ul>
-            </div>
-            
-            <div class="text-left">
-                <h3 class="text-white font-bold text-xl mb-4">Who We're Looking For:</h3>
-                <ul class="space-y-3 text-white/80">
-                    <li class="flex items-center"><i class="fas fa-music text-yellow-400 mr-3"></i>Professional musicians & producers</li>
-                    <li class="flex items-center"><i class="fas fa-music text-yellow-400 mr-3"></i>Recording studios & engineers</li>
-                    <li class="flex items-center"><i class="fas fa-music text-yellow-400 mr-3"></i>Record labels & distributors</li>
-                    <li class="flex items-center"><i class="fas fa-music text-yellow-400 mr-3"></i>Audio technology enthusiasts</li>
-                </ul>
-            </div>
-        </div>
-        
-        <button class="bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-black px-12 py-6 rounded-2xl hover:from-yellow-500 hover:via-orange-600 hover:to-red-600 transition-all duration-300 font-black text-xl shadow-2xl transform hover:scale-105 glow">
-            <i class="fas fa-envelope mr-3"></i>Request Beta Access
-        </button>
-    </div>
+      </div>
 
-    <!-- Technology Preview -->
-    <div class="mb-20">
-        <h2 class="text-4xl font-bold text-white text-center mb-12 text-glow">Technology Preview</h2>
-        
-        <div class="max-w-4xl mx-auto space-y-6">
-            <div class="glass rounded-2xl p-8">
-                <div class="flex items-center mb-4">
-                    <i class="fas fa-microchip text-yellow-400 text-2xl mr-4"></i>
-                    <h3 class="text-2xl font-bold text-white">Neural Architecture</h3>
-                </div>
-                <p class="text-white/80 text-lg leading-relaxed">
-                    Our proprietary quantum-enhanced neural networks analyze over 200 audio parameters simultaneously, 
-                    delivering mastering decisions that rival the world's top engineers.
-                </p>
-            </div>
-            
-            <div class="glass rounded-2xl p-8">
-                <div class="flex items-center mb-4">
-                    <i class="fas fa-chart-line text-yellow-400 text-2xl mr-4"></i>
-                    <h3 class="text-2xl font-bold text-white">Performance Metrics</h3>
-                </div>
-                <p class="text-white/80 text-lg leading-relaxed">
-                    In blind tests with industry professionals, our AI achieved a 94% preference rate over traditional mastering, 
-                    with 10x faster turnaround times and consistent quality across all genres.
-                </p>
-            </div>
-            
-            <div class="glass rounded-2xl p-8">
-                <div class="flex items-center mb-4">
-                    <i class="fas fa-shield-alt text-yellow-400 text-2xl mr-4"></i>
-                    <h3 class="text-2xl font-bold text-white">Enterprise Security</h3>
-                </div>
-                <p class="text-white/80 text-lg leading-relaxed">
-                    Bank-level encryption, GDPR compliance, and secure cloud infrastructure ensure your unreleased tracks 
-                    remain completely confidential throughout the mastering process.
-                </p>
-            </div>
+      <div class="glass rounded-2xl p-8">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-shield text-yellow-400 text-2xl mr-4"></i>
+          <h3 class="text-2xl font-bold text-white">Privacy & Data Handling (Beta)</h3>
         </div>
+        <ul class="text-white/80 text-lg leading-relaxed space-y-2">
+          <li><span class="font-semibold">Transport:</span> Use HTTPS/TLS in deployment. We don’t claim “end-to-end encryption.”</li>
+          <li><span class="font-semibold">Storage:</span> Files are processed server-side for previews. Avoid uploading sensitive material.</li>
+          <li><span class="font-semibold">Roadmap:</span> Auto-deletion, clearer retention policy, and admin controls are planned.</li>
+          <li><span class="font-semibold">Transparency:</span> We won’t claim SOC 2 or similar certifications until they’re actually completed.</li>
+        </ul>
+      </div>
     </div>
+  </div>
 
-    <!-- CTA Section -->
-    <div class="text-center">
-        <div class="glass rounded-3xl p-12 glow">
-            <h2 class="text-4xl font-bold text-white mb-6 text-glow">Experience the Demo</h2>
-            <p class="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
-                Try our technology preview and hear the difference quantum-powered AI mastering makes.
-            </p>
-            <a href="/" class="bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-black px-12 py-6 rounded-2xl hover:from-yellow-500 hover:via-orange-600 hover:to-red-600 transition-all duration-300 font-black text-xl shadow-2xl transform hover:scale-105 glow inline-block">
-                <i class="fas fa-play mr-3"></i>Try Demo Now
-            </a>
-        </div>
+  <!-- CTA -->
+  <div class="text-center">
+    <div class="glass rounded-3xl p-12 glow">
+      <h2 class="text-4xl font-bold text-white mb-6 text-glow">Try the Demo</h2>
+      <p class="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
+        Hear your track with our beta chain. It’s simple and quick to test.
+      </p>
+      <a href="/" class="bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-black px-12 py-6 rounded-2xl hover:from-yellow-500 hover:via-orange-600 hover:to-red-600 transition-all duration-300 font-black text-xl shadow-2xl transform hover:scale-105 glow inline-block">
+        <i class="fas fa-play mr-3"></i>Try Demo Now
+      </a>
     </div>
+  </div>
 </div>
 {% endblock %}
