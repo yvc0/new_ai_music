@@ -4,212 +4,174 @@
 
 {% block content %}
 <div class="container mx-auto px-6 pt-8 pb-16">
-    <!-- Hero Section -->
-    <div class="text-center mb-20 slide-up">
-        <div class="float inline-block mb-8">
-            <i class="fas fa-comments text-white text-8xl text-glow"></i>
-        </div>
-        
-        <h1 class="text-6xl md:text-8xl font-black text-white mb-6 text-glow">
-            <span class="gradient-text">Get in</span><br>
-            Touch
-        </h1>
-        
-        <p class="text-2xl md:text-3xl text-white/90 max-w-4xl mx-auto mb-12 font-light leading-relaxed">
-            Have questions? Need support? Want to partner with us? 
-            <strong class="font-bold text-yellow-400">We're here to help.</strong>
-        </p>
+  <!-- Local styles to fix dropdown visibility -->
+  <style>
+    /* Keep the closed select matching your dark UI */
+    #contact-form select {
+      color: #fff;
+      background-color: rgba(255,255,255,0.10);
+    }
+    /* Ensure options are readable when the menu opens */
+    #contact-form select option {
+      color: #111 !important;
+      background-color: #fff !important;
+    }
+  </style>
+
+  <!-- Hero Section -->
+  <div class="text-center mb-20 slide-up">
+    <div class="float inline-block mb-8">
+      <i class="fas fa-comments text-white text-8xl text-glow"></i>
+    </div>
+    <h1 class="text-6xl md:text-8xl font-black text-white mb-6 text-glow">
+      <span class="gradient-text">Get in</span><br>
+      Touch
+    </h1>
+    <p class="text-2xl md:text-3xl text-white/90 max-w-4xl mx-auto mb-12 font-light leading-relaxed">
+      Have questions, ideas, or want to collaborate?
+      <strong class="font-bold text-yellow-400">We’d love to hear from you.</strong>
+    </p>
+  </div>
+
+  <!-- Contact Options (no emails/phones) -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+    <div class="glass rounded-3xl p-8 text-center hover-lift">
+      <div class="w-16 h-16 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+        <i class="fas fa-life-ring text-white text-2xl"></i>
+      </div>
+      <h3 class="text-2xl font-bold text-white mb-4">Help & Support</h3>
+      <p class="text-white/80 mb-6">Find quick answers for account, billing, and technical issues in our help center.</p>
+      <div class="space-y-2 text-white/70">
+        <div><i class="fas fa-book mr-2"></i>Browse tutorials & FAQs</div>
+        <div><i class="fas fa-clock mr-2"></i>Most answers in minutes</div>
+      </div>
     </div>
 
-    <!-- Contact Options -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
-        <div class="glass rounded-3xl p-8 text-center hover-lift">
-            <div class="w-16 h-16 bg-gradient-to-r from-blue-400 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <i class="fas fa-headset text-white text-2xl"></i>
-            </div>
-            <h3 class="text-2xl font-bold text-white mb-4">Support</h3>
-            <p class="text-white/80 mb-6">Get help with technical issues, billing questions, or general inquiries.</p>
-            <div class="space-y-2 text-white/70">
-                <div><i class="fas fa-envelope mr-2"></i>support@masterai.com</div>
-                <div><i class="fas fa-clock mr-2"></i>24/7 Response</div>
-            </div>
-        </div>
-
-        <div class="glass rounded-3xl p-8 text-center hover-lift">
-            <div class="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <i class="fas fa-briefcase text-white text-2xl"></i>
-            </div>
-            <h3 class="text-2xl font-bold text-white mb-4">Business</h3>
-            <p class="text-white/80 mb-6">Enterprise solutions, partnerships, and custom integrations.</p>
-            <div class="space-y-2 text-white/70">
-                <div><i class="fas fa-envelope mr-2"></i>business@masterai.com</div>
-                <div><i class="fas fa-phone mr-2"></i>+1 (555) 123-4567</div>
-            </div>
-        </div>
-
-        <div class="glass rounded-3xl p-8 text-center hover-lift">
-            <div class="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <i class="fas fa-newspaper text-black text-2xl"></i>
-            </div>
-            <h3 class="text-2xl font-bold text-white mb-4">Press</h3>
-            <p class="text-white/80 mb-6">Media inquiries, press releases, and interview requests.</p>
-            <div class="space-y-2 text-white/70">
-                <div><i class="fas fa-envelope mr-2"></i>press@masterai.com</div>
-                <div><i class="fas fa-download mr-2"></i>Press Kit Available</div>
-            </div>
-        </div>
+    <div class="glass rounded-3xl p-8 text-center hover-lift">
+      <div class="w-16 h-16 bg-gradient-to-r from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+        <i class="fas fa-handshake text-white text-2xl"></i>
+      </div>
+      <h3 class="text-2xl font-bold text-white mb-4">Partnerships</h3>
+      <p class="text-white/80 mb-6">We’re teaming up with studios, educators, and indie creators to shape the future of mastering.</p>
+      <div class="space-y-2 text-white/70">
+        <div><i class="fas fa-users mr-2"></i>Community collabs</div>
+        <div><i class="fas fa-lightbulb mr-2"></i>Early access opportunities</div>
+      </div>
     </div>
 
-    <!-- Contact Form -->
-    <div class="max-w-4xl mx-auto mb-20">
-        <div class="glass rounded-3xl p-12">
-            <h2 class="text-4xl font-bold text-white text-center mb-8 text-glow">Send Us a Message</h2>
-            
-            <form class="space-y-6" id="contact-form">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-white font-medium mb-2">Name *</label>
-                        <input type="text" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="Your full name">
-                    </div>
-                    <div>
-                        <label class="block text-white font-medium mb-2">Email *</label>
-                        <input type="email" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="your@email.com">
-                    </div>
-                </div>
-                
-                <div>
-                    <label class="block text-white font-medium mb-2">Subject *</label>
-                    <select required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent">
-                        <option value="">Select a topic</option>
-                        <option value="support">Technical Support</option>
-                        <option value="billing">Billing Question</option>
-                        <option value="feature">Feature Request</option>
-                        <option value="partnership">Partnership Inquiry</option>
-                        <option value="press">Press Inquiry</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                
-                <div>
-                    <label class="block text-white font-medium mb-2">Message *</label>
-                    <textarea required rows="6" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent resize-none" placeholder="Tell us how we can help you..."></textarea>
-                </div>
-                
-                <div class="flex items-center space-x-3">
-                    <input type="checkbox" id="newsletter" class="rounded">
-                    <label for="newsletter" class="text-white/80">Subscribe to our newsletter for updates and tips</label>
-                </div>
-                
-                <div class="text-center">
-                    <button type="submit" class="bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-8 py-4 rounded-xl font-bold hover:from-yellow-500 hover:to-orange-600 transition-all duration-300 transform hover:scale-105">
-                        <i class="fas fa-paper-plane mr-2"></i>Send Message
-                    </button>
-                </div>
-            </form>
-        </div>
+    <div class="glass rounded-3xl p-8 text-center hover-lift">
+      <div class="w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+        <i class="fas fa-lightbulb text-black text-2xl"></i>
+      </div>
+      <h3 class="text-2xl font-bold text-white mb-4">Feedback & Ideas</h3>
+      <p class="text-white/80 mb-6">Tell us what you’d like to see next—we’re building this together with our community.</p>
+      <div class="space-y-2 text-white/70">
+        <div><i class="fas fa-check mr-2"></i>Community voting on requests</div>
+        <div><i class="fas fa-rocket mr-2"></i>Popular ideas go on the roadmap</div>
+      </div>
     </div>
+  </div>
 
-    <!-- Office Locations -->
-    <div class="mb-20">
-        <h2 class="text-4xl font-bold text-white text-center mb-12 text-glow">Our Offices</h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="glass rounded-2xl p-8">
-                <h3 class="text-2xl font-bold text-white mb-4">
-                    <i class="fas fa-map-marker-alt text-yellow-400 mr-3"></i>
-                    San Francisco HQ
-                </h3>
-                <div class="space-y-2 text-white/80">
-                    <div>123 Innovation Drive</div>
-                    <div>San Francisco, CA 94105</div>
-                    <div>United States</div>
-                    <div class="pt-2">
-                        <i class="fas fa-phone mr-2"></i>+1 (555) 123-4567
-                    </div>
-                    <div>
-                        <i class="fas fa-envelope mr-2"></i>sf@masterai.com
-                    </div>
-                </div>
-            </div>
-            
-            <div class="glass rounded-2xl p-8">
-                <h3 class="text-2xl font-bold text-white mb-4">
-                    <i class="fas fa-map-marker-alt text-yellow-400 mr-3"></i>
-                    London Office
-                </h3>
-                <div class="space-y-2 text-white/80">
-                    <div>456 Tech Square</div>
-                    <div>London EC2A 4DP</div>
-                    <div>United Kingdom</div>
-                    <div class="pt-2">
-                        <i class="fas fa-phone mr-2"></i>+44 20 7123 4567
-                    </div>
-                    <div>
-                        <i class="fas fa-envelope mr-2"></i>london@masterai.com
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+  <!-- Contact Form -->
+  <div class="max-w-4xl mx-auto mb-20">
+    <div class="glass rounded-3xl p-12">
+      <h2 class="text-4xl font-bold text-white text-center mb-8 text-glow">Send Us a Message</h2>
 
-    <!-- FAQ Section -->
-    <div class="mb-20">
-        <h2 class="text-4xl font-bold text-white text-center mb-12 text-glow">Quick Answers</h2>
-        
-        <div class="max-w-4xl mx-auto space-y-4">
-            <div class="glass rounded-2xl p-6">
-                <h3 class="text-xl font-bold text-white mb-3">How quickly do you respond to support requests?</h3>
-                <p class="text-white/80">We aim to respond to all support requests within 2 hours during business hours, and within 24 hours on weekends.</p>
-            </div>
-            
-            <div class="glass rounded-2xl p-6">
-                <h3 class="text-xl font-bold text-white mb-3">Do you offer phone support?</h3>
-                <p class="text-white/80">Phone support is available for Pro and Studio subscribers. Free users can access our comprehensive help center and email support.</p>
-            </div>
-            
-            <div class="glass rounded-2xl p-6">
-                <h3 class="text-xl font-bold text-white mb-3">Can I schedule a demo for my team?</h3>
-                <p class="text-white/80">Absolutely! Contact our business team to schedule a personalized demo and discuss enterprise solutions.</p>
-            </div>
+      <form class="space-y-6" id="contact-form">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-white font-medium mb-2">Name *</label>
+            <input type="text" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="Your full name">
+          </div>
+          <div>
+            <label class="block text-white font-medium mb-2">Email *</label>
+            <input type="email" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent" placeholder="your@email.com">
+          </div>
         </div>
-    </div>
 
-    <!-- CTA Section -->
-    <div class="text-center">
-        <div class="glass rounded-3xl p-12 glow">
-            <h2 class="text-4xl font-bold text-white mb-6 text-glow">Ready to Get Started?</h2>
-            <p class="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
-                Don't wait for answers. Experience MasterAI yourself with our free trial.
-            </p>
-            <a href="/" class="bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-black px-12 py-6 rounded-2xl hover:from-yellow-500 hover:via-orange-600 hover:to-red-600 transition-all duration-300 font-black text-xl shadow-2xl transform hover:scale-105 glow inline-block">
-                <i class="fas fa-rocket mr-3"></i>Try MasterAI Free
-            </a>
+        <div>
+          <label class="block text-white font-medium mb-2">Subject *</label>
+          <select id="topic" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent">
+            <option value="" disabled selected>Select a topic</option>
+            <option value="support">Help & Support</option>
+            <option value="partnership">Partnerships</option>
+            <option value="feedback">Feedback & Ideas</option>
+            <option value="other">Other</option>
+          </select>
         </div>
+
+        <div>
+          <label class="block text-white font-medium mb-2">Message *</label>
+          <textarea required rows="6" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent resize-none" placeholder="Tell us how we can help you..."></textarea>
+        </div>
+
+        <div class="flex items-center space-x-3">
+          <input type="checkbox" id="newsletter" class="rounded">
+          <label for="newsletter" class="text-white/80">Subscribe to our newsletter for updates and tips</label>
+        </div>
+
+        <div class="text-center">
+          <button type="submit" class="bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-8 py-4 rounded-xl font-bold hover:from-yellow-500 hover:to-orange-600 transition-all duration-300 transform hover:scale-105">
+            <i class="fas fa-paper-plane mr-2"></i>Send Message
+          </button>
+        </div>
+      </form>
     </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="mb-20">
+    <h2 class="text-4xl font-bold text-white text-center mb-12 text-glow">Quick Answers</h2>
+    <div class="max-w-4xl mx-auto space-y-4">
+      <div class="glass rounded-2xl p-6">
+        <h3 class="text-xl font-bold text-white mb-3">How quickly do you respond?</h3>
+        <p class="text-white/80">Most requests get a reply within 24 hours on weekdays.</p>
+      </div>
+      <div class="glass rounded-2xl p-6">
+        <h3 class="text-xl font-bold text-white mb-3">Do you offer phone support?</h3>
+        <p class="text-white/80">Not yet—right now everything is handled online through our help center and forms.</p>
+      </div>
+      <div class="glass rounded-2xl p-6">
+        <h3 class="text-xl font-bold text-white mb-3">How do I suggest a feature?</h3>
+        <p class="text-white/80">Use the “Feedback & Ideas” option above—popular requests move to our public roadmap.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="text-center">
+    <div class="glass rounded-3xl p-12 glow">
+      <h2 class="text-4xl font-bold text-white mb-6 text-glow">Ready to Get Started?</h2>
+      <p class="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
+        Don’t wait for replies—try MasterAI right now and hear the results yourself.
+      </p>
+      <a href="/" class="bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-black px-12 py-6 rounded-2xl hover:from-yellow-500 hover:via-orange-600 hover:to-red-600 transition-all duration-300 font-black text-xl shadow-2xl transform hover:scale-105 glow inline-block">
+        <i class="fas fa-rocket mr-3"></i>Try MasterAI Free
+      </a>
+    </div>
+  </div>
 </div>
 
 <script>
 document.getElementById('contact-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Simulate form submission
-    const button = this.querySelector('button[type="submit"]');
-    const originalText = button.innerHTML;
-    
-    button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Sending...';
-    button.disabled = true;
-    
+  e.preventDefault();
+  const button = this.querySelector('button[type="submit"]');
+  const originalText = button.innerHTML;
+
+  button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Sending...';
+  button.disabled = true;
+
+  setTimeout(() => {
+    button.innerHTML = '<i class="fas fa-check mr-2"></i>Message Sent!';
+    button.className = button.className.replace('from-yellow-400 to-orange-500', 'from-green-500 to-emerald-600');
     setTimeout(() => {
-        button.innerHTML = '<i class="fas fa-check mr-2"></i>Message Sent!';
-        button.className = button.className.replace('from-yellow-400 to-orange-500', 'from-green-500 to-emerald-600');
-        
-        setTimeout(() => {
-            button.innerHTML = originalText;
-            button.disabled = false;
-            button.className = button.className.replace('from-green-500 to-emerald-600', 'from-yellow-400 to-orange-500');
-            this.reset();
-        }, 3000);
-    }, 2000);
+      button.innerHTML = originalText;
+      button.disabled = false;
+      button.className = button.className.replace('from-green-500 to-emerald-600', 'from-yellow-400 to-orange-500');
+      this.reset();
+      document.getElementById('topic').selectedIndex = 0; // reset placeholder
+    }, 3000);
+  }, 2000);
 });
 </script>
 {% endblock %}
