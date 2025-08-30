@@ -53,7 +53,7 @@
   <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
 </div>
 
-<!-- Optional neural net layer the JS can target -->
+<!-- Neural net layer targeted by JS -->
 <div id="neural-network" class="neural-network"></div>
 
 <style>
@@ -459,7 +459,7 @@
     }, 400);
   }
 
-  // UPDATED: robust error surfacing (shows server message + step)
+  // Robust error surfacing (shows server message/step when present)
   async function uploadAndProcess(file) {
     const formData = new FormData();
     formData.append('audio', file);
@@ -486,7 +486,7 @@
     app.elements.progressBar.style.width = '100%';
     app.elements.processingStatus.textContent = 'Processing complete!';
     setTimeout(() => {
-      // Cache-busting query to avoid stale audio in some hosts/CDNs
+      // Cache-busting to avoid stale audio on some hosts/CDNs
       const bust = `?t=${Date.now()}`;
       app.elements.originalAudio.src = result.originalUrl + bust;
       app.elements.masteredAudio.src = result.masteredUrl + bust;
@@ -508,7 +508,7 @@
   }
 
   function showError(message) {
-    alert('Error: ' + message);  // now includes server-provided step (e.g., decode, write_output)
+    alert('Error: ' + message);
     resetProcessing();
   }
 
@@ -570,6 +570,7 @@
     const musicSymbols = ['♪','♫','♬','♩','♭','♯','𝄞','𝄢'];
     const bgAnimation = document.querySelector('.bg-animation');
     createNeuralNetwork();
+
     setInterval(() => {
       if (Math.random() > 0.7) {
         const note = document.createElement('div');
@@ -583,5 +584,68 @@
         setTimeout(() => { if (note.parentNode) note.parentNode.removeChild(note); }, 25000);
       }
     }, 3000);
+
     setInterval(() => {
       if (Math.random() > 0.85) {
+        const icon = document.createElement('i');
+        icon.className = 'fas floating-icon';
+        icon.style.left = Math.random() * 100 + '%';
+        icon.style.animationDuration = (18 + Math.random() * 7) + 's';
+        icon.style.color = `rgba(${255},${255},${255},${0.06 + Math.random() * 0.08})`;
+        const iconClasses = ['fa-microchip','fa-wave-square','fa-broadcast-tower','fa-satellite-dish'];
+        icon.classList.add(iconClasses[Math.floor(Math.random() * iconClasses.length)]);
+        bgAnimation.appendChild(icon);
+        setTimeout(() => { if (icon.parentNode) icon.parentNode.removeChild(icon); }, 25000);
+      }
+    }, 4000);
+
+    setInterval(() => {
+      if (Math.random() > 0.8) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDuration = (10 + Math.random() * 5) + 's';
+        particle.style.animationDelay = Math.random() * 2 + 's';
+        bgAnimation.appendChild(particle);
+        setTimeout(() => { if (particle.parentNode) particle.parentNode.removeChild(particle); }, 15000);
+      }
+    }, 2000);
+
+    setInterval(() => {
+      if (Math.random() > 0.9) {
+        const circle = document.createElement('div');
+        circle.className = 'pulse-circle';
+        circle.style.left = Math.random() * 100 + '%';
+        circle.style.top = Math.random() * 100 + '%';
+        circle.style.width = (50 + Math.random() * 100) + 'px';
+        circle.style.height = circle.style.width;
+        bgAnimation.appendChild(circle);
+        setTimeout(() => { if (circle.parentNode) circle.parentNode.removeChild(circle); }, 6000);
+      }
+    }, 5000);
+  }
+
+  function createNeuralNetwork() {
+    const network = document.getElementById('neural-network');
+    if (!network) return;
+    for (let i = 0; i < 15; i++) {
+      const node = document.createElement('div');
+      node.className = 'neural-node';
+      node.style.left = Math.random() * 100 + '%';
+      node.style.top = Math.random() * 100 + '%';
+      node.style.animationDelay = Math.random() * 4 + 's';
+      network.appendChild(node);
+    }
+    for (let i = 0; i < 8; i++) {
+      const connection = document.createElement('div');
+      connection.className = 'neural-connection';
+      connection.style.left = Math.random() * 80 + '%';
+      connection.style.top = Math.random() * 80 + '%';
+      connection.style.width = (100 + Math.random() * 200) + 'px';
+      connection.style.transform = `rotate(${Math.random() * 360}deg)`;
+      connection.style.animationDelay = Math.random() * 3 + 's';
+      network.appendChild(connection);
+    }
+  }
+</script>
+{% endblock %}
