@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}MasterAI - Revolutionary AI Music Mastering Platform{% endblock %}
+{% block title %}MIXR.com – AI Music Mastering{% endblock %}
 
 {% block content %}
 <!-- Animated Background -->
@@ -101,9 +101,9 @@
       </div>
     </div>
 
+    <!-- CHANGED: brand title -->
     <h1 class="text-7xl md:text-9xl font-black text-white mb-6 text-glow">
-      <span class="gradient-text">Neural</span><br>
-      <span class="typing inline-block">Sonic Genesis</span>
+      <span class="gradient-text">MIXR.com</span>
     </h1>
 
     <p class="text-2xl md:text-3xl text-white/90 max-w-5xl mx-auto mb-16 font-light leading-relaxed">
@@ -222,10 +222,7 @@
           <button id="signup-btn" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-12 py-4 rounded-xl hover:from-green-600 hover:to-emerald-700 font-bold text-lg shadow-lg transform hover:scale-105 transition-all duration-300 mr-4">
             <i class="fas fa-download mr-2"></i>Download Master
           </button>
-          <div class="text-white/60 text-sm mt-4">
-            <i class="fas fa-shield-check mr-1"></i>
-            Secure download • No watermarks • Commercial license included
-          </div>
+          <!-- REMOVED: secure download / watermarks / license line -->
         </div>
 
         <button id="new-upload-btn" class="text-white/80 hover:text-yellow-400 transition-colors font-medium">
@@ -346,10 +343,7 @@
       <a href="/dashboard" class="btn-world-class text-black px-12 py-6 rounded-2xl font-black text-xl transform hover:scale-105 inline-block">
         <i class="fas fa-rocket mr-3"></i>START MASTERING NOW
       </a>
-      <div class="text-white/80">
-        <div class="font-bold text-lg">100% Risk-Free</div>
-        <div class="text-sm">30-day money-back guarantee</div>
-      </div>
+      <!-- REMOVED: “100% Risk-Free / 30-day money-back guarantee” -->
     </div>
 
     <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
@@ -459,11 +453,9 @@
     }, 400);
   }
 
-  // Robust error surfacing (shows server message/step when present)
   async function uploadAndProcess(file) {
     const formData = new FormData();
     formData.append('audio', file);
-
     const res = await fetch('/upload', { method: 'POST', body: formData });
     const ct = (res.headers.get('content-type') || '').toLowerCase();
 
@@ -486,7 +478,6 @@
     app.elements.progressBar.style.width = '100%';
     app.elements.processingStatus.textContent = 'Processing complete!';
     setTimeout(() => {
-      // Cache-busting to avoid stale audio on some hosts/CDNs
       const bust = `?t=${Date.now()}`;
       app.elements.originalAudio.src = result.originalUrl + bust;
       app.elements.masteredAudio.src = result.masteredUrl + bust;
@@ -536,7 +527,7 @@
       showDownloadMessage();
       const a = document.createElement('a');
       a.href = app.elements.masteredAudio.src;
-      a.download = 'neural-sonic-genesis-mastered.wav';
+      a.download = 'mixr-mastered.wav';
       a.click();
     } else {
       alert('No mastered track available for download.');
