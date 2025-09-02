@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}MIXR.ai - AI Music Mastering{% endblock %}</title>
+  <title>{% block title %}MIXR.ai – Revolutionary AI Music Mastering{% endblock %}</title>
   <meta name="description" content="{% block description %}Transform your music with cutting-edge AI mastering. Fast, simple, and studio-quality results for everyone.{% endblock %}">
 
   <script src="https://cdn.tailwindcss.com"></script>
@@ -27,30 +27,7 @@
     .text-glow { text-shadow: 0 0 30px rgba(255,255,255,.3); }
     .pulse-glow { animation: pulse-glow 2s ease-in-out infinite alternate; }
     @keyframes pulse-glow { from { box-shadow: 0 0 20px rgba(124,58,237,.3); } to { box-shadow: 0 0 60px rgba(124,58,237,.6); } }
-    body.gradient-bg::after {
-      content: ""; position: fixed; inset: 0; pointer-events: none; z-index: -1;
-      background:
-        radial-gradient(120% 80% at 50% 10%, transparent 0%, rgba(0,0,0,.12) 60%),
-        radial-gradient(160% 120% at 50% 120%, rgba(0,0,0,.25), transparent 60%);
-    }
   </style>
-
-  <!-- Loader: show MIXR.ai during navigation -->
-  <script>
-    (function(){
-      const originalTitle = document.title;
-      document.title = 'MIXR.ai';
-      window.addEventListener('load', function(){ document.title = originalTitle; });
-
-      // Also force replace if something else tries to set old text
-      const observer = new MutationObserver(() => {
-        if (document.title.includes('Neural Sonic Genesis')) {
-          document.title = 'MIXR.ai';
-        }
-      });
-      observer.observe(document.querySelector('title'), { childList: true });
-    })();
-  </script>
 </head>
 <body class="gradient-bg min-h-screen overflow-x-hidden">
   {% set on_dashboard = request.path.startswith('/dashboard') %}
@@ -66,6 +43,7 @@
           </div>
           <div>
             <a href="/" class="text-white font-black text-3xl gradient-text hover:opacity-80 transition-opacity">MIXR.AI</a>
+            <div class="text-white/60 text-sm font-medium">Revolutionary Mastering</div>
           </div>
         </div>
 
@@ -97,12 +75,10 @@
       <a href="/testimonials" class="text-white text-2xl font-medium hover:text-yellow-400 transition-colors">Success Stories</a>
       <a href="/about" class="text-white text-2xl font-medium hover:text-yellow-400 transition-colors">About</a>
       <a href="/contact" class="text-white text-2xl font-medium hover:text-yellow-400 transition-colors">Contact</a>
-
       <a href="/dashboard"
          class="{% if on_dashboard %}bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-8 py-4 rounded-xl font-bold{% else %}text-white text-2xl font-medium hover:text-yellow-400 transition-colors{% endif %}">
         Dashboard
       </a>
-
       <button class="text-white text-3xl" onclick="toggleMobileMenu()"><i class="fas fa-times"></i></button>
     </div>
   </div>
@@ -116,16 +92,16 @@
   <footer class="glass border-t border-white/10 mt-32">
     <div class="container mx-auto px-6 py-16">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
-        
         <!-- Brand -->
         <div>
           <div class="flex items-center space-x-3 mb-6">
             <i class="fas fa-waveform-lines text-yellow-400 text-2xl"></i>
             <span class="text-white font-black text-xl gradient-text">MIXR.AI</span>
           </div>
-          <p class="text-white/70 mb-6">AI music mastering that makes your tracks clean, loud, and ready to share.</p>
+          <p class="text-white/70 mb-6">
+            AI music mastering that makes your tracks clean, loud, and ready to share.
+          </p>
           <div class="flex space-x-4">
-            <!-- Twitter removed -->
             <a href="#" class="text-white/60 hover:text-yellow-400 transition-colors"><i class="fab fa-instagram text-xl"></i></a>
             <a href="#" class="text-white/60 hover:text-yellow-400 transition-colors"><i class="fab fa-youtube text-xl"></i></a>
             <a href="#" class="text-white/60 hover:text-yellow-400 transition-colors"><i class="fab fa-discord text-xl"></i></a>
@@ -137,7 +113,7 @@
           <h4 class="text-white font-bold text-lg mb-6">Navigate</h4>
           <ul class="space-y-3">
             <li><a href="/features" class="text-white/70 hover:text-yellow-400 transition-colors">Features</a></li>
-            <li><a href="#" class="text-white/70 hover:text-yellow-400 transition-colors">Integrations</a></li>
+            <li><a href="/integrations" class="text-white/70 hover:text-yellow-400 transition-colors">Integrations</a></li>
             <li><a href="/about" class="text-white/70 hover:text-yellow-400 transition-colors">About</a></li>
           </ul>
         </div>
@@ -154,34 +130,30 @@
                 Help Centre
               </a>
             </li>
-            <li><a href="#" class="text-white/70 hover:text-yellow-400 transition-colors">Community</a></li>
+            <li><a href="/community" class="text-white/70 hover:text-yellow-400 transition-colors">Community</a></li>
           </ul>
         </div>
-
       </div>
 
-      <!-- Bottom -->
       <div class="border-t border-white/20 pt-8">
         <div class="flex flex-col md:flex-row justify-between items-center">
           <div class="text-white/60 text-sm mb-4 md:mb-0">© 2025 MIXR.AI. All rights reserved.</div>
           <div class="flex space-x-6 text-sm">
-            <a href="#" class="text-white/60 hover:text-yellow-400 transition-colors">Privacy Policy</a>
-            <a href="#" class="text-white/60 hover:text-yellow-400 transition-colors">Terms of Service</a>
-            <a href="#" class="text-white/60 hover:text-yellow-400 transition-colors">Cookie Policy</a>
+            <a href="/privacy" class="text-white/60 hover:text-yellow-400 transition-colors">Privacy Policy</a>
+            <a href="/terms" class="text-white/60 hover:text-yellow-400 transition-colors">Terms of Service</a>
+            <a href="/cookies" class="text-white/60 hover:text-yellow-400 transition-colors">Cookie Policy</a>
           </div>
         </div>
       </div>
     </div>
   </footer>
 
-  <!-- JS -->
   <script>
     function toggleMobileMenu() {
       var el = document.getElementById('mobile-menu');
       if (el) el.classList.toggle('hidden');
     }
   </script>
-
   <script src="/static/js/enhanced-ui.js"></script>
   <script src="/static/js/world-class-effects.js"></script>
   <script src="/static/js/professional-animations.js"></script>
