@@ -46,82 +46,45 @@
     @media (prefers-reduced-motion: reduce) { .rg .rg-layer { transition: none; } }
   </style>
 
-  <!-- FORCE loading title to MIXR.ai and purge any old loader copy -->
+  <!-- Lightweight loading title: MIXR.ai during navigation -->
   <script>
   (function(){
-    const LOADING_BRAND = 'MIXR.ai';
-    const BAD_PHRASES = ['Neural Sonic Genesis', 'Initializing Quantum Audio Intelligence'];
-    let originalTitle = document.title;
-    let navigating = false;
+    var LOADING_BRAND = 'MIXR.ai';
+    var originalTitle = document.title;
 
-    function setLoadingTitle() {
-      const titleEl = document.querySelector('head > title');
-      if (titleEl) titleEl.textContent = LOADING_BRAND;
-      document.title = LOADING_BRAND;
-    }
-    function restoreTitle() {
-      if (!originalTitle) originalTitle = document.title || LOADING_BRAND;
-      document.title = originalTitle;
+    function isInternal(a){
+      try {
+        var url = new URL(a.href, window.location.origin);
+        return url.origin === window.location.origin && !a.target && !a.hasAttribute('download');
+      } catch(e){ return false; }
     }
 
-    // Create <title> if missing, and observe changes to keep MIXR.ai while navigating
-    const titleEl = document.querySelector('head > title') || (function(){
-      const t = document.createElement('title'); document.head.appendChild(t); return t;
-    })();
-    const titleObserver = new MutationObserver(() => { if (navigating) setLoadingTitle(); });
-    titleObserver.observe(titleEl, { childList: true });
+    // Show MIXR.ai while loading initial page
+    document.title = LOADING_BRAND;
 
-    // Initial load
-    navigating = true;
-    setLoadingTitle();
-    window.addEventListener('load', function(){ navigating = false; restoreTitle(); });
+    // Restore on full load
+    window.addEventListener('load', function(){
+      document.title = document.title && document.title !== LOADING_BRAND ? document.title : (originalTitle || LOADING_BRAND);
+    });
 
-    // Internal link clicks
+    // On internal link clicks
     document.addEventListener('click', function(e){
-      const a = e.target.closest('a[href]');
-      if (!a) return;
-      const url = new URL(a.href, window.location.origin);
-      if (url.origin === window.location.origin && !a.target && !a.hasAttribute('download')) {
-        navigating = true;
-        setLoadingTitle();
-      }
+      var a = e.target.closest && e.target.closest('a[href]');
+      if (!a || !isInternal(a)) return;
+      document.title = LOADING_BRAND;
     });
 
-    // Page lifecycle
-    window.addEventListener('beforeunload', function(){ navigating = true; setLoadingTitle(); });
-    document.addEventListener('visibilitychange', function(){
-      if (document.visibilityState === 'hidden') { navigating = true; setLoadingTitle(); }
+    // Before unload
+    window.addEventListener('beforeunload', function(){
+      document.title = LOADING_BRAND;
     });
+
+    // Handle bfcache restores
     window.addEventListener('pageshow', function(ev){
-      originalTitle = document.title || LOADING_BRAND;
-      if (ev.persisted) { navigating = false; restoreTitle(); }
-    });
-
-    // Replace any old loader copy present/added in DOM
-    function replaceBadCopy(root) {
-      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
-      const toPatch = [];
-      while (walker.nextNode()) {
-        const n = walker.currentNode;
-        if (!n.nodeValue) continue;
-        for (const phrase of BAD_PHRASES) {
-          if (n.nodeValue.includes(phrase)) { toPatch.push(n); break; }
-        }
+      if (ev.persisted) {
+        document.title = originalTitle || document.title || LOADING_BRAND;
       }
-      toPatch.forEach(n => { n.nodeValue = LOADING_BRAND; });
-    }
-    function runReplaceOnAddedNodes(mutations) {
-      mutations.forEach(m => {
-        if (m.addedNodes) {
-          m.addedNodes.forEach(node => {
-            if (node.nodeType === 1) replaceBadCopy(node);
-          });
-        }
-      });
-    }
-    if (document.body) replaceBadCopy(document.body);
-    const bodyObserver = new MutationObserver(runReplaceOnAddedNodes);
-    bodyObserver.observe(document.documentElement, { childList: true, subtree: true });
+    });
   })();
   </script>
 </head>
