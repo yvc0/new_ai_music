@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}MIXR.ai{% endblock %}</title>
+  <title>{% block title %}MIXR.ai – Revolutionary AI Music Mastering{% endblock %}</title>
   <meta name="description" content="{% block description %}MIXR.ai transforms your music with cutting-edge AI mastering. Fast, simple, and studio-quality results for everyone.{% endblock %}">
 
   <script src="https://cdn.tailwindcss.com"></script>
@@ -46,33 +46,83 @@
     @media (prefers-reduced-motion: reduce) { .rg .rg-layer { transition: none; } }
   </style>
 
-  <!-- Always show MIXR.ai as the tab title during load and page transitions -->
+  <!-- FORCE loading title to MIXR.ai and purge any old loader copy -->
   <script>
-    (function(){
-      let originalTitle = document.title;
+  (function(){
+    const LOADING_BRAND = 'MIXR.ai';
+    const BAD_PHRASES = ['Neural Sonic Genesis', 'Initializing Quantum Audio Intelligence'];
+    let originalTitle = document.title;
+    let navigating = false;
 
-      function setLoadingTitle(){ document.title = 'MIXR.ai'; }
-      function restoreTitle(){ document.title = originalTitle; }
+    function setLoadingTitle() {
+      const titleEl = document.querySelector('head > title');
+      if (titleEl) titleEl.textContent = LOADING_BRAND;
+      document.title = LOADING_BRAND;
+    }
+    function restoreTitle() {
+      if (!originalTitle) originalTitle = document.title || LOADING_BRAND;
+      document.title = originalTitle;
+    }
 
-      setLoadingTitle();
-      window.addEventListener('load', restoreTitle);
-      window.addEventListener('beforeunload', setLoadingTitle);
-      document.addEventListener('visibilitychange', function(){
-        if (document.visibilityState === 'hidden') setLoadingTitle();
-      });
-      document.addEventListener('click', function(e){
-        const a = e.target.closest('a[href]');
-        if (!a) return;
-        const url = new URL(a.href, window.location.origin);
-        if (url.origin === window.location.origin && !a.target && !a.hasAttribute('download')) {
-          setLoadingTitle();
+    // Create <title> if missing, and observe changes to keep MIXR.ai while navigating
+    const titleEl = document.querySelector('head > title') || (function(){
+      const t = document.createElement('title'); document.head.appendChild(t); return t;
+    })();
+    const titleObserver = new MutationObserver(() => { if (navigating) setLoadingTitle(); });
+    titleObserver.observe(titleEl, { childList: true });
+
+    // Initial load
+    navigating = true;
+    setLoadingTitle();
+    window.addEventListener('load', function(){ navigating = false; restoreTitle(); });
+
+    // Internal link clicks
+    document.addEventListener('click', function(e){
+      const a = e.target.closest('a[href]');
+      if (!a) return;
+      const url = new URL(a.href, window.location.origin);
+      if (url.origin === window.location.origin && !a.target && !a.hasAttribute('download')) {
+        navigating = true;
+        setLoadingTitle();
+      }
+    });
+
+    // Page lifecycle
+    window.addEventListener('beforeunload', function(){ navigating = true; setLoadingTitle(); });
+    document.addEventListener('visibilitychange', function(){
+      if (document.visibilityState === 'hidden') { navigating = true; setLoadingTitle(); }
+    });
+    window.addEventListener('pageshow', function(ev){
+      originalTitle = document.title || LOADING_BRAND;
+      if (ev.persisted) { navigating = false; restoreTitle(); }
+    });
+
+    // Replace any old loader copy present/added in DOM
+    function replaceBadCopy(root) {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+      const toPatch = [];
+      while (walker.nextNode()) {
+        const n = walker.currentNode;
+        if (!n.nodeValue) continue;
+        for (const phrase of BAD_PHRASES) {
+          if (n.nodeValue.includes(phrase)) { toPatch.push(n); break; }
+        }
+      }
+      toPatch.forEach(n => { n.nodeValue = LOADING_BRAND; });
+    }
+    function runReplaceOnAddedNodes(mutations) {
+      mutations.forEach(m => {
+        if (m.addedNodes) {
+          m.addedNodes.forEach(node => {
+            if (node.nodeType === 1) replaceBadCopy(node);
+          });
         }
       });
-      window.addEventListener('pageshow', function(ev){
-        originalTitle = document.title;
-        if (ev.persisted) restoreTitle();
-      });
-    })();
+    }
+    if (document.body) replaceBadCopy(document.body);
+    const bodyObserver = new MutationObserver(runReplaceOnAddedNodes);
+    bodyObserver.observe(document.documentElement, { childList: true, subtree: true });
+  })();
   </script>
 </head>
 <body class="gradient-bg min-h-screen overflow-x-hidden">
@@ -88,6 +138,7 @@
             <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
           </div>
           <div>
+            <!-- BRAND -->
             <a href="/" class="text-white font-black text-3xl gradient-text hover:opacity-80 transition-opacity">MIXR.AI</a>
           </div>
         </div>
@@ -135,7 +186,7 @@
     {% block content %}{% endblock %}
   </main>
 
-  <!-- Footer -->
+  <!-- Footer (shared across all pages) -->
   <footer class="glass border-t border-white/10 mt-32">
     <div class="container mx-auto px-6 py-16">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
@@ -146,6 +197,7 @@
           </div>
           <p class="text-white/70 mb-6">AI music mastering that makes your tracks clean, loud, and ready to share.</p>
           <div class="flex space-x-4">
+            <!-- Twitter removed -->
             <a href="#" class="text-white/60 hover:text-yellow-400 transition-colors"><i class="fab fa-instagram text-xl"></i></a>
             <a href="#" class="text-white/60 hover:text-yellow-400 transition-colors"><i class="fab fa-youtube text-xl"></i></a>
             <a href="#" class="text-white/60 hover:text-yellow-400 transition-colors"><i class="fab fa-discord text-xl"></i></a>
