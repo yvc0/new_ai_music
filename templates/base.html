@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}MIXR.ai – Revolutionary AI Music Mastering{% endblock %}</title>
-  <meta name="description" content="{% block description %}MIXR.ai transforms your music with cutting-edge AI mastering. Fast, simple, and studio-quality results for everyone.{% endblock %}">
+  <title>{% block title %}MIXR.ai - AI Music Mastering{% endblock %}</title>
+  <meta name="description" content="{% block description %}Transform your music with cutting-edge AI mastering. Fast, simple, and studio-quality results for everyone.{% endblock %}">
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -33,59 +33,23 @@
         radial-gradient(120% 80% at 50% 10%, transparent 0%, rgba(0,0,0,.12) 60%),
         radial-gradient(160% 120% at 50% 120%, rgba(0,0,0,.25), transparent 60%);
     }
-    .rg { position: relative; }
-    .rg .rg-layer {
-      pointer-events: none; position: absolute; inset: -2px; border-radius: inherit;
-      background:
-        radial-gradient(120px 120px at var(--rg-x, -50%) var(--rg-y, -50%), rgba(251,191,36,.35), transparent 60%),
-        radial-gradient(220px 220px at var(--rg-x, -50%) var(--rg-y, -50%), rgba(99,102,241,.20), transparent 65%);
-      filter: blur(18px); opacity: 0; transition: opacity .25s ease; mix-blend-mode: screen; z-index: 0;
-    }
-    .rg:hover .rg-layer { opacity: 1; }
-    .rg > * { position: relative; z-index: 1; }
-    @media (prefers-reduced-motion: reduce) { .rg .rg-layer { transition: none; } }
   </style>
 
-  <!-- Lightweight loading title: MIXR.ai during navigation -->
+  <!-- Loader: show MIXR.ai during navigation -->
   <script>
-  (function(){
-    var LOADING_BRAND = 'MIXR.ai';
-    var originalTitle = document.title;
+    (function(){
+      const originalTitle = document.title;
+      document.title = 'MIXR.ai';
+      window.addEventListener('load', function(){ document.title = originalTitle; });
 
-    function isInternal(a){
-      try {
-        var url = new URL(a.href, window.location.origin);
-        return url.origin === window.location.origin && !a.target && !a.hasAttribute('download');
-      } catch(e){ return false; }
-    }
-
-    // Show MIXR.ai while loading initial page
-    document.title = LOADING_BRAND;
-
-    // Restore on full load
-    window.addEventListener('load', function(){
-      document.title = document.title && document.title !== LOADING_BRAND ? document.title : (originalTitle || LOADING_BRAND);
-    });
-
-    // On internal link clicks
-    document.addEventListener('click', function(e){
-      var a = e.target.closest && e.target.closest('a[href]');
-      if (!a || !isInternal(a)) return;
-      document.title = LOADING_BRAND;
-    });
-
-    // Before unload
-    window.addEventListener('beforeunload', function(){
-      document.title = LOADING_BRAND;
-    });
-
-    // Handle bfcache restores
-    window.addEventListener('pageshow', function(ev){
-      if (ev.persisted) {
-        document.title = originalTitle || document.title || LOADING_BRAND;
-      }
-    });
-  })();
+      // Also force replace if something else tries to set old text
+      const observer = new MutationObserver(() => {
+        if (document.title.includes('Neural Sonic Genesis')) {
+          document.title = 'MIXR.ai';
+        }
+      });
+      observer.observe(document.querySelector('title'), { childList: true });
+    })();
   </script>
 </head>
 <body class="gradient-bg min-h-screen overflow-x-hidden">
@@ -101,7 +65,6 @@
             <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
           </div>
           <div>
-            <!-- BRAND -->
             <a href="/" class="text-white font-black text-3xl gradient-text hover:opacity-80 transition-opacity">MIXR.AI</a>
           </div>
         </div>
@@ -149,20 +112,18 @@
     {% block content %}{% endblock %}
   </main>
 
-  <!-- Footer (shared across all pages) -->
+  <!-- Footer -->
   <footer class="glass border-t border-white/10 mt-32">
     <div class="container mx-auto px-6 py-16">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
         
-        <!-- Brand + Tagline -->
+        <!-- Brand -->
         <div>
           <div class="flex items-center space-x-3 mb-6">
             <i class="fas fa-waveform-lines text-yellow-400 text-2xl"></i>
             <span class="text-white font-black text-xl gradient-text">MIXR.AI</span>
           </div>
-          <p class="text-white/70 mb-6">
-            AI music mastering that makes your tracks clean, loud, and ready to share.
-          </p>
+          <p class="text-white/70 mb-6">AI music mastering that makes your tracks clean, loud, and ready to share.</p>
           <div class="flex space-x-4">
             <!-- Twitter removed -->
             <a href="#" class="text-white/60 hover:text-yellow-400 transition-colors"><i class="fab fa-instagram text-xl"></i></a>
@@ -188,7 +149,8 @@
             <li><a href="/contact" class="text-white/70 hover:text-yellow-400 transition-colors">Contact</a></li>
             <li>
               <a href="mailto:pranamyashukla08@gmail.com"
-                 class="text-white/70 hover:text-yellow-400 transition-colors">
+                 class="text-white/70 hover:text-yellow-400 transition-colors"
+                 title="Email: pranamyashukla08@gmail.com">
                 Help Centre
               </a>
             </li>
@@ -218,31 +180,6 @@
       var el = document.getElementById('mobile-menu');
       if (el) el.classList.toggle('hidden');
     }
-    (function reactiveGlow(){
-      var targets = document.querySelectorAll(
-        '.btn-world-class, .btn-premium, .card-world-class, .glass, .pricing-world-class, .stat-world-class'
-      );
-      if (!targets.length) return;
-      targets.forEach(function(el){
-        if (el.classList.contains('rg')) return;
-        el.classList.add('rg');
-        var layer = document.createElement('span');
-        layer.className = 'rg-layer';
-        el.appendChild(layer);
-        var raf = null;
-        function onMove(e){
-          var rect = el.getBoundingClientRect();
-          var x = e.clientX - rect.left;
-          var y = e.clientY - rect.top;
-          if (raf) cancelAnimationFrame(raf);
-          raf = requestAnimationFrame(function(){
-            el.style.setProperty('--rg-x', x + 'px');
-            el.style.setProperty('--rg-y', y + 'px');
-          });
-        }
-        el.addEventListener('mousemove', onMove, { passive: true });
-      });
-    })();
   </script>
 
   <script src="/static/js/enhanced-ui.js"></script>
