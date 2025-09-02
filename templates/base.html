@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}MasterAI - Revolutionary AI Music Mastering{% endblock %}</title>
-  <meta name="description" content="{% block description %}Transform your music with cutting-edge AI mastering. Fast, simple, and studio-quality results for everyone.{% endblock %}">
+  <title>{% block title %}MIXR.ai{% endblock %}</title>
+  <meta name="description" content="{% block description %}MIXR.ai transforms your music with cutting-edge AI mastering. Fast, simple, and studio-quality results for everyone.{% endblock %}">
 
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -46,12 +46,32 @@
     @media (prefers-reduced-motion: reduce) { .rg .rg-layer { transition: none; } }
   </style>
 
-  <!-- Show MIXR.ai as the tab title while loading -->
+  <!-- Always show MIXR.ai as the tab title during load and page transitions -->
   <script>
     (function(){
-      const originalTitle = document.title;
-      document.title = 'MIXR.ai';
-      window.addEventListener('load', function(){ document.title = originalTitle; });
+      let originalTitle = document.title;
+
+      function setLoadingTitle(){ document.title = 'MIXR.ai'; }
+      function restoreTitle(){ document.title = originalTitle; }
+
+      setLoadingTitle();
+      window.addEventListener('load', restoreTitle);
+      window.addEventListener('beforeunload', setLoadingTitle);
+      document.addEventListener('visibilitychange', function(){
+        if (document.visibilityState === 'hidden') setLoadingTitle();
+      });
+      document.addEventListener('click', function(e){
+        const a = e.target.closest('a[href]');
+        if (!a) return;
+        const url = new URL(a.href, window.location.origin);
+        if (url.origin === window.location.origin && !a.target && !a.hasAttribute('download')) {
+          setLoadingTitle();
+        }
+      });
+      window.addEventListener('pageshow', function(ev){
+        originalTitle = document.title;
+        if (ev.persisted) restoreTitle();
+      });
     })();
   </script>
 </head>
@@ -68,8 +88,7 @@
             <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
           </div>
           <div>
-            <a href="/" class="text-white font-black text-3xl gradient-text hover:opacity-80 transition-opacity">MasterAI</a>
-            <div class="text-white/60 text-sm font-medium">Revolutionary Mastering</div>
+            <a href="/" class="text-white font-black text-3xl gradient-text hover:opacity-80 transition-opacity">MIXR.AI</a>
           </div>
         </div>
 
@@ -80,7 +99,6 @@
           <a href="/about" class="text-white/80 hover:text-yellow-400 transition-all duration-300 font-medium">About</a>
           <a href="/contact" class="text-white/80 hover:text-yellow-400 transition-all duration-300 font-medium">Contact</a>
 
-          <!-- Dashboard only (no Launch App) -->
           <a href="/dashboard"
              class="{% if on_dashboard %}bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-6 py-3 rounded-xl font-bold shadow hover:from-yellow-500 hover:to-orange-600 transition-all duration-300{% else %}glass text-white px-5 py-2 rounded-lg hover:bg-white/10 transition-all duration-300 font-medium border border-white/20{% endif %}">
             Dashboard
@@ -103,7 +121,6 @@
       <a href="/about" class="text-white text-2xl font-medium hover:text-yellow-400 transition-colors">About</a>
       <a href="/contact" class="text-white text-2xl font-medium hover:text-yellow-400 transition-colors">Contact</a>
 
-      <!-- Dashboard only (no Launch App) -->
       <a href="/dashboard"
          class="{% if on_dashboard %}bg-gradient-to-r from-yellow-400 to-orange-500 text-black px-8 py-4 rounded-xl font-bold{% else %}text-white text-2xl font-medium hover:text-yellow-400 transition-colors{% endif %}">
         Dashboard
@@ -118,18 +135,17 @@
     {% block content %}{% endblock %}
   </main>
 
-  <!-- Footer (simplified links + Help Centre email; Twitter removed) -->
+  <!-- Footer -->
   <footer class="glass border-t border-white/10 mt-32">
     <div class="container mx-auto px-6 py-16">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
         <div>
           <div class="flex items-center space-x-3 mb-6">
             <i class="fas fa-waveform-lines text-yellow-400 text-2xl"></i>
-            <span class="text-white font-black text-xl gradient-text">MasterAI</span>
+            <span class="text-white font-black text-xl gradient-text">MIXR.AI</span>
           </div>
           <p class="text-white/70 mb-6">AI music mastering that makes your tracks clean, loud, and ready to share.</p>
           <div class="flex space-x-4">
-            <!-- Twitter removed -->
             <a href="#" class="text-white/60 hover:text-yellow-400 transition-colors"><i class="fab fa-instagram text-xl"></i></a>
             <a href="#" class="text-white/60 hover:text-yellow-400 transition-colors"><i class="fab fa-youtube text-xl"></i></a>
             <a href="#" class="text-white/60 hover:text-yellow-400 transition-colors"><i class="fab fa-discord text-xl"></i></a>
@@ -157,7 +173,7 @@
 
       <div class="border-t border-white/20 pt-8">
         <div class="flex flex-col md:flex-row justify-between items-center">
-          <div class="text-white/60 text-sm mb-4 md:mb-0">© 2024 MasterAI. All rights reserved.</div>
+          <div class="text-white/60 text-sm mb-4 md:mb-0">© 2025 MIXR.AI. All rights reserved.</div>
           <div class="flex space-x-6 text-sm">
             <a href="#" class="text-white/60 hover:text-yellow-400 transition-colors">Privacy Policy</a>
             <a href="#" class="text-white/60 hover:text-yellow-400 transition-colors">Terms of Service</a>
