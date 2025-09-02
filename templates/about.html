@@ -16,7 +16,9 @@
     </h1>
 
     <p class="text-2xl md:text-3xl text-white/90 max-w-4xl mx-auto mb-12 font-light leading-relaxed">
-      We’re a small team of music lovers and engineers making <strong class="font-bold text-yellow-400">great-sounding masters</strong> fast, simple, and affordable for everyone.
+      We’re a small team of music lovers and engineers making
+      <strong class="font-bold text-yellow-400">great-sounding masters</strong>
+      fast, simple, and affordable for everyone.
     </p>
   </div>
 
@@ -24,28 +26,28 @@
   <div class="glass rounded-3xl p-12 mb-20 text-center">
     <h2 class="text-4xl font-bold text-white mb-8 text-glow">Our Mission</h2>
     <p class="text-xl text-white/90 max-w-4xl mx-auto leading-relaxed">
-      Help independent artists and small teams release music that sounds polished—without big budgets or complex tools. If you have a song, you deserve a clean, loud, and balanced master.
+      Help independent artists and small teams release music that sounds polished—without big budgets or complex tools.
+      If you have a song, you deserve a clean, loud, and balanced master.
     </p>
   </div>
 
-  <!-- Founder (single) -->
+  <!-- Founder (single, with real <img>) -->
   <div class="glass rounded-3xl p-8 mb-20">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-      <!-- Founder Photo -->
-      <div class="md:col-span-1 flex justify-center">
-        <div class="relative w-40 h-40 sm:w-48 sm:h-48">
-          <img
-            src="{{ url_for('static_1', filename='images/founder-pranamya.jpg') }}"
-            alt="Pranamya Shukla (Artemis) — Founder, MIXR.ai"
-            class="w-full h-full object-cover rounded-full ring-4 ring-yellow-400/40 shadow-xl"
-          />
-        </div>
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-10 items-center">
+      <!-- Photo -->
+      <div class="lg:col-span-2 flex justify-center">
+        <img
+          src="{{ url_for('static', filename='founder-pranamya.jpeg') }}"
+          alt="Pranamya Shukla — Founder, MIXR.ai"
+          class="w-64 h-64 rounded-full object-cover ring-8 ring-yellow-400/60 shadow-xl"
+          style="object-position:center 10%;"
+        />
       </div>
 
-      <!-- Founder Text -->
-      <div class="md:col-span-2">
-        <h3 class="text-2xl font-bold text-white mb-1">Pranamya Shukla</h3>
-        <p class="text-yellow-400 mb-4 font-medium">Founder</p>
+      <!-- Text -->
+      <div class="lg:col-span-3">
+        <h3 class="text-3xl font-bold text-white mb-2">Pranamya Shukla</h3>
+        <p class="text-yellow-400 mb-6 font-medium">Founder</p>
         <p class="text-white/80 leading-relaxed">
           “I go by the stage name Artemis and I am one of the most experimental and fearless producers in the underground DHH scene.
           I started out crafting sounds in small, makeshift studios with nothing but headphones and an obsession for pushing boundaries.
