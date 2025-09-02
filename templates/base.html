@@ -45,6 +45,15 @@
     .rg > * { position: relative; z-index: 1; }
     @media (prefers-reduced-motion: reduce) { .rg .rg-layer { transition: none; } }
   </style>
+
+  <!-- Show MIXR.ai as the tab title while loading -->
+  <script>
+    (function(){
+      const originalTitle = document.title;
+      document.title = 'MIXR.ai';
+      window.addEventListener('load', function(){ document.title = originalTitle; });
+    })();
+  </script>
 </head>
 <body class="gradient-bg min-h-screen overflow-x-hidden">
   {% set on_dashboard = request.path.startswith('/dashboard') %}
@@ -109,10 +118,10 @@
     {% block content %}{% endblock %}
   </main>
 
-  <!-- Footer -->
+  <!-- Footer (simplified links + Help Centre email; Twitter removed) -->
   <footer class="glass border-t border-white/10 mt-32">
     <div class="container mx-auto px-6 py-16">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
         <div>
           <div class="flex items-center space-x-3 mb-6">
             <i class="fas fa-waveform-lines text-yellow-400 text-2xl"></i>
@@ -120,7 +129,7 @@
           </div>
           <p class="text-white/70 mb-6">AI music mastering that makes your tracks clean, loud, and ready to share.</p>
           <div class="flex space-x-4">
-            <a href="#" class="text-white/60 hover:text-yellow-400 transition-colors"><i class="fab fa-twitter text-xl"></i></a>
+            <!-- Twitter removed -->
             <a href="#" class="text-white/60 hover:text-yellow-400 transition-colors"><i class="fab fa-instagram text-xl"></i></a>
             <a href="#" class="text-white/60 hover:text-yellow-400 transition-colors"><i class="fab fa-youtube text-xl"></i></a>
             <a href="#" class="text-white/60 hover:text-yellow-400 transition-colors"><i class="fab fa-discord text-xl"></i></a>
@@ -128,31 +137,19 @@
         </div>
 
         <div>
-          <h4 class="text-white font-bold text-lg mb-6">Product</h4>
+          <h4 class="text-white font-bold text-lg mb-6">Navigate</h4>
           <ul class="space-y-3">
             <li><a href="/features" class="text-white/70 hover:text-yellow-400 transition-colors">Features</a></li>
-            <li><a href="/pricing" class="text-white/70 hover:text-yellow-400 transition-colors">Pricing</a></li>
-            <li><a href="#" class="text-white/70 hover:text-yellow-400 transition-colors">API</a></li>
             <li><a href="#" class="text-white/70 hover:text-yellow-400 transition-colors">Integrations</a></li>
-          </ul>
-        </div>
-
-        <div>
-          <h4 class="text-white font-bold text-lg mb-6">Company</h4>
-          <ul class="space-y-3">
             <li><a href="/about" class="text-white/70 hover:text-yellow-400 transition-colors">About</a></li>
-            <li><a href="/contact" class="text-white/70 hover:text-yellow-400 transition-colors">Contact</a></li>
-            <li><a href="#" class="text-white/70 hover:text-yellow-400 transition-colors">Careers</a></li>
-            <li><a href="#" class="text-white/70 hover:text-yellow-400 transition-colors">Blog</a></li>
           </ul>
         </div>
 
         <div>
           <h4 class="text-white font-bold text-lg mb-6">Support</h4>
           <ul class="space-y-3">
-            <li><a href="#" class="text-white/70 hover:text-yellow-400 transition-colors">Help Center</a></li>
-            <li><a href="#" class="text-white/70 hover:text-yellow-400 transition-colors">Documentation</a></li>
-            <li><a href="#" class="text-white/70 hover:text-yellow-400 transition-colors">Status</a></li>
+            <li><a href="/contact" class="text-white/70 hover:text-yellow-400 transition-colors">Contact</a></li>
+            <li><a href="mailto:pranamyashukla08@gmail.com" class="text-white/70 hover:text-yellow-400 transition-colors">Help Centre</a></li>
             <li><a href="#" class="text-white/70 hover:text-yellow-400 transition-colors">Community</a></li>
           </ul>
         </div>
