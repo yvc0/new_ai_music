@@ -88,35 +88,40 @@
   .glass:hover { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.2); border-color: rgba(255,255,255,0.3); }
   .card-hover-effect { transition: all 0.4s cubic-bezier(0.175,0.885,0.32,1.275); }
   .card-hover-effect:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 25px 50px rgba(0,0,0,0.15); }
+
+  /* Spacing tweak: reduce the gap between Upload (Drop Your Masterpiece) and Features */
+  #features { margin-top: 3rem; } /* was mt-32 (~8rem) */
 </style>
 
 <!-- Page content (nav comes from base.html) -->
 <div class="container mx-auto px-6 pt-28 pb-16">
   <!-- Hero -->
-  <div class="text-center mb-24 slide-up">
+  <div class="text-center mb-20 slide-up"> <!-- was mb-24 -->
     <div class="inline-block mb-8">
       <div class="relative">
         <div class="absolute inset-0 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full blur-xl opacity-30 animate-pulse"></div>
-        <i class="fas fa-brain text-white text-8xl relative z-10 text-glow"></i>
+        <!-- Changed icon to record/vinyl -->
+        <i class="fas fa-record-vinyl text-white text-8xl relative z-10 text-glow"></i>
       </div>
     </div>
 
-    <!-- CHANGED: brand title -->
+    <!-- brand title -->
     <h1 class="text-7xl md:text-9xl font-black text-white mb-6 text-glow">
       <span class="gradient-text">MIXR.com</span>
     </h1>
 
     <p class="text-2xl md:text-3xl text-white/90 max-w-5xl mx-auto mb-16 font-light leading-relaxed">
-      Breakthrough <strong class="font-bold text-yellow-400">quantum-neural architecture</strong> that transmutes your
-      <strong class="font-bold text-yellow-400">raw sonic essence</strong> into <strong class="font-bold text-yellow-400">polished, release-ready audio</strong>.
+      <!-- tagline updated -->
+      Breakthrough <strong class="font-bold text-yellow-400">AI mixing and mastering</strong> that transmutes your
+      <strong class="font-bold text-yellow-400">raw tracks</strong> into <strong class="font-bold text-yellow-400">polished, release-ready audio</strong>.
     </p>
 
     <!-- Metrics -->
-    <div class="grid grid-cols-2 md:grid-cols-3 gap-8 mb-16 max-w-5xl mx-auto">
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-8 mb-12 max-w-5xl mx-auto"> <!-- was mb-16 -->
       <div class="glass rounded-2xl p-6 hover-lift card-hover-effect">
         <i class="fas fa-bolt text-yellow-400 text-3xl mb-3"></i>
         <div class="text-white font-bold text-2xl">8.2s</div>
-        <div class="text-white/70">Avg Processing</div>
+        <div class="text-white/70">Avg Processing Time</div> <!-- label updated -->
       </div>
       <div class="glass rounded-2xl p-6 hover-lift card-hover-effect">
         <i class="fas fa-shield-alt text-yellow-400 text-3xl mb-3"></i>
@@ -132,7 +137,7 @@
   </div>
 
   <!-- Upload -->
-  <div class="max-w-6xl mx-auto mb-24">
+  <div class="max-w-6xl mx-auto mb-16"> <!-- was mb-24 -->
     <div id="upload-section" class="glass rounded-3xl p-12 border border-white/10 hover-lift glow">
       <div class="text-center mb-8">
         <h2 class="text-4xl font-bold text-white mb-4">Experience the Future</h2>
@@ -152,7 +157,7 @@
           </div>
           <input type="file" id="audio-input" accept=".mp3,.wav,.aiff,.flac,.m4a" class="hidden">
           <button type="button" id="upload-btn" class="bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-black px-12 py-6 rounded-2xl hover:from-yellow-500 hover:via-orange-600 hover:to-red-600 transition-all duration-300 font-black text-xl shadow-2xl transform hover:scale-105 glow">
-            <i class="fas fa-atom mr-3"></i>INITIATE SONIC GENESIS
+            <i class="fas fa-atom mr-3"></i>MIX MY TRACK <!-- updated label -->
           </button>
         </div>
       </div>
@@ -222,7 +227,6 @@
           <button id="signup-btn" class="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-12 py-4 rounded-xl hover:from-green-600 hover:to-emerald-700 font-bold text-lg shadow-lg transform hover:scale-105 transition-all duration-300 mr-4">
             <i class="fas fa-download mr-2"></i>Download Master
           </button>
-          <!-- REMOVED: secure download / watermarks / license line -->
         </div>
 
         <button id="new-upload-btn" class="text-white/80 hover:text-yellow-400 transition-colors font-medium">
@@ -234,7 +238,7 @@
 </div>
 
 <!-- Features -->
-<div id="features" class="mt-32">
+<div id="features" class="mt-12"> <!-- was mt-32 -->
   <div class="text-center mb-16">
     <h2 class="text-5xl font-black text-white mb-6 text-glow">Revolutionary <span class="gradient-text">Features</span></h2>
     <p class="text-xl text-white/80 max-w-3xl mx-auto">Discover the technology that powers fast, consistent AI mastering.</p>
@@ -289,7 +293,7 @@
           <i class="fas fa-headphones text-black text-xl"></i>
         </div>
         <div>
-          <div class="text-white font-bold">Jay M.</div>
+          <div class="text-white font-bold">Dhroof</div> <!-- name updated -->
           <div class="text-yellow-400 text-sm">Indie producer</div>
         </div>
       </div>
@@ -303,7 +307,7 @@
           <i class="fas fa-music text-white text-xl"></i>
         </div>
         <div>
-          <div class="text-white font-bold">Ananya S.</div>
+          <div class="text-white font-bold">Awedeo</div> <!-- name updated -->
           <div class="text-yellow-400 text-sm">Bedroom musician</div>
         </div>
       </div>
@@ -317,7 +321,7 @@
           <i class="fas fa-home text-white text-xl"></i>
         </div>
         <div>
-          <div class="text-white font-bold">Small Room Studios</div>
+          <div class="text-white font-bold">Trent</div> <!-- name updated -->
           <div class="text-yellow-400 text-sm">Project studio</div>
         </div>
       </div>
@@ -343,7 +347,6 @@
       <a href="/dashboard" class="btn-world-class text-black px-12 py-6 rounded-2xl font-black text-xl transform hover:scale-105 inline-block">
         <i class="fas fa-rocket mr-3"></i>START MASTERING NOW
       </a>
-      <!-- REMOVED: “100% Risk-Free / 30-day money-back guarantee” -->
     </div>
 
     <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
@@ -463,14 +466,14 @@
       const data = await res.json();
       if (!res.ok || !data.success) {
         const msg = (data && (data.error || data.message))
-          ? `${data.error || data.message}${data.step ? "  (step: " + data.step + ")" : ""}`
+          ? `${data.error || data.message}${data.step ? '  (step: ' + data.step + ')' : ''}`
           : `HTTP ${res.status}`;
         throw new Error(msg);
       }
       return data;
     } else {
       const text = await res.text();
-      throw new Error(`HTTP ${res.status}${text ? (": " + text.slice(0, 300)) : ""}`);
+      throw new Error(`HTTP ${res.status}${text ? (': ' + text.slice(0, 300)) : ''}`);
     }
   }
 
@@ -489,8 +492,7 @@
             <div><i class="fas fa-wave-square text-green-400 mr-1"></i>Dynamics: ${result.improvements.dynamics}</div>
             <div><i class="fas fa-chart-line text-green-400 mr-1"></i>Frequency: ${result.improvements.frequency_response}</div>
             <div><i class="fas fa-expand-arrows-alt text-green-400 mr-1"></i>Stereo: ${result.improvements.stereo_width}</div>
-          </div>
-        `;
+          </div>`;
       }
       app.elements.uploadSection.classList.add('hidden');
       app.elements.comparisonSection.classList.remove('hidden');
@@ -507,7 +509,7 @@
     app.elements.progress.classList.add('hidden');
     app.elements.progressBar.style.width = '0%';
     app.elements.uploadBtn.disabled = false;
-    app.elements.uploadBtn.innerHTML = '<i class="fas fa-atom mr-3"></i>INITIATE SONIC GENESIS';
+    app.elements.uploadBtn.innerHTML = '<i class="fas fa-atom mr-3"></i>MIX MY TRACK';
   }
 
   function switchPlayer(type) {
@@ -570,7 +572,7 @@
         note.style.left = Math.random() * 100 + '%';
         note.style.fontSize = (1.5 + Math.random() * 1.5) + 'rem';
         note.style.animationDuration = (15 + Math.random() * 10) + 's';
-        note.style.color = `rgba(${255},${255},${255},${0.05 + Math.random() * 0.1})`;
+        note.style.color = `rgba(255,255,255,${0.05 + Math.random() * 0.1})`;
         bgAnimation.appendChild(note);
         setTimeout(() => { if (note.parentNode) note.parentNode.removeChild(note); }, 25000);
       }
@@ -582,7 +584,7 @@
         icon.className = 'fas floating-icon';
         icon.style.left = Math.random() * 100 + '%';
         icon.style.animationDuration = (18 + Math.random() * 7) + 's';
-        icon.style.color = `rgba(${255},${255},${255},${0.06 + Math.random() * 0.08})`;
+        icon.style.color = `rgba(255,255,255,${0.06 + Math.random() * 0.08})`;
         const iconClasses = ['fa-microchip','fa-wave-square','fa-broadcast-tower','fa-satellite-dish'];
         icon.classList.add(iconClasses[Math.floor(Math.random() * iconClasses.length)]);
         bgAnimation.appendChild(icon);
